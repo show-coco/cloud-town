@@ -1,8 +1,8 @@
 import express from 'express'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
-import { settings } from './settings';
-import { PathMapping } from './enum/app/pathMapping';
+import { settings } from './settings'
+import { PathMapping } from './enum/app/PathMapping'
 
 const PORT = settings.PORT
 
@@ -16,35 +16,40 @@ const books = [
     title: 'Jurassic Park',
     author: 'Michael Crichton',
   },
-];
+]
 
 // The GraphQL schema in string form
 const typeDefs = `
   type Query { books: [Book] }
   type Book { title: String, author: String }
-`;
+`
 
 // The resolvers
 const resolvers = {
   Query: { books: () => books },
-};
+}
 
 // Put together a schema
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
-});
+})
 
 // Initialize the app
-const app = express();
+const app = express()
 
 // The GraphQL endpoint
-app.use(PathMapping.graphql, express.json(), graphqlExpress({ schema }));
+app.use(PathMapping.graphql, express.json(), graphqlExpress({ schema }))
 
 // GraphiQL, a visual editor for queries
-app.use(PathMapping.graphiql, graphiqlExpress({ endpointURL: PathMapping.graphql }));
+app.use(
+  PathMapping.graphiql,
+  graphiqlExpress({ endpointURL: PathMapping.graphql })
+)
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Go to http://localhost:${PORT}${PathMapping.graphiql} to run queries!`);
-});
+  console.log(
+    `Go to http://localhost:${PORT}${PathMapping.graphiql} to run queries!`
+  )
+})
