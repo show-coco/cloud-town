@@ -1,4 +1,4 @@
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
+import { ApolloServer, gql, ServerRegistration } from 'apollo-server-express'
 import express from 'express'
 import { makeExecutableSchema } from 'graphql-tools'
 import { PathMapping } from './enum/app/PathMapping'
@@ -35,17 +35,10 @@ const schema = makeExecutableSchema({
   resolvers,
 })
 
-// Initialize the app
-const app = express()
+const server = new ApolloServer({ typeDefs, resolvers });
 
-// The GraphQL endpoint
-app.use(PathMapping.graphql, express.json(), graphqlExpress({ schema }))
-
-// GraphiQL, a visual editor for queries
-app.use(
-  PathMapping.graphiql,
-  graphiqlExpress({ endpointURL: PathMapping.graphql })
-)
+const app = express();
+server.applyMiddleware({ app } as ServerRegistration);
 
 // Start the server
 app.listen(PORT, () => {
