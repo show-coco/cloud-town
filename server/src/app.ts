@@ -1,9 +1,10 @@
-import { ApolloServer, gql, ServerRegistration } from 'apollo-server-express'
+import { ApolloServer, ServerRegistration } from 'apollo-server-express'
 import express from 'express'
-import { makeExecutableSchema } from 'graphql-tools'
+import { importSchema } from 'graphql-import';
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
 
+// Application Port
 const PORT = settings.PORT
 
 // Some fake data
@@ -18,22 +19,13 @@ const books = [
   },
 ]
 
-// The GraphQL schema in string form
-const typeDefs = `
-  type Query { books: [Book] }
-  type Book { title: String, author: String }
-`
+// GraphQL型定義
+const typeDefs = importSchema(`${__dirname}/schema/schema.graphql`);
 
 // The resolvers
 const resolvers = {
   Query: { books: () => books },
 }
-
-// Put together a schema
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-})
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
