@@ -4,8 +4,10 @@
     "private": true,
     "scripts": {
         "dev": "ts-node ./src/app.ts",
+        "build": "webpack --config ./webpack/prod.config.js",
+        "start": "npm run build && node dist/server.js",
         "check-types": "tsc --noEmit",
-        "lint": "eslint src/**/*.ts --fix && prettier --write 'src/**/*.{js,ts,json}'"
+        "lint": "eslint src/**/*.ts --fix && eslint webpack/**/*.js --fix && prettier --write '{src,webpack}/**/*.{js,ts,json}'"
     },
     "engines": {
         "node": "^14 || ^16"
@@ -23,6 +25,8 @@
         "@typescript-eslint/parser": "^4.26.0",
         "eslint": "^7.28.0",
         "eslint-config-prettier": "^8.3.0",
+        "eslint-import-resolver-webpack": "^0.13.1",
+        "eslint-plugin-import": "^2.23.4",
         "prettier": "^2.3.1",
         "ts-node": "^10.0.0",
         "typescript": "^4.3.2"

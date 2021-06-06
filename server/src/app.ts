@@ -1,8 +1,8 @@
-import express from 'express'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
+import express from 'express'
 import { makeExecutableSchema } from 'graphql-tools'
-import { settings } from './settings'
 import { PathMapping } from './enum/app/PathMapping'
+import { settings } from './settings'
 
 const PORT = settings.PORT
 
