@@ -12,9 +12,14 @@ export const SignInPage = () => {
         className="container"
         alignItems="center"
         h="100vh"
-        justifyContent="space-around"
+        justifyContent={{ base: "center", lg: "space-around" }}
+        flexDir={{ base: "column", lg: "row" }}
       >
-        <Flex className="left">
+        <Flex
+          className="left"
+          mb={{ base: "20", lg: "0" }}
+          px={{ base: "10", lg: "0" }}
+        >
           <Box>
             <Heading as="h1" color="blackAlpha.900" mb={5}>
               Welcome to Atomic Community
@@ -23,7 +28,12 @@ export const SignInPage = () => {
               コミュニティを盛り上げるためのプラットフォーム
             </Heading>
 
-            <Button colorScheme="blue" variant="outline" size="lg">
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="lg"
+              display={{ base: "none", lg: "inline" }}
+            >
               コミュニティ一覧
             </Button>
           </Box>
@@ -32,16 +42,27 @@ export const SignInPage = () => {
         </Flex>
 
         <Box className="right" textAlign="center">
-          <Button
-            colorScheme="blue"
-            size="lg"
-            px="10"
-            py="8"
-            boxShadow="2xl-blue"
-            mb={10}
-          >
-            Login with Google
-          </Button>
+          <Flex flexDir={{ base: "column", lg: "row" }}>
+            <Button
+              colorScheme="blue"
+              variant="outline"
+              size="lg"
+              display={{ lg: "none" }}
+              mb={6}
+            >
+              コミュニティ一覧
+            </Button>
+            <Button
+              colorScheme="blue"
+              size="lg"
+              px="10"
+              py={{ lg: 8 }}
+              boxShadow="2xl-blue"
+              mb={10}
+            >
+              Login with Google
+            </Button>
+          </Flex>
 
           <Text fontSize="lg">
             <Link href="#">
