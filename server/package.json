@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "ts-node ./src/app.ts",
-        "migrate": "prisma migrate dev --name init",
+        "migrate": "prisma migrate dev --name",
         "check-types": "tsc --noEmit",
         "lint": "eslint src/**/*.ts --fix && eslint webpack/**/*.js --fix && prettier --write '{src,webpack}/**/*.{js,ts,json}'"
     },

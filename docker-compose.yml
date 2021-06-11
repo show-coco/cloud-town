@@ -1,18 +1,13 @@
-version: "3.9"
+version: "3.8"
+
 services:
   db:
-    build:
-      context: .
-      dockerfile: ./docker/mysql/Dockerfile
-    ports:
-      - target: 3306
-        published: ${DB_PORT:-3306}
-        protocol: tcp
-        mode: host
+    image: postgres:13.3-alpine
     volumes:
-      - ./docker/mysql/db:/var/lib/mysql
+      - ./tmp/db:/var/lib/postgresql/data
     environment:
-      - MYSQL_DATABASE=${DB_NAME:-cloud_event}
-      - MYSQL_USER=${DB_USER:-cloud_event}
-      - MYSQL_PASSWORD=${DB_PASS:-cloud_event}
-      - MYSQL_ROOT_PASSWORD=${DB_PASS:-cloud_event}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
