@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    ports:
+      - target: 3306
+        published: ${DB_PORT:-3306}
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./docker/mysql/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${DB_NAME:-cloud_event}
+      - MYSQL_USER=${DB_USER:-cloud_event}
+      - MYSQL_PASSWORD=${DB_PASS:-cloud_event}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:-cloud_event}
