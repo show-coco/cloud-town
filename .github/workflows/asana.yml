@@ -1,0 +1,14 @@
+name: asana
+on:
+  pull_request:
+
+jobs:
+  comment-pr-link-on-asana:
+    name: "AsanaにPRのリンクをコメントする"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: H37kouya/comment-pr-link-on-asana@v1.0.0
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        asana-token: "${{ secrets.ASANA_PERSONAL_ACCESS_TOKEN }}"
+
