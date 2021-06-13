@@ -1,6 +1,6 @@
-import passport from "passport"
-import passportJwt from "passport-jwt"
-import UserRepository from '../repository/UserRepository';
+import passport from 'passport'
+import passportJwt from 'passport-jwt'
+import UserRepository from '../repository/UserRepository'
 
 const jwtOptions = {
   // AuthorizationヘッダからJWTを取得
@@ -10,13 +10,15 @@ const jwtOptions = {
   secretOrKey: process.env.TOKEN_SECRET,
   issuer: process.env.TOKEN_ISSUER,
   audience: process.env.TOKEN_AUDIENCE,
-};
+}
 
-passport.use(new passportJwt.Strategy(jwtOptions, (payload, done) => {
-  const userRepo = new UserRepository()
-  const user = userRepo.getUserById(parseInt(payload.sub));
-  if (user) {
-      return done(null, user, payload);
-  }
-  return done(null);
-}));
+passport.use(
+  new passportJwt.Strategy(jwtOptions, (payload: { sub: string }, done) => {
+    const userRepo = new UserRepository()
+    const user = userRepo.getUserById(parseInt(payload.sub))
+    if (user) {
+      return done(null, user, payload)
+    }
+    return done(null)
+  })
+)

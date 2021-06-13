@@ -52,16 +52,18 @@ export const SignInPage = () => {
             >
               コミュニティ一覧
             </Button>
-            <Button
-              colorScheme="blue"
-              size="lg"
-              px="10"
-              py={{ lg: 8 }}
-              boxShadow="2xl-blue"
-              mb={10}
-            >
-              Login with Google
-            </Button>
+            <a href="http://localhost:4000/api/authentication/google/start">
+              <Button
+                colorScheme="blue"
+                size="lg"
+                px="10"
+                py={{ lg: 8 }}
+                boxShadow="2xl-blue"
+                mb={10}
+              >
+                Login with Google
+              </Button>
+            </a>
           </Flex>
 
           <Text fontSize="lg">
