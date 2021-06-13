@@ -1,10 +1,12 @@
 import { ApolloServer, ServerRegistration } from 'apollo-server-express'
+import dotenv from "dotenv"
 import express from 'express'
 import { importSchema } from 'graphql-import';
 import passport from "passport"
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
 require('./auth')
+dotenv.config()
 
 // Application Port
 const PORT = settings.PORT

@@ -1,8 +1,6 @@
-import dotenv from "dotenv"
 import passport from "passport"
 import passportJwt from "passport-jwt"
 import UserRepository from './repository/UserRepository';
-dotenv.config()
 
 const jwtOptions = {
   // AuthorizationヘッダからJWTを取得
@@ -10,6 +8,8 @@ const jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
   // JWTの署名に使用されるシークレット
   secretOrKey: process.env.TOKEN_SECRET,
+  issuer: process.env.TOKEN_ISSUER,
+  audience: process.env.TOKEN_AUDIENCE,
 };
 
 passport.use(new passportJwt.Strategy(jwtOptions, (payload, done) => {
