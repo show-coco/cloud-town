@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "ts-node ./src/app.ts",
+        "dev": "ts-node --files ./src/app.ts",
         "migrate": "prisma migrate dev --name",
         "check-types": "tsc --noEmit",
         "lint": "eslint src/**/*.ts --fix && eslint webpack/**/*.js --fix && prettier --write '{src,webpack}/**/*.{js,ts,json}'"
@@ -26,6 +26,7 @@
         "@types/express": "^4.17.12",
         "@types/node": "^15.12.1",
         "@types/passport": "^1.0.6",
+        "@types/passport-google-oauth": "^1.0.41",
         "@types/passport-jwt": "^3.0.5",
         "@typescript-eslint/eslint-plugin": "^4.26.0",
         "@typescript-eslint/parser": "^4.26.0",

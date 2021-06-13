@@ -1,6 +1,6 @@
 import passport from "passport"
 import passportJwt from "passport-jwt"
-import UserRepository from './repository/UserRepository';
+import UserRepository from '../repository/UserRepository';
 
 const jwtOptions = {
   // AuthorizationヘッダからJWTを取得

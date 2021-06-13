@@ -1,12 +1,14 @@
 import { ApolloServer, ServerRegistration } from 'apollo-server-express'
 import dotenv from "dotenv"
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { importSchema } from 'graphql-import';
 import passport from "passport"
+import { tokenGenerator } from "./auth/tokenGenerator"
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
-require('./auth')
 dotenv.config()
+require('./auth/jwt')
+require('./auth/google')
 
 // Application Port
 const PORT = settings.PORT
@@ -35,6 +37,18 @@ const server = new ApolloServer({ typeDefs, resolvers });
 
 const app = express();
 server.applyMiddleware({ app } as ServerRegistration);
+
+function generateUserToken(req: Request, res: Response) {
+  const accessToken = tokenGenerator(req.user.id);
+  res.render('authenticated.html', {
+    token: accessToken
+  });
+}
+
+app.get('/api/authentication/google/start',
+  passport.authenticate('google', { session: false, scope: ['openid', 'profile', 'email'] }));
+app.get('/api/authentication/google/redirect',
+  passport.authenticate('google', { session: false }), generateUserToken);
 
 app.get('/api/secure',
   // This request must be authenticated using a JWT, or else we will fail

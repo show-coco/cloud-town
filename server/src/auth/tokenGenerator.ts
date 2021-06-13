@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const generateAccessToken = (userId: number): string => {
+export const tokenGenerator = (userId: number): string => {
   const expiresIn = '7 days';
   const issuer = process.env.TOKEN_ISSUER;
   const audience = process.env.TOKEN_AUDIENCE;
