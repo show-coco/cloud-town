@@ -1,8 +1,10 @@
 import { ApolloServer, ServerRegistration } from 'apollo-server-express'
 import express from 'express'
 import { importSchema } from 'graphql-import';
+import passport from "passport"
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
+require('./auth')
 
 // Application Port
 const PORT = settings.PORT
@@ -31,6 +33,14 @@ const server = new ApolloServer({ typeDefs, resolvers });
 
 const app = express();
 server.applyMiddleware({ app } as ServerRegistration);
+
+app.get('/api/secure',
+  // This request must be authenticated using a JWT, or else we will fail
+  passport.authenticate(['jwt'], { session: false }),
+  (req, res) => {
+    res.send('Secure response from ' + JSON.stringify(req.user));
+  }
+);
 
 // Start the server
 app.listen(PORT, () => {
