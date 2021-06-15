@@ -1,40 +1,35 @@
 import { ApolloServer, ServerRegistration } from 'apollo-server-express'
+import dotenv from 'dotenv'
 import express from 'express'
-import { importSchema } from 'graphql-import';
+import { resolvers } from './core/adapter/graphql/resolver'
+import { typeDefs } from './core/adapter/graphql/schema'
+import { AuthRouter } from './core/adapter/rest/routes'
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
+import cors from 'cors'
+import { context } from './core/adapter/graphql/context'
+dotenv.config()
+require('./auth/jwt')
+require('./auth/google')
 
 // Application Port
 const PORT = settings.PORT
 
-// Some fake data
-const books = [
-  {
-    title: "Harry Potter and the Sorcerer's stone",
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-]
+const server = new ApolloServer({ typeDefs, resolvers, context })
 
-// GraphQL型定義
-const typeDefs = importSchema(`${__dirname}/schema/schema.graphql`);
+const app = express()
+app.use(cors())
 
-// The resolvers
-const resolvers = {
-  Query: { books: () => books },
-}
+server.applyMiddleware({ app } as ServerRegistration)
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const router = express.Router()
+app.use('/', router)
 
-const app = express();
-server.applyMiddleware({ app } as ServerRegistration);
+AuthRouter(router)
 
 // Start the server
 app.listen(PORT, () => {
   console.log(
-    `Go to http://localhost:${PORT}${PathMapping.graphiql} to run queries!`
+    `Go to http://localhost:${PORT}${PathMapping.graphql} to run queries!`
   )
 })
