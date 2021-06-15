@@ -6,7 +6,8 @@
         "dev": "ts-node-dev --files ./src/app.ts",
         "migrate": "prisma migrate dev --name",
         "check-types": "tsc --noEmit",
-        "lint": "npm-run-all tsc-test eslint"
+        "lint": "npm-run-all tsc-test eslint",
+        "generate": "gql-gen"
     },
     "engines": {
         "node": "^14 || ^16"
@@ -25,6 +26,9 @@
         "passport-jwt": "^4.0.0"
     },
     "devDependencies": {
+        "@graphql-codegen/cli": "^1.21.5",
+        "@graphql-codegen/typescript": "^1.22.1",
+        "@graphql-codegen/typescript-resolvers": "^1.19.2",
         "@types/express": "^4.17.12",
         "@types/node": "^15.12.1",
         "@types/passport": "^1.0.6",

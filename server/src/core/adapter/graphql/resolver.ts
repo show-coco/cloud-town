@@ -1,3 +1,5 @@
+import { Resolvers } from "../../../types/graphql";
+
 const books = [
   {
     title: "Harry Potter and the Sorcerer's stone",
@@ -9,9 +11,9 @@ const books = [
   },
 ]
 
-export const resolvers = {
-  Query: { books: (_parent: any, _args: any, context: any) => {
-    if (!context.user) return null;
+export const resolvers: Resolvers = {
+  Query: { books: (_parent, _args, context) => {
+    if (!context.userId) return null;
 
     return books;
   }},
