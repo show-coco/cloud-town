@@ -10,5 +10,9 @@ const books = [
 ]
 
 export const resolvers = {
-  Query: { books: () => books },
+  Query: { books: (_parent: any, _args: any, context: any) => {
+    if (!context.user) return null;
+
+    return books;
+  }},
 }

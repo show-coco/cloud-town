@@ -7,6 +7,7 @@ import { AuthRouter } from './core/adapter/rest/routes'
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
 import cors from 'cors'
+import { context } from './core/adapter/graphql/context'
 dotenv.config()
 require('./auth/jwt')
 require('./auth/google')
@@ -14,7 +15,7 @@ require('./auth/google')
 // Application Port
 const PORT = settings.PORT
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({ typeDefs, resolvers, context })
 
 const app = express()
 app.use(cors())
