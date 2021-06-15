@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { jwtManager } from "../utils/jwtManager";
 
 export default function Page() {
   const router = useRouter();
@@ -7,6 +8,7 @@ export default function Page() {
 
   useEffect(() => {
     if (token) {
+      jwtManager.setJwt(token.toString());
       router.push("/");
     } else {
       router.push("/sign-in");

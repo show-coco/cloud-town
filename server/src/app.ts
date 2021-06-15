@@ -6,6 +6,7 @@ import { typeDefs } from './core/adapter/graphql/schema'
 import { AuthRouter } from './core/adapter/rest/routes'
 import { PathMapping } from './enum/app/PathMapping'
 import { settings } from './settings'
+import cors from 'cors'
 dotenv.config()
 require('./auth/jwt')
 require('./auth/google')
@@ -16,6 +17,8 @@ const PORT = settings.PORT
 const server = new ApolloServer({ typeDefs, resolvers })
 
 const app = express()
+app.use(cors())
+
 server.applyMiddleware({ app } as ServerRegistration)
 
 const router = express.Router()
