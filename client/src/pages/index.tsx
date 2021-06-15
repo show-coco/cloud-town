@@ -3,17 +3,10 @@ import styles from "../styles/Home.module.css";
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { Spinner } from "@chakra-ui/spinner";
-
-const BOOKS = gql`
-  query {
-    books {
-      title
-    }
-  }
-`;
+import { useBooksQuery } from "../graphql/generated/types";
 
 export default function Home() {
-  const { data, loading } = useQuery(BOOKS);
+  const { data, loading } = useBooksQuery();
 
   console.log(data);
 
