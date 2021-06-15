@@ -31,7 +31,7 @@ export default class PUserRepository implements IUserRepository {
       data: { google_id: externalId, name, email, slug: externalId },
     })
 
-    console.log("pUser", pUser)
+    console.log('pUser', pUser)
 
     return this.converter(pUser)
   }

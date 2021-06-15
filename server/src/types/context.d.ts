@@ -1,3 +1,5 @@
 export type Context = {
-  userId: number
+  user: {
+    sub: string
+  }
 }

@@ -17,3 +17,8 @@ model User {
   name      String
   google_id String
 }
+
+model Community {
+  id   Int    @id @default(autoincrement())
+  name String
+}
