@@ -1,6 +1,6 @@
 import passport from 'passport'
 import passportGoogle from 'passport-google-oauth'
-import UserRepository from '../repository/UserRepository'
+import UserRepository from '../core/adapter/repository/UserRepository/PUserRepository'
 
 const passportConfig = {
   clientID: process.env.GOOGLE_CLIENT_ID || '',
@@ -10,16 +10,16 @@ const passportConfig = {
 
 if (passportConfig.clientID) {
   passport.use(
-    new passportGoogle.OAuth2Strategy(passportConfig, function (
+    new passportGoogle.OAuth2Strategy(passportConfig, async function (
       accessToken,
       refreshToken,
       profile,
       done
     ) {
       const userRepo = new UserRepository()
-      let user = userRepo.getUserByExternalId('google', profile.id)
+      let user = await userRepo.getUserByGoogleId(profile.id)
       if (!user) {
-        user = userRepo.createUser(profile.displayName, 'google', profile.id)
+        user = await userRepo.createUser(profile.displayName, 'google', profile.id)
       }
       return done(null, user)
     })

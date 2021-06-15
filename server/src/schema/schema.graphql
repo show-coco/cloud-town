@@ -1,5 +1,0 @@
-# import Book from "book.graphql"
-
-type Query {
-  books: [Book]
-}
