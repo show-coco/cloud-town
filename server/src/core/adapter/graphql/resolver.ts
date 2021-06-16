@@ -1,5 +1,5 @@
 import { Resolvers } from '../../../types/graphql'
-import CommunityUseCase from '../../usecase/CommunityUseCase'
+import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'
 
 const books = [

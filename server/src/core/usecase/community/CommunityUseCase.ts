@@ -1,5 +1,5 @@
-import ICommunityRepository from '../adapter/repository/CommunityRepository/ICommunityRepository'
-import Community from '../domain/entities/Community'
+import ICommunityRepository from '../../adapter/repository/CommunityRepository/ICommunityRepository'
+import Community from '../../domain/entities/Community'
 
 export default class CommunityUseCase {
   private communityRepo: ICommunityRepository
