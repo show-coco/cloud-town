@@ -1,5 +1,5 @@
 import { Resolvers } from '../../../types/graphql'
-import CommunityService from '../../service/CommunityService'
+import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'
 
 const books = [
@@ -14,7 +14,7 @@ const books = [
 ]
 
 const communityRepo = new PCommunityRepository()
-const communityService = new CommunityService(communityRepo)
+const communityUseCase = new CommunityUseCase(communityRepo)
 
 export const resolvers: Resolvers = {
   Query: {
@@ -24,7 +24,7 @@ export const resolvers: Resolvers = {
       return books
     },
     community: async (_parent, _args, context) => {
-      const com = await communityService.getCommunityById(1)
+      const com = await communityUseCase.getCommunityById(1)
 
       if (!com) return null
 
