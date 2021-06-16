@@ -1,7 +1,7 @@
 import ICommunityRepository from '../adapter/repository/CommunityRepository/ICommunityRepository'
 import Community from '../domain/entities/Community'
 
-export default class CommunityService {
+export default class CommunityUseCase {
   private communityRepo: ICommunityRepository
 
   constructor(communityRepo: ICommunityRepository) {
