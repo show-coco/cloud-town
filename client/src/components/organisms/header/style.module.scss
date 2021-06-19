@@ -1,0 +1,13 @@
+.header {
+  &_menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0 0 0 30px;
+
+    li {
+      font-size: 15px;
+      padding: 0 15px;
+    }
+  }
+}
