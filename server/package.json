@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "ts-node-dev --files ./src/app.ts",
-        "migrate": "prisma migrate dev --name",
+        "migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
         "check-types": "tsc --noEmit",
         "lint": "npm-run-all tsc-test eslint",
         "generate": "gql-gen"
