@@ -27,6 +27,9 @@ jobs:
       - name: package Install
         run: yarn install
         working-directory: ./server
+      - name: copy dotenv
+        run: cp .env.ci .env
+        working-directory: ./server
       - name: docker
         run: docker-compose up -d
       - name: migrate db
