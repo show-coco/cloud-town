@@ -26,6 +26,6 @@ app.get(PathMapping.health, (req, res) => {
   res.send('Ok')
 })
 
-process.env.NODE_ENV !== 'test' && AuthRouter(router)
+AuthRouter(router)
 
 export { app }

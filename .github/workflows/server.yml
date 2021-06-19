@@ -38,6 +38,6 @@ jobs:
       - name: check type
         run: yarn run check-types
         working-directory: ./server
-      - name: test
-        run: yarn run test
-        working-directory: ./server
+      # - name: test
+      #   run: yarn run test
+      #   working-directory: ./server
