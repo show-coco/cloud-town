@@ -30,7 +30,20 @@ export const resolvers: Resolvers = {
 
       return {
         id: com.getCommunityId(),
+        name: com.getName(),
       }
     },
+  },
+  Mutation: {
+    createCommunity: async (_parent, _args, context) => {
+      const com = await communityUseCase.createCommunity({
+        name: _args.input?.name,
+      })
+
+      return {
+        id: com.getCommunityId(),
+        name: com.getName(),
+      }
+    }
   },
 }
