@@ -19,7 +19,11 @@ if (passportConfig.clientID) {
       const userRepo = new UserRepository()
       let user = await userRepo.getUserByGoogleId(profile.id)
       if (!user && profile.emails) {
-        user = await userRepo.createUser(profile.displayName, profile.id, profile.emails[0].value)
+        user = await userRepo.createUser(
+          profile.displayName,
+          profile.id,
+          profile.emails[0].value
+        )
       }
       return done(null, user)
     })
