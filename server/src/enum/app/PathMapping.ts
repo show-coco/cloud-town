@@ -1,5 +1,5 @@
 // URLの変数
 export const PathMapping = {
   graphql: '/graphql',
-  graphiql: '/graphiql',
+  health: '/health',
 } as const

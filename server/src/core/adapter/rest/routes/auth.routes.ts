@@ -23,11 +23,11 @@ export function AuthRouter(router: Router): void {
     generateUserToken
   )
 
-  router.get('/api/secure',
-  passport.authenticate(['jwt'], { session: false }),
-  (req, res) => {
-    res.send('Secure response from ' + JSON.stringify(req.user));
-  }
-);
-
+  router.get(
+    '/api/secure',
+    passport.authenticate(['jwt'], { session: false }),
+    (req, res) => {
+      res.send('Secure response from ' + JSON.stringify(req.user))
+    }
+  )
 }
