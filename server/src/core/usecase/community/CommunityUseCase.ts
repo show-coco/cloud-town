@@ -12,13 +12,9 @@ export default class CommunityUseCase {
     return this.communityRepo.getCommunityById(id)
   }
 
-  createCommunity({
-    name
-  } :{
-    name: string
-  }) {
+  createCommunity({ name }: { name: string }): Promise<Community> {
     return this.communityRepo.createCommunity({
-      name
+      name,
     })
   }
 }

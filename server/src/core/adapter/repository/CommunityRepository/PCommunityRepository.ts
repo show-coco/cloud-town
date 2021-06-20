@@ -6,7 +6,7 @@ import ICommunityRepository from './ICommunityRepository'
 export default class PCommunityRepository implements ICommunityRepository {
   async getCommunityById(id: number): Promise<Community | null> {
     console.log('PCommunityRepository getCommunityById args', {
-      id
+      id,
     })
 
     const pCommunity = await prisma.community.findFirst({ where: { id } })
@@ -15,22 +15,21 @@ export default class PCommunityRepository implements ICommunityRepository {
 
     if (!pCommunity) return null
 
-    const community = new Community({ id: pCommunity.id, name: pCommunity.name })
+    const community = new Community({
+      id: pCommunity.id,
+      name: pCommunity.name,
+    })
     return community
   }
 
-  async createCommunity({
-    name
-  }: {
-    name: string
-  }): Promise<Community> {
+  async createCommunity({ name }: { name: string }): Promise<Community> {
     console.log('PCommunityRepository createCommunity args', {
-      name
+      name,
     })
 
     const pCommunity = await prisma.community.create({
       data: {
-        name
+        name,
       },
     })
 

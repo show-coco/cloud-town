@@ -9,7 +9,5 @@ export default interface ICommunityRepository {
   /**
    * Communityの作成
    */
-  createCommunity(arg: {
-    name: string
-  }): Promise<Community>
+  createCommunity(arg: { name: string }): Promise<Community>
 }
