@@ -1,15 +1,16 @@
 import passport from 'passport'
-import passportJwt from 'passport-jwt'
+import passportJwt, { StrategyOptions } from 'passport-jwt'
 import UserRepository from '../core/adapter/repository/UserRepository/PUserRepository'
+import { settings } from '../settings'
 
-const jwtOptions = {
+const jwtOptions: StrategyOptions = {
   // AuthorizationヘッダからJWTを取得
   // デフォルトでは"JWT"のプレフィックスを探す
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
   // JWTの署名に使用されるシークレット
-  secretOrKey: process.env.TOKEN_SECRET,
-  issuer: process.env.TOKEN_ISSUER,
-  audience: process.env.TOKEN_AUDIENCE,
+  secretOrKey: settings.JWT_TOKEN_SECRET,
+  issuer: settings.JWT_TOKEN_ISSUER,
+  audience: settings.JWT_TOKEN_AUDIENCE,
 }
 
 passport.use(
