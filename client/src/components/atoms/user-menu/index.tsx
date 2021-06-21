@@ -10,7 +10,7 @@ import { TypeUserMenu } from "client/src/utils/types";
 /*
  * DOM
  */
-export const Component: React.FC<TypeUserMenu> = (props) => (
+export const Component: React.VFC<TypeUserMenu> = (props) => (
   <Menu>
     <MenuButton p={2}>
       <Flex alignItems="center">

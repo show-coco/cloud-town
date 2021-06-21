@@ -22,7 +22,7 @@ export type Props = {
 /*
  * DOM
  */
-const Component: React.FC<Props> = (props) => (
+const Component: React.VFC<Props> = (props) => (
   <Box bgColor="white" height="60px">
     <ChakraContainer maxW="container.xl">
       <Flex align="center">
@@ -77,7 +77,7 @@ const Component: React.FC<Props> = (props) => (
 /*
  * Container
  */
-const Container: React.FC = () => {
+const Container: React.VFC = () => {
   const userMenu = {
     items: ["user menu1", "user menu2", "user menu3"],
     image: "https://bit.ly/dan-abramov",
