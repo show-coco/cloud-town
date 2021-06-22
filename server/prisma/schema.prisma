@@ -11,14 +11,30 @@ generator client {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  email     String @unique
-  slug      String @unique
-  name      String
-  google_id String
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  slug            String            @unique
+  name            String
+  googleId        String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  CommunityMember CommunityMember[]
 }
 
 model Community {
-  id   Int    @id @default(autoincrement())
-  name String
+  id              Int               @id @default(autoincrement())
+  slug            String            @unique
+  name            String
+  introduction    String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  CommunityMember CommunityMember[]
+}
+
+model CommunityMember {
+  id          Int       @id @default(autoincrement())
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId Int
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
 }
