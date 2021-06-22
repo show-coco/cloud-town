@@ -11,4 +11,10 @@ export default class CommunityUseCase {
   getCommunityById(id: number): Promise<Community | null> {
     return this.communityRepo.getCommunityById(id)
   }
+
+  createCommunity({ name }: { name: string }): Promise<Community> {
+    return this.communityRepo.createCommunity({
+      name,
+    })
+  }
 }

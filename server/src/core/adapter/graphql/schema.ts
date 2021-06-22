@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server-express'
 
 export const typeDefs = gql`
+  input CreateCommunityInput {
+    name: String!
+  }
+
   type Query {
     books: [Book]
     community: Community
@@ -13,5 +17,10 @@ export const typeDefs = gql`
 
   type Community {
     id: Int
+    name: String
+  }
+
+  type Mutation {
+    createCommunity(input: CreateCommunityInput!): Community
   }
 `
