@@ -14,7 +14,7 @@ export default class PUserRepository implements IUserRepository {
 
   async getUserByGoogleId(googleId: string): Promise<User | null> {
     const pUser = await prisma.user.findFirst({
-      where: { googleId: googleId },
+      where: { google_id: googleId },
     })
 
     if (!pUser) return null
@@ -28,7 +28,7 @@ export default class PUserRepository implements IUserRepository {
     email: string
   ): Promise<User> {
     const pUser = await prisma.user.create({
-      data: { googleId: externalId, name, email, slug: externalId },
+      data: { google_id: externalId, name, email, slug: externalId },
     })
 
     console.log('pUser', pUser)
@@ -42,7 +42,7 @@ export default class PUserRepository implements IUserRepository {
       email: pUser.email,
       slug: pUser.slug,
       name: pUser.name,
-      googleId: pUser.googleId,
+      googleId: pUser.google_id,
     })
   }
 }

@@ -21,8 +21,8 @@ export default class PCommunityRepository implements ICommunityRepository {
       name: pCommunity.name,
       slug: pCommunity.slug,
       introduction: pCommunity.introduction,
-      createdAt: pCommunity.createdAt,
-      updatedAt: pCommunity.updatedAt,
+      createdAt: pCommunity.created_at,
+      updatedAt: pCommunity.updated_at,
     })
     return community
   }
@@ -57,8 +57,8 @@ export default class PCommunityRepository implements ICommunityRepository {
       name: pCommunity.name,
       slug: pCommunity.slug,
       introduction: pCommunity.introduction,
-      createdAt: pCommunity.createdAt,
-      updatedAt: pCommunity.updatedAt,
+      createdAt: pCommunity.created_at,
+      updatedAt: pCommunity.updated_at,
     })
   }
 }
