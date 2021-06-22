@@ -2,6 +2,7 @@ import { Resolvers } from '../../../types/graphql'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'
 import { Context } from '../../../types/context'
+import { dateScalar } from './scalar'
 
 const books = [
   {
@@ -18,6 +19,8 @@ const communityRepo = new PCommunityRepository()
 const communityUseCase = new CommunityUseCase(communityRepo)
 
 export const resolvers: Resolvers = {
+  Date: dateScalar,
+
   Query: {
     books: (_parent, _args, context: Context) => {
       if (!context.user) return null
@@ -32,18 +35,32 @@ export const resolvers: Resolvers = {
       return {
         id: com.getCommunityId(),
         name: com.getName(),
+        slug: com.getSlug(),
+        introduction: com.getIntroduction(),
+        createdAt: com.getCreatedAt(),
+        updatedAt: com.getUpdatedAt(),
       }
     },
   },
   Mutation: {
     createCommunity: async (_parent, args, context: Context) => {
+      console.log('resolvers createCommunity args', {
+        args,
+      })
+
       const com = await communityUseCase.createCommunity({
         name: args.input?.name,
+        slug: args.input?.slug,
+        introduction: args.input?.introduction,
       })
 
       return {
         id: com.getCommunityId(),
         name: com.getName(),
+        slug: com.getSlug(),
+        introduction: com.getIntroduction(),
+        createdAt: com.getCreatedAt(),
+        updatedAt: com.getUpdatedAt(),
       }
     },
   },

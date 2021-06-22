@@ -1,4 +1,5 @@
 import ICommunityRepository from '../../adapter/repository/CommunityRepository/ICommunityRepository'
+import { CreateCommunityParam } from './TCommunityUseCase'
 import Community from '../../domain/entities/Community'
 
 export default class CommunityUseCase {
@@ -12,9 +13,27 @@ export default class CommunityUseCase {
     return this.communityRepo.getCommunityById(id)
   }
 
-  createCommunity({ name }: { name: string }): Promise<Community> {
+  /**
+   * コミュニティの作成
+   *
+   * @param arg CreateCommunityParam
+   * @returns
+   */
+  createCommunity({
+    name,
+    slug,
+    introduction,
+  }: CreateCommunityParam): Promise<Community> {
+    console.log('CommunityUseCase createCommunity args', {
+      name,
+      slug,
+      introduction,
+    })
+
     return this.communityRepo.createCommunity({
       name,
+      slug,
+      introduction,
     })
   }
 }
