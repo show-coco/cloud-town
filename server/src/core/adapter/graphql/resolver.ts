@@ -5,17 +5,6 @@ import { Context } from '../../../types/context'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
 import ChatUseCase from '../../usecase/chat/ChannelUseCase'
 
-const books = [
-  {
-    title: "Harry Potter and the Sorcerer's stone",
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-]
-
 const communityRepo = new PCommunityRepository()
 const communityUseCase = new CommunityUseCase(communityRepo)
 
@@ -24,11 +13,6 @@ const channelUseCase = new ChatUseCase(channelRepo)
 
 export const resolvers: Resolvers = {
   Query: {
-    books: (_parent, _args, context: Context) => {
-      if (!context.user) return null
-
-      return books
-    },
     community: async (_parent, _args, context: Context) => {
       const com = await communityUseCase.getCommunityById(1)
 

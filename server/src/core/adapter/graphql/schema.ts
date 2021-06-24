@@ -13,13 +13,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    books: [Book]
     community: Community
-  }
-
-  type Book {
-    title: String
-    author: String
   }
 
   type Community {
