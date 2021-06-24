@@ -52,7 +52,7 @@ YES → moelcules
 NO → atoms
 
 * molecules vs organisms  
-ドメインが入っている？（特定のコンテンツ・コンテキストじゃないと使えない状態）
+ドメインが入っている？（状態管理や外部のAPIへデータを参照しているか？）
 YES → organisms
 NO → molecules
 
