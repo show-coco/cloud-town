@@ -1,5 +1,5 @@
 import ICommunityRepository from '../../adapter/repository/CommunityRepository/ICommunityRepository'
-import { CreateCommunityParam } from './TCommunityUseCase'
+import { CreateCommunityParam } from './CommunityUseCaseParam'
 import Community from '../../domain/entities/Community'
 
 export default class CommunityUseCase {
