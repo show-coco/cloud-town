@@ -26,6 +26,7 @@ model Community {
   slug            String            @unique
   name            String
   introduction    String
+  deleted_at      DateTime?
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
   CommunityMember CommunityMember[]
