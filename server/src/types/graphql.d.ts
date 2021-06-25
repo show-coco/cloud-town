@@ -14,16 +14,25 @@ export type Scalars = {
   Float: number;
 };
 
-export type Book = {
-  __typename?: 'Book';
-  title?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
+export type Channel = {
+  __typename?: 'Channel';
+  id: Scalars['Int'];
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  isPrivate: Scalars['Boolean'];
 };
 
 export type Community = {
   __typename?: 'Community';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+};
+
+export type CreateChannelInput = {
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  isPrivate: Scalars['Boolean'];
+  communityId: Scalars['Int'];
 };
 
 export type CreateCommunityInput = {
@@ -33,6 +42,7 @@ export type CreateCommunityInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createCommunity?: Maybe<Community>;
+  createChannel?: Maybe<Channel>;
 };
 
 
@@ -40,9 +50,13 @@ export type MutationCreateCommunityArgs = {
   input: CreateCommunityInput;
 };
 
+
+export type MutationCreateChannelArgs = {
+  input: CreateChannelInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
   community?: Maybe<Community>;
 };
 
@@ -125,31 +139,35 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Book: ResolverTypeWrapper<Book>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  Community: ResolverTypeWrapper<Community>;
+  Channel: ResolverTypeWrapper<Channel>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Community: ResolverTypeWrapper<Community>;
+  CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Book: Book;
-  String: Scalars['String'];
-  Community: Community;
+  Channel: Channel;
   Int: Scalars['Int'];
+  String: Scalars['String'];
+  Boolean: Scalars['Boolean'];
+  Community: Community;
+  CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Mutation: {};
   Query: {};
-  Boolean: Scalars['Boolean'];
 }>;
 
-export type BookResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+export type ChannelResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isPrivate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -161,15 +179,15 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCommunity?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
+  createChannel?: Resolver<Maybe<ResolversTypes['Channel']>, ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
-  Book?: BookResolvers<ContextType>;
+  Channel?: ChannelResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
