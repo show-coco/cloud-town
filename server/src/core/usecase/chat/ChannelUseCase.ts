@@ -19,15 +19,15 @@ export default class ChannelUseCase {
   }: CreateChannelProps): Promise<Channel> {
     const canCreate = ChatService.canCreateChannel(userId, communityId)
 
-    if (canCreate) {
-      const channel = new Channel({ name, slug, isPrivate })
-      const newChannel = await this.channelRepo.save(channel)
-
-      // TODO: 作成したユーザーをチャンネル管理者に自動追加(これはドメインのロジック？だとしたら集約ルートのチャンネルに含める方が良さそう)
-
-      return newChannel
-    } else {
+    if (!canCreate) {
       throw new Error("User doesn't have authorization to create channel.")
     }
+
+    const channel = new Channel({ name, slug, isPrivate })
+    const newChannel = await this.channelRepo.save(channel)
+
+    // TODO: 作成したユーザーをチャンネル管理者に自動追加(これはドメインのロジック？だとしたら集約ルートのチャンネルに含める方が良さそう)
+
+    return newChannel
   }
 }
