@@ -1,5 +1,5 @@
 import Community from '../../../domain/entities/Community'
-import { CreateCommunityParam } from './TCommunityRepository'
+import { CreateCommunityParam } from './CommunityRepositoryParam'
 
 export default interface ICommunityRepository {
   /**

@@ -2,7 +2,7 @@ import { Community as PCommunity } from '@prisma/client'
 import { prisma } from '../../../../prisma'
 import Community from '../../../domain/entities/Community'
 import ICommunityRepository from './ICommunityRepository'
-import { CreateCommunityParam } from './TCommunityRepository'
+import { CreateCommunityParam } from './CommunityRepositoryParam'
 
 export default class PCommunityRepository implements ICommunityRepository {
   async getCommunityById(id: number): Promise<Community | null> {
