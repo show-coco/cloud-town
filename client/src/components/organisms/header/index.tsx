@@ -29,6 +29,7 @@ export type Props = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  mounted: boolean;
 };
 
 /*
@@ -49,7 +50,7 @@ const Component: React.VFC<Props> = (props) => (
         </Box>
 
         {/* スマホの場合のみハンバーガーメニューを表示 */}
-        {props.isDisplayPc ? (
+        {props.mounted && props.isDisplayPc ? (
           <Navigation
             userMenu={props.userMenu}
             selectValue={props.selectValue}
@@ -109,6 +110,11 @@ const Container: React.VFC = () => {
   const [isDisplayPc] = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <Component
       userMenu={userMenu}
@@ -118,6 +124,7 @@ const Container: React.VFC = () => {
       isOpen={isOpen}
       onOpen={onOpen}
       onClose={onClose}
+      mounted={mounted}
     />
   );
 };
