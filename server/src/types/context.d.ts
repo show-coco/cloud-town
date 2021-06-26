@@ -1,5 +1,5 @@
 export type Context = {
-  user: {
+  user?: {
     sub: string
   }
 }
