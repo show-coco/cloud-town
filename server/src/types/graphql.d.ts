@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
 };
 
 export type Channel = {
@@ -26,6 +27,10 @@ export type Community = {
   __typename?: 'Community';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  introduction?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['Date']>;
+  updatedAt?: Maybe<Scalars['Date']>;
 };
 
 export type CreateChannelInput = {
@@ -37,7 +42,10 @@ export type CreateChannelInput = {
 
 export type CreateCommunityInput = {
   name: Scalars['String'];
+  slug: Scalars['String'];
+  introduction: Scalars['String'];
 };
+
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -146,6 +154,7 @@ export type ResolversTypes = ResolversObject<{
   Community: ResolverTypeWrapper<Community>;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
 }>;
@@ -159,6 +168,7 @@ export type ResolversParentTypes = ResolversObject<{
   Community: Community;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  Date: Scalars['Date'];
   Mutation: {};
   Query: {};
 }>;
@@ -174,8 +184,16 @@ export type ChannelResolvers<ContextType = Context, ParentType extends Resolvers
 export type CommunityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']> = ResolversObject<{
   id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  introduction?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCommunity?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
@@ -189,6 +207,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;

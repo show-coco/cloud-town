@@ -2,6 +2,7 @@ import { Community as PCommunity } from '@prisma/client'
 import { prisma } from '../../../../prisma'
 import Community from '../../../domain/entities/Community'
 import ICommunityRepository from './ICommunityRepository'
+import { CreateCommunityParam } from './CommunityRepositoryParam'
 
 export default class PCommunityRepository implements ICommunityRepository {
   async getCommunityById(id: number): Promise<Community | null> {
@@ -18,18 +19,30 @@ export default class PCommunityRepository implements ICommunityRepository {
     const community = new Community({
       id: pCommunity.id,
       name: pCommunity.name,
+      slug: pCommunity.slug,
+      introduction: pCommunity.introduction,
+      createdAt: pCommunity.created_at,
+      updatedAt: pCommunity.updated_at,
     })
     return community
   }
 
-  async createCommunity({ name }: { name: string }): Promise<Community> {
+  async createCommunity({
+    name,
+    slug,
+    introduction,
+  }: CreateCommunityParam): Promise<Community> {
     console.log('PCommunityRepository createCommunity args', {
       name,
+      slug,
+      introduction,
     })
 
     const pCommunity = await prisma.community.create({
       data: {
         name,
+        slug,
+        introduction,
       },
     })
 
@@ -42,6 +55,10 @@ export default class PCommunityRepository implements ICommunityRepository {
     return new Community({
       id: pCommunity.id,
       name: pCommunity.name,
+      slug: pCommunity.slug,
+      introduction: pCommunity.introduction,
+      createdAt: pCommunity.created_at,
+      updatedAt: pCommunity.updated_at,
     })
   }
 }

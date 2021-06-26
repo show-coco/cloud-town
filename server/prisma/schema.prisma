@@ -11,17 +11,35 @@ generator client {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String          @unique
-  slug          String          @unique
-  name          String
-  google_id     String
-  ChannelMember ChannelMember[]
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  slug            String            @unique
+  name            String
+  google_id       String
+  deleted_at      DateTime?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  ChannelMember   ChannelMember[]
+  CommunityMember CommunityMember[]
 }
 
 model Community {
-  id   Int    @id @default(autoincrement())
-  name String
+  id              Int               @id @default(autoincrement())
+  slug            String            @unique
+  name            String
+  introduction    String
+  deleted_at      DateTime?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  CommunityMember CommunityMember[]
+}
+
+model CommunityMember {
+  id           Int       @id @default(autoincrement())
+  community    Community @relation(fields: [community_id], references: [id])
+  community_id Int
+  user         User      @relation(fields: [user_id], references: [id])
+  user_id      Int
 }
 
 model Channel {

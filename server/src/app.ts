@@ -8,8 +8,8 @@ import cors from 'cors'
 import { context } from './core/adapter/graphql/context'
 import { PathMapping } from './enum/app/PathMapping'
 dotenv.config()
-require('./auth/jwt')
-require('./auth/google')
+import './auth/jwt'
+import './auth/google'
 
 const server = new ApolloServer({ typeDefs, resolvers, context })
 

@@ -1,8 +1,12 @@
 import { gql } from 'apollo-server-express'
 
 export const typeDefs = gql`
+  scalar Date
+
   input CreateCommunityInput {
     name: String!
+    slug: String!
+    introduction: String!
   }
 
   input CreateChannelInput {
@@ -19,6 +23,10 @@ export const typeDefs = gql`
   type Community {
     id: Int
     name: String
+    slug: String
+    introduction: String
+    createdAt: Date
+    updatedAt: Date
   }
 
   type Channel {

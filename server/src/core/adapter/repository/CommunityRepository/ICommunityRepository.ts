@@ -1,4 +1,5 @@
 import Community from '../../../domain/entities/Community'
+import { CreateCommunityParam } from './CommunityRepositoryParam'
 
 export default interface ICommunityRepository {
   /**
@@ -9,5 +10,5 @@ export default interface ICommunityRepository {
   /**
    * Communityの作成
    */
-  createCommunity(arg: { name: string }): Promise<Community>
+  createCommunity(arg: CreateCommunityParam): Promise<Community>
 }

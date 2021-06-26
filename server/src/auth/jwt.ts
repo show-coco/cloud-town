@@ -13,13 +13,15 @@ const jwtOptions: StrategyOptions = {
   audience: settings.JWT_TOKEN_AUDIENCE,
 }
 
-passport.use(
-  new passportJwt.Strategy(jwtOptions, (payload: { sub: string }, done) => {
-    const userRepo = new UserRepository()
-    const user = userRepo.getUserById(parseInt(payload.sub))
-    if (user) {
-      return done(null, user, payload)
-    }
-    return done(null)
-  })
-)
+if (jwtOptions.secretOrKey) {
+  passport.use(
+    new passportJwt.Strategy(jwtOptions, (payload: { sub: string }, done) => {
+      const userRepo = new UserRepository()
+      const user = userRepo.getUserById(parseInt(payload.sub))
+      if (user) {
+        return done(null, user, payload)
+      }
+      return done(null)
+    })
+  )
+}
