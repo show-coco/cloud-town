@@ -26,24 +26,28 @@ const Component: React.VFC<Props> = (props) => (
   <Box
     display={{ base: "block", lg: "flex" }}
     alignItems={{ base: "normal", md: "center" }}
+    flexGrow={1}
+    justifyContent="space-between"
   >
     <Box>
-      <ul
-        className={
-          props.isDisplayPc ? styles.navigation_menu : styles.navigation_modal
-        }
-      >
-        <li>
-          <Link href="/">
-            <a className={styles.card}>さがす</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/">
-            <a className={styles.card}>コミュニティをつくる</a>
-          </Link>
-        </li>
-      </ul>
+      <nav>
+        <ul
+          className={
+            props.isDisplayPc ? styles.navigation_menu : styles.navigation_modal
+          }
+        >
+          <li>
+            <Link href="/">
+              <a className={styles.card}>さがす</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/">
+              <a className={styles.card}>コミュニティをつくる</a>
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </Box>
 
     <Spacer />
@@ -57,7 +61,7 @@ const Component: React.VFC<Props> = (props) => (
         onChange={props.handleSelectChange}
         placeholder="コミュニティを選択"
         py={{ base: "15px", lg: "0" }}
-        backgroundColor={{ base: "#F3F3F3", lg: "transparent" }}
+        backgroundColor={{ base: "gray.200", lg: "transparent" }}
       >
         <option value="コミュニティ 1">コミュニティ 1</option>
         <option value="コミュニティ 2">コミュニティ 2</option>

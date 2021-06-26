@@ -25,6 +25,9 @@ const theme = extendTheme({
     blackAlpha: {
       900: "#212121",
     },
+    gray: {
+      200: "#f3f3f3",
+    },
   },
   components: {
     Button: CustomButton,

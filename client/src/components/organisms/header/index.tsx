@@ -2,7 +2,7 @@
  * Import
  */
 import React from "react";
-import { Box, Flex, Spacer, Heading } from "@chakra-ui/layout";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
 import {
   Container as ChakraContainer,
   Modal,
@@ -37,14 +37,16 @@ export type Props = {
 const Component: React.VFC<Props> = (props) => (
   <Box bgColor="white">
     <ChakraContainer maxW="container.xl">
-      <Flex align="center" height={{ base: "40px", lg: "60px" }}>
+      <Flex
+        align="center"
+        height={{ base: "40px", lg: "60px" }}
+        justifyContent="space-between"
+      >
         <Box>
           <Heading size="md" color="blue.400">
             Cloud Town
           </Heading>
         </Box>
-
-        <Spacer />
 
         {/* スマホの場合のみハンバーガーメニューを表示 */}
         {props.isDisplayPc ? (
