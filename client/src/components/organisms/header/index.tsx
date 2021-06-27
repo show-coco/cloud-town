@@ -2,13 +2,21 @@
  * Import
  */
 import React from "react";
-import Link from "next/link";
-import { Box, Flex, Spacer, Heading } from "@chakra-ui/layout";
-import { Container as ChakraContainer } from "@chakra-ui/react";
-import { Select } from "client/src/components/atoms/select";
-import { UserMenu } from "client/src/components/atoms/user-menu";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
+import {
+  Container as ChakraContainer,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+  useMediaQuery,
+} from "@chakra-ui/react";
+import { Navigation } from "client/src/components/molecules/navigation";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { TypeUserMenu } from "client/src/utils/types";
-import styles from "./style.module.scss";
+import theme from "client/src/config/theme";
 
 /*
  * Types
@@ -17,58 +25,67 @@ export type Props = {
   userMenu: TypeUserMenu;
   selectValue: string;
   handleSelectChange: React.ChangeEventHandler<HTMLSelectElement>;
+  isDisplayPc: boolean;
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  mounted: boolean;
 };
 
 /*
  * DOM
  */
 const Component: React.VFC<Props> = (props) => (
-  <Box bgColor="white" height="60px">
+  <Box bgColor="white">
     <ChakraContainer maxW="container.xl">
-      <Flex align="center">
+      <Flex
+        align="center"
+        height={{ base: "40px", lg: "60px" }}
+        justifyContent="space-between"
+      >
         <Box>
           <Heading size="md" color="blue.400">
             Cloud Town
           </Heading>
         </Box>
 
-        <Box>
-          <ul className={styles.header_menu}>
-            <li>
-              <Link href="/" passHref>
-                <a className={styles.card}>さがす</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/" passHref>
-                <a className={styles.card}>コミュニティをつくる</a>
-              </Link>
-            </li>
-          </ul>
-        </Box>
-
-        <Spacer />
-
-        <Flex align="center">
-          <Select
-            value={props.selectValue}
-            onChange={props.handleSelectChange}
-            placeholder="コミュニティを選択"
-          >
-            <option value="コミュニティ 1">コミュニティ 1</option>
-            <option value="コミュニティ 2">コミュニティ 2</option>
-            <option value="コミュニティ 3">コミュニティ 3</option>
-          </Select>
-
-          <Box ml="15px">
-            <UserMenu
-              items={props.userMenu.items}
-              image={props.userMenu.image}
-              name={props.userMenu.name}
-              job={props.userMenu.job}
+        {/* スマホの場合のみハンバーガーメニューを表示 */}
+        {props.mounted && props.isDisplayPc ? (
+          <Navigation
+            userMenu={props.userMenu}
+            selectValue={props.selectValue}
+            handleSelectChange={props.handleSelectChange}
+            isDisplayPc={props.isDisplayPc}
+          />
+        ) : (
+          <>
+            <HamburgerIcon
+              onClick={props.onOpen}
+              cursor="pointer"
+              aria-label="header menu"
+              w="20px"
+              h="20px"
+              ml="10px"
             />
-          </Box>
-        </Flex>
+            <Modal isOpen={props.isOpen} onClose={props.onClose}>
+              <ModalOverlay backgroundColor="transparent" />
+              <ModalContent
+                m="15px"
+                boxShadow="3px 3px 12px rgb(50 58 69 / 40%);"
+              >
+                <ModalCloseButton />
+                <ModalBody>
+                  <Navigation
+                    userMenu={props.userMenu}
+                    selectValue={props.selectValue}
+                    handleSelectChange={props.handleSelectChange}
+                    isDisplayPc={props.isDisplayPc}
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </>
+        )}
       </Flex>
     </ChakraContainer>
   </Box>
@@ -90,11 +107,24 @@ const Container: React.VFC = () => {
     setSelectValue(event.target.value);
   };
 
+  const [isDisplayPc] = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <Component
       userMenu={userMenu}
       selectValue={selectValue}
       handleSelectChange={handleSelectChange}
+      isDisplayPc={isDisplayPc}
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+      mounted={mounted}
     />
   );
 };

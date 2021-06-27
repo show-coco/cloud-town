@@ -1,0 +1,26 @@
+.navigation {
+  &_menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0 0 0 30px;
+
+    li {
+      font-size: 15px;
+      padding: 0 15px;
+    }
+  }
+
+  &_modal {
+    list-style: none;
+
+    li {
+      a {
+        display: block;
+        font-size: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--chakra-colors-gray-200);
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
+import { createBreakpoints } from "@chakra-ui/theme-tools";
 import { CustomButton } from "./custom-style/button";
 
 const config: ThemeConfig = {
@@ -6,8 +7,16 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
+export const breakpoints = createBreakpoints({
+  sm: "320px",
+  md: "768px",
+  lg: "960px",
+  xl: "1200px",
+});
+
 const theme = extendTheme({
   config,
+  breakpoints,
   colors: {
     blue: {
       50: "#F0F4F9",
@@ -15,6 +24,9 @@ const theme = extendTheme({
     },
     blackAlpha: {
       900: "#212121",
+    },
+    gray: {
+      200: "#f3f3f3",
     },
   },
   components: {
