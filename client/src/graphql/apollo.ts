@@ -13,6 +13,8 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   const token = jwtManager.getJwt()
 
+  console.log(token)
+
   return {
     headers: {
       ...headers,

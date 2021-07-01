@@ -1,5 +1,7 @@
+import { v4 } from 'uuid'
+
 export default class Channel {
-  private id: number
+  private id: string
   private name: string
   private slug: string
   private isPrivate: boolean
@@ -10,18 +12,18 @@ export default class Channel {
     slug,
     isPrivate,
   }: {
-    id?: number // 作成と再構成に対応するためにオプショナルにしている(参考: https://khalilstemmler.com/articles/typescript-domain-driven-design/entities/#Optional-id-field)
+    id?: string
     name: string
     slug: string
     isPrivate: boolean
   }) {
-    this.id = id || 1 // TODO: UUIDに変更する
+    this.id = id || v4()
     this.name = name
     this.slug = slug
     this.isPrivate = isPrivate
   }
 
-  getId(): number {
+  getId(): string {
     return this.id
   }
 

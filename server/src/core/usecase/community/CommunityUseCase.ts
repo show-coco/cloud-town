@@ -9,7 +9,7 @@ export default class CommunityUseCase {
     this.communityRepo = communityRepo
   }
 
-  getCommunityById(id: number): Promise<Community | null> {
+  getCommunityById(id: string): Promise<Community | null> {
     return this.communityRepo.getCommunityById(id)
   }
 

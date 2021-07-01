@@ -24,7 +24,7 @@ model User {
 }
 
 model Community {
-  id              Int               @id @default(autoincrement())
+  id              String            @id @default(uuid())
   slug            String            @unique
   name            String
   introduction    String
@@ -43,7 +43,7 @@ enum CommunityRole {
 model CommunityMember {
   id           Int           @id @default(autoincrement())
   community    Community     @relation(fields: [community_id], references: [id])
-  community_id Int
+  community_id String
   user         User          @relation(fields: [user_id], references: [id])
   user_id      String
   role         CommunityRole

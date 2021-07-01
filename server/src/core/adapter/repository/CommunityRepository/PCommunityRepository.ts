@@ -5,7 +5,7 @@ import ICommunityRepository from './ICommunityRepository'
 import { CreateCommunityParam } from './CommunityRepositoryParam'
 
 export default class PCommunityRepository implements ICommunityRepository {
-  async getCommunityById(id: number): Promise<Community | null> {
+  async getCommunityById(id: string): Promise<Community | null> {
     console.log('PCommunityRepository getCommunityById args', {
       id,
     })

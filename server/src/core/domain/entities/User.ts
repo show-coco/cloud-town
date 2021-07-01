@@ -1,5 +1,7 @@
+import { v4 } from 'uuid'
+
 export default class User {
-  private id: number
+  private id: string
   private slug: string
   private email: string
   private name: string
@@ -12,20 +14,20 @@ export default class User {
     name,
     googleId,
   }: {
-    id: number
+    id?: string
     slug: string
     email: string
     name: string
     googleId: string
   }) {
-    this.id = id
+    this.id = id || v4()
     this.slug = slug
     this.email = email
     this.name = name
     this.googleId = googleId
   }
 
-  getId(): number {
+  getId(): string {
     return this.id
   }
 

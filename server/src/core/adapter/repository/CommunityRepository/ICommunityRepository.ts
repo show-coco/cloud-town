@@ -5,7 +5,7 @@ export default interface ICommunityRepository {
   /**
    * @param id
    */
-  getCommunityById(id: number): Promise<Community | null>
+  getCommunityById(id: string): Promise<Community | null>
 
   /**
    * Communityの作成

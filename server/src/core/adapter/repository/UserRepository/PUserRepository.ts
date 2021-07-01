@@ -4,7 +4,7 @@ import { prisma } from '../../../../prisma'
 import IUserRepository from './IUserRepository'
 
 export default class PUserRepository implements IUserRepository {
-  async getUserById(id: number): Promise<User | null> {
+  async getUserById(id: string): Promise<User | null> {
     const pUser = await prisma.user.findFirst({ where: { id: id } })
 
     if (!pUser) return null

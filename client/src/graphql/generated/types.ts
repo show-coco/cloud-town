@@ -12,83 +12,116 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Date custom scalar type */
+  Date: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
-
-export type Author = {
-  __typename?: 'Author';
-  name?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type Book = {
-  __typename?: 'Book';
-  title?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
-};
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE'
 }
 
+export type Channel = {
+  __typename?: 'Channel';
+  id: Scalars['String'];
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  isPrivate: Scalars['Boolean'];
+};
+
+export type Community = {
+  __typename?: 'Community';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  introduction?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['Date']>;
+  updatedAt?: Maybe<Scalars['Date']>;
+};
+
+export type CreateChannelInput = {
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  isPrivate: Scalars['Boolean'];
+  communityId: Scalars['String'];
+};
+
+export type CreateCommunityInput = {
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  introduction: Scalars['String'];
+};
+
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createCommunity?: Maybe<Community>;
+  createChannel?: Maybe<Channel>;
+};
+
+
+export type MutationCreateCommunityArgs = {
+  input: CreateCommunityInput;
+};
+
+
+export type MutationCreateChannelArgs = {
+  input: CreateChannelInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  getAuthor?: Maybe<Author>;
-  books?: Maybe<Array<Maybe<Book>>>;
+  community?: Maybe<Community>;
 };
 
 
-export type QueryGetAuthorArgs = {
-  id: Scalars['String'];
-};
+export type CommunityQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BooksQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BooksQuery = (
+export type CommunityQuery = (
   { __typename?: 'Query' }
-  & { books?: Maybe<Array<Maybe<(
-    { __typename?: 'Book' }
-    & Pick<Book, 'title'>
-  )>>> }
+  & { community?: Maybe<(
+    { __typename?: 'Community' }
+    & Pick<Community, 'id' | 'name'>
+  )> }
 );
 
 
-export const BooksDocument = gql`
-    query Books {
-  books {
-    title
+export const CommunityDocument = gql`
+    query Community {
+  community {
+    id
+    name
   }
 }
     `;
 
 /**
- * __useBooksQuery__
+ * __useCommunityQuery__
  *
- * To run a query within a React component, call `useBooksQuery` and pass it any options that fit your needs.
- * When your component renders, `useBooksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useBooksQuery({
+ * const { data, loading, error } = useCommunityQuery({
  *   variables: {
  *   },
  * });
  */
-export function useBooksQuery(baseOptions?: Apollo.QueryHookOptions<BooksQuery, BooksQueryVariables>) {
+export function useCommunityQuery(baseOptions?: Apollo.QueryHookOptions<CommunityQuery, CommunityQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BooksQuery, BooksQueryVariables>(BooksDocument, options);
+        return Apollo.useQuery<CommunityQuery, CommunityQueryVariables>(CommunityDocument, options);
       }
-export function useBooksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BooksQuery, BooksQueryVariables>) {
+export function useCommunityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommunityQuery, CommunityQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BooksQuery, BooksQueryVariables>(BooksDocument, options);
+          return Apollo.useLazyQuery<CommunityQuery, CommunityQueryVariables>(CommunityDocument, options);
         }
-export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
-export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
-export type BooksQueryResult = Apollo.QueryResult<BooksQuery, BooksQueryVariables>;
+export type CommunityQueryHookResult = ReturnType<typeof useCommunityQuery>;
+export type CommunityLazyQueryHookResult = ReturnType<typeof useCommunityLazyQuery>;
+export type CommunityQueryResult = Apollo.QueryResult<CommunityQuery, CommunityQueryVariables>;

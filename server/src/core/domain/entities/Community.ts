@@ -1,5 +1,7 @@
+import { v4 } from 'uuid'
+
 export default class Community {
-  private id: number
+  private id: string
   private name: string
   private slug: string
   private introduction: string
@@ -14,14 +16,14 @@ export default class Community {
     createdAt,
     updatedAt,
   }: {
-    id: number
+    id?: string
     name: string
     slug: string
     introduction: string
     createdAt: Date
     updatedAt: Date
   }) {
-    this.id = id
+    this.id = id || v4()
     this.name = name
     this.slug = slug
     this.introduction = introduction
@@ -29,7 +31,7 @@ export default class Community {
     this.updatedAt = updatedAt
   }
 
-  getCommunityId(): number {
+  getCommunityId(): string {
     return this.id
   }
 

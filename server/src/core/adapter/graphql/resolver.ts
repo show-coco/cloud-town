@@ -17,7 +17,7 @@ export const resolvers: Resolvers = {
 
   Query: {
     community: async (_parent, _args, context: Context) => {
-      const com = await communityUseCase.getCommunityById(1)
+      const com = await communityUseCase.getCommunityById('uuid')
 
       if (!com) return null
 
@@ -57,7 +57,7 @@ export const resolvers: Resolvers = {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { name, slug, isPrivate, communityId } = args.input
-      const userId = Number(context.user.sub)
+      const userId = context.user.sub
 
       const channel = await channelUseCase.createChannel({
         name,
