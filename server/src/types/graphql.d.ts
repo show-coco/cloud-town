@@ -17,7 +17,7 @@ export type Scalars = {
 
 export type Channel = {
   __typename?: 'Channel';
-  id: Scalars['Int'];
+  id: Scalars['String'];
   slug: Scalars['String'];
   name: Scalars['String'];
   isPrivate: Scalars['Boolean'];
@@ -25,7 +25,7 @@ export type Channel = {
 
 export type Community = {
   __typename?: 'Community';
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   introduction?: Maybe<Scalars['String']>;
@@ -37,7 +37,7 @@ export type CreateChannelInput = {
   slug: Scalars['String'];
   name: Scalars['String'];
   isPrivate: Scalars['Boolean'];
-  communityId: Scalars['Int'];
+  communityId: Scalars['String'];
 };
 
 export type CreateCommunityInput = {
@@ -148,7 +148,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Channel: ResolverTypeWrapper<Channel>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Community: ResolverTypeWrapper<Community>;
@@ -162,7 +161,6 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Channel: Channel;
-  Int: Scalars['Int'];
   String: Scalars['String'];
   Boolean: Scalars['Boolean'];
   Community: Community;
@@ -174,7 +172,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type ChannelResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -182,7 +180,7 @@ export type ChannelResolvers<ContextType = Context, ParentType extends Resolvers
 }>;
 
 export type CommunityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']> = ResolversObject<{
-  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   introduction?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

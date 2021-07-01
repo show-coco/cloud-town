@@ -9,7 +9,7 @@ export default class CommunityUseCase {
     this.communityRepo = communityRepo
   }
 
-  getCommunityById(id: number): Promise<Community | null> {
+  getCommunityById(id: string): Promise<Community | null> {
     return this.communityRepo.getCommunityById(id)
   }
 
@@ -30,10 +30,14 @@ export default class CommunityUseCase {
       introduction,
     })
 
-    return this.communityRepo.createCommunity({
+    const community = new Community({
       name,
       slug,
       introduction,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     })
+
+    return this.communityRepo.createCommunity(community)
   }
 }

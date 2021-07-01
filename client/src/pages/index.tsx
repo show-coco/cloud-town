@@ -1,12 +1,11 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
 import { Spinner } from "@chakra-ui/spinner";
-import { useBooksQuery } from "../graphql/generated/types";
+import { useCommunityQuery } from "../graphql/generated/types";
 
 export default function Home() {
-  const { data, loading } = useBooksQuery();
+  const { data, loading } = useCommunityQuery();
 
   console.log(data);
 

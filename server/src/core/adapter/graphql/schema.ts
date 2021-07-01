@@ -13,7 +13,7 @@ export const typeDefs = gql`
     slug: String!
     name: String!
     isPrivate: Boolean!
-    communityId: Int!
+    communityId: String!
   }
 
   type Query {
@@ -21,7 +21,7 @@ export const typeDefs = gql`
   }
 
   type Community {
-    id: Int
+    id: String
     name: String
     slug: String
     introduction: String
@@ -30,7 +30,7 @@ export const typeDefs = gql`
   }
 
   type Channel {
-    id: Int!
+    id: String!
     slug: String!
     name: String!
     isPrivate: Boolean!
