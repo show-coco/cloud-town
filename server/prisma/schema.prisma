@@ -11,7 +11,7 @@ generator client {
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
+  id              String            @id @default(uuid())
   email           String            @unique
   slug            String            @unique
   name            String
@@ -34,16 +34,23 @@ model Community {
   CommunityMember CommunityMember[]
 }
 
+enum CommunityRole {
+  USER
+  ADMIN
+  OWNER
+}
+
 model CommunityMember {
-  id           Int       @id @default(autoincrement())
-  community    Community @relation(fields: [community_id], references: [id])
+  id           Int           @id @default(autoincrement())
+  community    Community     @relation(fields: [community_id], references: [id])
   community_id Int
-  user         User      @relation(fields: [user_id], references: [id])
-  user_id      Int
+  user         User          @relation(fields: [user_id], references: [id])
+  user_id      String
+  role         CommunityRole
 }
 
 model Channel {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(uuid())
   slug          String          @unique
   name          String
   is_private    Boolean
@@ -52,11 +59,17 @@ model Channel {
   ChannelMember ChannelMember[]
 }
 
+enum ChannelRole {
+  USER
+  ADMIN
+  OWNER
+}
+
 model ChannelMember {
-  id         Int     @id @default(autoincrement())
-  channel    Channel @relation(fields: [channel_id], references: [id])
-  channel_id Int
-  user       User    @relation(fields: [user_id], references: [id])
-  user_id    Int
-  role       String
+  id         Int         @id @default(autoincrement())
+  channel    Channel     @relation(fields: [channel_id], references: [id])
+  channel_id String
+  user       User        @relation(fields: [user_id], references: [id])
+  user_id    String
+  role       ChannelRole
 }
