@@ -1,3 +1,4 @@
+import { v4 } from 'uuid'
 import { prisma } from '../../../prisma'
 import PCommunityRepository from '../../adapter/repository/CommunityRepository/PCommunityRepository'
 import CommunityUseCase from './CommunityUseCase'
@@ -19,10 +20,13 @@ describe('CommunityUseCase', () => {
       // DBが全削除できているか
       expect(await prisma.community.findMany()).toHaveLength(0)
 
+      const uuid = v4()
+
       // demoデータの挿入
       const demoCommunity: Parameters<typeof prisma.community.create> = [
         {
           data: {
+            id: uuid,
             name: '山田太郎',
             slug: 'abcdef',
             introduction: '<p>Hello</p>',
@@ -45,7 +49,7 @@ describe('CommunityUseCase', () => {
       expect(actual.getIntroduction()).toBe(demoCommunity[0].data.introduction)
     })
 
-    it('コミュニティが登録されていないとき、nullである', async () => {
+    it('コミュニティが登録されていないとき、コミュニティが存在しない', async () => {
       // THEN
 
       // DBのコミュニティの全削除
@@ -54,10 +58,10 @@ describe('CommunityUseCase', () => {
       expect(await prisma.community.findMany()).toHaveLength(0)
 
       // WHEN
-      const actual = await communityUseCase.getCommunityById(1)
+      const actual = await prisma.community.findMany()
 
       // THEN
-      expect(actual).toBeNull()
+      expect(actual).toHaveLength(0)
     })
   })
 
