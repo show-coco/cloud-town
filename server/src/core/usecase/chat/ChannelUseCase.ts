@@ -1,5 +1,5 @@
 import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
-import Channel from '../../domain/entities/Channel'
+import Channel from '../../domain/entities/ChannelAggregate/Channel'
 import ChatService from '../../domain/services/ChatService'
 import { CreateChannelProps } from './ChannelUseCaseProps'
 
@@ -24,9 +24,9 @@ export default class ChannelUseCase {
     }
 
     const channel = new Channel({ name, slug, isPrivate })
-    const newChannel = await this.channelRepo.save(channel)
+    channel.addOwner(userId)
 
-    // TODO: 作成したユーザーをチャンネル管理者に自動追加(これはドメインのロジック？だとしたら集約ルートのチャンネルに含める方が良さそう)
+    const newChannel = await this.channelRepo.save(channel)
 
     return newChannel
   }

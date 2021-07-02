@@ -68,10 +68,10 @@ export const resolvers: Resolvers = {
       })
 
       return {
-        id: channel.getId(),
-        name: channel.getName(),
-        slug: channel.getSlug(),
-        isPrivate: channel.getIsPrivate(),
+        id: channel.id,
+        name: channel.name,
+        slug: channel.slug,
+        isPrivate: channel.isPrivate,
       }
     },
   },
