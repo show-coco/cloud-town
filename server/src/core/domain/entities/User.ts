@@ -2,8 +2,11 @@ import { v4 } from 'uuid'
 
 export default class User {
   private id: string
+  /** スラッグ */
   private slug: string
+  /** メールアドレス */
   private email: string
+  /** 表示名 */
   private name: string
   private googleId: string
 
@@ -31,14 +34,17 @@ export default class User {
     return this.id
   }
 
+  /** スラッグ */
   getSlug(): string {
     return this.slug
   }
 
+  /** メールアドレス */
   getEmail(): string {
     return this.email
   }
 
+  /** 表示名 */
   getName(): string {
     return this.name
   }
