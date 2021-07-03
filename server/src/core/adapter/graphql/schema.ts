@@ -16,6 +16,13 @@ export const typeDefs = gql`
     communityId: String!
   }
 
+  input UpdateChannelInput {
+    id: String!
+    name: String
+    slug: String
+    isPrivate: Boolean
+  }
+
   type Query {
     community: Community
   }
@@ -38,7 +45,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createCommunity(input: CreateCommunityInput!): Community
-    createChannel(input: CreateChannelInput!): Channel
+    createCommunity(input: CreateCommunityInput!): Community!
+    createChannel(input: CreateChannelInput!): Channel!
+    updateChannel(input: UpdateChannelInput!): Channel!
   }
 `

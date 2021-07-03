@@ -49,8 +49,9 @@ export type CreateCommunityInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createCommunity?: Maybe<Community>;
-  createChannel?: Maybe<Channel>;
+  createCommunity: Community;
+  createChannel: Channel;
+  updateChannel: Channel;
 };
 
 
@@ -63,9 +64,21 @@ export type MutationCreateChannelArgs = {
   input: CreateChannelInput;
 };
 
+
+export type MutationUpdateChannelArgs = {
+  input: UpdateChannelInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   community?: Maybe<Community>;
+};
+
+export type UpdateChannelInput = {
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
+  isPrivate?: Maybe<Scalars['Boolean']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -156,6 +169,7 @@ export type ResolversTypes = ResolversObject<{
   Date: ResolverTypeWrapper<Scalars['Date']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  UpdateChannelInput: UpdateChannelInput;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -169,6 +183,7 @@ export type ResolversParentTypes = ResolversObject<{
   Date: Scalars['Date'];
   Mutation: {};
   Query: {};
+  UpdateChannelInput: UpdateChannelInput;
 }>;
 
 export type ChannelResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
@@ -194,8 +209,9 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createCommunity?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
-  createChannel?: Resolver<Maybe<ResolversTypes['Channel']>, ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
+  createCommunity?: Resolver<ResolversTypes['Community'], ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
+  createChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
+  updateChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationUpdateChannelArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

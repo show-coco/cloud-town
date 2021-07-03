@@ -74,5 +74,34 @@ export const resolvers: Resolvers = {
         isPrivate: channel.isPrivate,
       }
     },
+    updateChannel: async (_parent, args, context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, name, slug, isPrivate } = args.input
+
+      if (
+        typeof id === 'string' &&
+        typeof name === 'string' &&
+        typeof slug === 'string' &&
+        typeof isPrivate === 'boolean'
+      ) {
+        const channel = await channelUseCase.updateChannel({
+          id,
+          slug,
+          name,
+          isPrivate,
+          userId: context.user.sub,
+        })
+
+        return {
+          id: channel.id,
+          name: channel.name,
+          slug: channel.slug,
+          isPrivate: channel.isPrivate,
+        }
+      } else {
+        throw new Error('Input type is strange')
+      }
+    },
   },
 }
