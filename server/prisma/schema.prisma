@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Prisma PostgreSQLの型
+// https://www.prisma.io/docs/concepts/database-connectors/postgresql#native-type-mappings
+
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
@@ -10,10 +13,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+/// ユーザー
 model User {
   id              String            @id @default(uuid())
+  /// メールアドレス
   email           String            @unique
+  /// スラッグ
   slug            String            @unique
+  /// 表示名
   name            String
   google_id       String
   deleted_at      DateTime?
@@ -23,10 +30,14 @@ model User {
   CommunityMember CommunityMember[]
 }
 
+/// コミュニティ
 model Community {
   id              String            @id @default(uuid())
+  /// スラッグ
   slug            String            @unique
+  /// コミュニティ名
   name            String
+  /// コミュニティ紹介文
   introduction    String
   deleted_at      DateTime?
   created_at      DateTime          @default(now())
@@ -34,37 +45,54 @@ model Community {
   CommunityMember CommunityMember[]
 }
 
+/// コミュニティのユーザー権限
 enum CommunityRole {
+  /// 一般
   USER
+  /// 管理者
   ADMIN
+  /// オーナー
   OWNER
 }
 
+/// コミュニティに所属するユーザー
 model CommunityMember {
   id           Int           @id @default(autoincrement())
   community    Community     @relation(fields: [community_id], references: [id])
   community_id String
   user         User          @relation(fields: [user_id], references: [id])
   user_id      String
+  /// 権限
   role         CommunityRole
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
 }
 
+/// チャンネル
 model Channel {
   id            String          @id @default(uuid())
+  /// スラッグ
   slug          String          @unique
+  /// チャンネル名
   name          String
+  /// 秘公開かどうか
   is_private    Boolean
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   ChannelMember ChannelMember[]
 }
 
+/// チャンネルのユーザー権限
 enum ChannelRole {
+  /// 一般
   USER
+  /// 管理者
   ADMIN
+  /// オーナー
   OWNER
 }
 
+/// チャンネルに所属するユーザー
 model ChannelMember {
   id         Int         @id @default(autoincrement())
   channel    Channel     @relation(fields: [channel_id], references: [id])
@@ -72,4 +100,6 @@ model ChannelMember {
   user       User        @relation(fields: [user_id], references: [id])
   user_id    String
   role       ChannelRole
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
 }
