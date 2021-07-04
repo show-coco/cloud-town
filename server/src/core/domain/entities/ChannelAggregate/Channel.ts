@@ -1,3 +1,4 @@
+import { ChannelRole } from '@prisma/client'
 import { v4 } from 'uuid'
 import ChannelMember from './ChannelMember'
 
@@ -50,6 +51,7 @@ export default class Channel {
     )
   }
 
+  // チャンネルのオーナーは1人
   addOwner(userId: string): void {
     if (this.currentOwner()) {
       throw new Error('Owner already exists.')
@@ -58,7 +60,7 @@ export default class Channel {
     const owner = new ChannelMember({
       userId,
       channelId: this.id,
-      role: 'OWNER',
+      role: ChannelRole.OWNER,
     })
 
     this._channelMembers?.push(owner)
@@ -83,13 +85,13 @@ export default class Channel {
 
   private removeCurrentOwner(): void {
     this._channelMembers.filter(
-      (channelMember) => channelMember.role !== 'OWNER'
+      (channelMember) => channelMember.role !== ChannelRole.OWNER
     )
   }
 
   currentOwner(): ChannelMember | undefined {
     return this._channelMembers.find(
-      (channelMember) => channelMember.role === 'OWNER'
+      (channelMember) => channelMember.role === ChannelRole.OWNER
     )
   }
 }
