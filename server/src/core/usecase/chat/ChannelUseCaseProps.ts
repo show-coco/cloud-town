@@ -5,3 +5,11 @@ export interface CreateChannelProps {
   communityId: string
   userId: string
 }
+
+export interface UpdateChannelProps {
+  id: string
+  name?: string
+  slug?: string
+  isPrivate?: boolean
+  userId: string
+}

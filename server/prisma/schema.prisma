@@ -48,7 +48,7 @@ model Community {
 /// コミュニティのユーザー権限
 enum CommunityRole {
   /// 一般
-  USER
+  COMMON
   /// 管理者
   ADMIN
   /// オーナー
@@ -64,8 +64,8 @@ model CommunityMember {
   user_id      String
   /// 権限
   role         CommunityRole
-  created_at   DateTime          @default(now())
-  updated_at   DateTime          @updatedAt
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
 }
 
 /// チャンネル
@@ -85,7 +85,7 @@ model Channel {
 /// チャンネルのユーザー権限
 enum ChannelRole {
   /// 一般
-  USER
+  COMMON
   /// 管理者
   ADMIN
   /// オーナー
@@ -100,6 +100,6 @@ model ChannelMember {
   user       User        @relation(fields: [user_id], references: [id])
   user_id    String
   role       ChannelRole
-  created_at   DateTime          @default(now())
-  updated_at   DateTime          @updatedAt
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
 }

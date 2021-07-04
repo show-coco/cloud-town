@@ -1,7 +1,7 @@
 import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
-import Channel from '../../domain/entities/Channel'
+import Channel from '../../domain/entities/ChannelAggregate/Channel'
 import ChatService from '../../domain/services/ChatService'
-import { CreateChannelProps } from './ChannelUseCaseProps'
+import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
 
 export default class ChannelUseCase {
   private channelRepo: IChannelRepository
@@ -24,10 +24,31 @@ export default class ChannelUseCase {
     }
 
     const channel = new Channel({ name, slug, isPrivate })
+    channel.addOwner(userId)
+
     const newChannel = await this.channelRepo.save(channel)
 
-    // TODO: 作成したユーザーをチャンネル管理者に自動追加(これはドメインのロジック？だとしたら集約ルートのチャンネルに含める方が良さそう)
-
     return newChannel
+  }
+
+  async updateChannel({
+    id,
+    name,
+    isPrivate,
+    slug,
+    userId,
+  }: UpdateChannelProps): Promise<Channel> {
+    const channel = await this.channelRepo.getChannelById(id)
+
+    const userIsExists = channel.existsInChannel(userId)
+    if (!userIsExists) throw new Error("User doesn't exists in this channel")
+
+    if (name) channel.changeName(name)
+    if (isPrivate) channel.changeIsPrivate(isPrivate)
+    if (slug) channel.changeSlug(slug)
+
+    await this.channelRepo.save(channel)
+
+    return channel
   }
 }
