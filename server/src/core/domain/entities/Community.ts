@@ -2,8 +2,11 @@ import { v4 } from 'uuid'
 
 export default class Community {
   private id: string
+  /** コミュニティ名 */
   private name: string
+  /** スラッグ */
   private slug: string
+  /** コミュニティ紹介文 */
   private introduction: string
   private createdAt: Date
   private updatedAt: Date
@@ -35,14 +38,17 @@ export default class Community {
     return this.id
   }
 
+  /** コミュニティ名 */
   getName(): string {
     return this.name
   }
 
+  /** スラッグ */
   getSlug(): string {
     return this.slug
   }
 
+  /** コミュニティ紹介文 */
   getIntroduction(): string {
     return this.introduction
   }
