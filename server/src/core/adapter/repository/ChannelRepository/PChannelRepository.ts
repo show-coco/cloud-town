@@ -22,25 +22,54 @@ export default class PChannelRepository implements IChannelRepository {
   }
 
   async save(channel: Channel): Promise<Channel> {
-    await prisma.channel.create({
-      data: {
-        id: channel.id,
-        name: channel.name,
-        slug: channel.slug,
-        is_private: channel.isPrivate,
-        ChannelMember: {
-          createMany: {
-            data: channel.channelMembers.map((member) => ({
-              id: member.id,
-              user_id: member.userId,
-              role: member.role,
+    const exists = await prisma.channel.findFirst({ where: { id: channel.id } })
+
+    if (!exists) {
+      const created = await prisma.channel.create({
+        data: {
+          id: channel.id,
+          name: channel.name,
+          slug: channel.slug,
+          is_private: channel.isPrivate,
+          ChannelMember: {
+            createMany: {
+              data: channel.channelMembers?.map((member) => ({
+                id: member.id,
+                user_id: member.userId,
+                role: member.role,
+              })),
+            },
+          },
+        },
+        include: { ChannelMember: true },
+      })
+
+      return this.converter(created)
+    } else {
+      const updated = await prisma.channel.update({
+        data: {
+          name: channel.name,
+          slug: channel.slug,
+          is_private: channel.isPrivate,
+          ChannelMember: {
+            updateMany: channel.channelMembers.map((member) => ({
+              data: {
+                role: member.role,
+              },
+              where: {
+                id: member.id,
+              },
             })),
           },
         },
-      },
-    })
+        where: {
+          id: channel.id,
+        },
+        include: { ChannelMember: true },
+      })
 
-    return channel
+      return this.converter(updated)
+    }
   }
 
   private converter(

@@ -40,8 +40,6 @@ export default class ChannelUseCase {
   }: UpdateChannelProps): Promise<Channel> {
     const channel = await this.channelRepo.getChannelById(id)
 
-    console.log('channleeavevfrwavrjvnajn', channel)
-
     const userIsExists = channel.existsInChannel(userId)
     if (!userIsExists) throw new Error("User doesn't exists in this channel")
 

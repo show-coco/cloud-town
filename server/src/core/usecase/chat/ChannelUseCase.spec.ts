@@ -47,8 +47,6 @@ describe('ChannelUseCase', () => {
 
       const channel = await channelUseCase.createChannel(createParam)
 
-      console.log(channel)
-
       const notExistsUserId = 'abcde'
 
       const updateParam: UpdateChannelProps = {
@@ -64,6 +62,34 @@ describe('ChannelUseCase', () => {
       } catch (e) {
         expect(e).toEqual(new Error("User doesn't exists in this channel"))
       }
+    })
+
+    it('チャンネルに所属しているユーザーは更新できる', async () => {
+      const createParam: CreateChannelProps = {
+        userId: user.getId(),
+        communityId,
+        name: 'test community3',
+        isPrivate: false,
+        slug: 'test-community3',
+      }
+
+      const channel = await channelUseCase.createChannel(createParam)
+
+      const existsUserId = user.getId()
+
+      const updateParam: UpdateChannelProps = {
+        id: channel.id,
+        userId: existsUserId,
+        name: 'updated',
+        isPrivate: true,
+        slug: 'updated',
+      }
+
+      const actual = await channelUseCase.updateChannel(updateParam)
+
+      expect(actual.name).toBe(updateParam.name)
+      expect(actual.slug).toBe(updateParam.slug)
+      expect(actual.isPrivate).toBe(updateParam.isPrivate)
     })
   })
 })
