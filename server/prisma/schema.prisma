@@ -43,6 +43,7 @@ model Community {
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
   CommunityMember CommunityMember[]
+  CommunityPlan   CommunityPlan[]
 }
 
 /// コミュニティのユーザー権限
@@ -62,6 +63,8 @@ model CommunityMember {
   community_id String
   user         User          @relation(fields: [user_id], references: [id])
   user_id      String
+  plan         Plan?         @relation(fields: [plan_id], references: [id])
+  plan_id      String?
   /// 権限
   role         CommunityRole
   created_at   DateTime      @default(now())
@@ -102,4 +105,40 @@ model ChannelMember {
   role       ChannelRole
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
+}
+
+/// チャンネルのユーザー権限
+enum TrailPeriod {
+  /// 初月無料
+  FREE_FOR_THE_FIRST_MONTH
+}
+
+/// プラン
+model Plan {
+  id                   String            @id @default(uuid())
+  /// プラン名
+  name                 String
+  /// プラン紹介文
+  introduction         String
+  /// ひと月あたりの金額
+  price_per_month      Int
+  /// 無料期間
+  trail_period         TrailPeriod?
+  /// 募集人数
+  number_of_applicants Int?
+  deleted_at           DateTime?
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @updatedAt
+  CommunityMember      CommunityMember[]
+  CommunityPlan        CommunityPlan[]
+}
+
+model CommunityPlan {
+  id           String    @id @default(uuid())
+  community    Community @relation(fields: [community_id], references: [id])
+  community_id String
+  plan         Plan      @relation(fields: [plan_id], references: [id])
+  plan_id      String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
 }
