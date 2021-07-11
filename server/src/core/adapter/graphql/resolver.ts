@@ -1,4 +1,4 @@
-import { Resolvers } from '../../../types/graphql'
+import { Plan, Resolvers } from '../../../types/graphql'
 import ChatUseCase from '../../usecase/chat/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
@@ -50,6 +50,20 @@ export const resolvers: Resolvers = {
         introduction: com.getIntroduction(),
         createdAt: com.getCreatedAt(),
         updatedAt: com.getUpdatedAt(),
+        plans: com.getCommunityPlans().map(
+          (communityPlan): Plan => ({
+            id: communityPlan.getPlan().getId(),
+            name: communityPlan.getPlan().getName(),
+            introduction: communityPlan.getPlan().getIntroduction(),
+            pricePerMonth: communityPlan.getPlan().getPricePerMonth(),
+            trailPeriod: communityPlan.getPlan().getTrailPeriod() as string,
+            numberOfApplicants: communityPlan
+              .getPlan()
+              .getNumberOfApplicants() as number,
+            createdAt: communityPlan.getPlan().getCreatedAt(),
+            updatedAt: communityPlan.getPlan().getUpdatedAt(),
+          })
+        ),
       }
     },
     createChannel: async (_parent, args, context: Context) => {

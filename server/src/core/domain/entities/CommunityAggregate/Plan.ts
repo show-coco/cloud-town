@@ -12,7 +12,9 @@ export default class Plan {
   /** 無料期間 */
   private _trailPeriod: TrailPeriod | null
   /** 募集人数 */
-  private _numberOfApplicants: number
+  private _numberOfApplicants: number | null
+  private _createdAt: Date
+  private _updatedAt: Date
 
   constructor({
     id,
@@ -21,13 +23,17 @@ export default class Plan {
     pricePerMonth,
     trailPeriod,
     numberOfApplicants,
+    createdAt,
+    updatedAt,
   }: {
     id?: string
     name: string
     introduction: string
     pricePerMonth: number
     trailPeriod: TrailPeriod | null
-    numberOfApplicants: number
+    numberOfApplicants: number | null
+    createdAt: Date
+    updatedAt: Date
   }) {
     this.id = id || v4()
     this._name = name
@@ -35,6 +41,8 @@ export default class Plan {
     this._pricePerMonth = pricePerMonth
     this._trailPeriod = trailPeriod
     this._numberOfApplicants = numberOfApplicants
+    this._createdAt = createdAt
+    this._updatedAt = updatedAt
   }
 
   /** id */
@@ -63,7 +71,15 @@ export default class Plan {
   }
 
   /** 募集人数 */
-  getNumberOfApplicants(): number {
+  getNumberOfApplicants(): number | null {
     return this._numberOfApplicants
+  }
+
+  getCreatedAt(): Date {
+    return this._createdAt
+  }
+
+  getUpdatedAt(): Date {
+    return this._updatedAt
   }
 }

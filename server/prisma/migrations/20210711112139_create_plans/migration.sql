@@ -1,15 +1,5 @@
-/*
-  Warnings:
-
-  - Added the required column `updated_at` to the `ChannelMember` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
 CREATE TYPE "TrailPeriod" AS ENUM ('FREE_FOR_THE_FIRST_MONTH');
-
--- AlterTable
-ALTER TABLE "ChannelMember" ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL;
 
 -- AlterTable
 ALTER TABLE "CommunityMember" ADD COLUMN     "plan_id" TEXT;
@@ -31,13 +21,12 @@ CREATE TABLE "Plan" (
 
 -- CreateTable
 CREATE TABLE "CommunityPlan" (
-    "id" TEXT NOT NULL,
     "community_id" TEXT NOT NULL,
     "plan_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("community_id","plan_id")
 );
 
 -- AddForeignKey

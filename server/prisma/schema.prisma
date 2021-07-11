@@ -32,18 +32,18 @@ model User {
 
 /// コミュニティ
 model Community {
-  id              String            @id @default(uuid())
+  id               String            @id @default(uuid())
   /// スラッグ
-  slug            String            @unique
+  slug             String            @unique
   /// コミュニティ名
-  name            String
+  name             String
   /// コミュニティ紹介文
-  introduction    String
-  deleted_at      DateTime?
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
-  CommunityMember CommunityMember[]
-  CommunityPlan   CommunityPlan[]
+  introduction     String
+  deleted_at       DateTime?
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+  CommunityMembers CommunityMember[]
+  CommunityPlans   CommunityPlan[]
 }
 
 /// コミュニティのユーザー権限
@@ -63,7 +63,7 @@ model CommunityMember {
   community_id String
   user         User          @relation(fields: [user_id], references: [id])
   user_id      String
-  plan         Plan?         @relation(fields: [plan_id], references: [id])
+  plans        Plan?         @relation(fields: [plan_id], references: [id])
   plan_id      String?
   /// 権限
   role         CommunityRole
@@ -129,16 +129,17 @@ model Plan {
   deleted_at           DateTime?
   created_at           DateTime          @default(now())
   updated_at           DateTime          @updatedAt
-  CommunityMember      CommunityMember[]
-  CommunityPlan        CommunityPlan[]
+  CommunityMembers     CommunityMember[]
+  CommunityPlans       CommunityPlan[]
 }
 
 model CommunityPlan {
-  id           String    @id @default(uuid())
   community    Community @relation(fields: [community_id], references: [id])
   community_id String
   plan         Plan      @relation(fields: [plan_id], references: [id])
   plan_id      String
   created_at   DateTime  @default(now())
   updated_at   DateTime  @updatedAt
+
+  @@id([community_id, plan_id])
 }

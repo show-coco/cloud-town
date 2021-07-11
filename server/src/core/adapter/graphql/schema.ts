@@ -34,6 +34,18 @@ export const typeDefs = gql`
     introduction: String
     createdAt: Date
     updatedAt: Date
+    plans: [Plan]
+  }
+
+  type Plan {
+    id: String
+    name: String
+    introduction: String
+    pricePerMonth: Int
+    trailPeriod: String!
+    numberOfApplicants: Int!
+    createdAt: Date
+    updatedAt: Date
   }
 
   type Channel {

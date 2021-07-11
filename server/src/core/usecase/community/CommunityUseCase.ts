@@ -1,6 +1,7 @@
 import ICommunityRepository from '../../adapter/repository/CommunityRepository/ICommunityRepository'
 import { CreateCommunityParam } from './CommunityUseCaseParam'
-import Community from '../../domain/entities/Community'
+import Community from '../../domain/entities/CommunityAggregate/Community'
+import Plan from '../../domain/entities/CommunityAggregate/Plan'
 
 export default class CommunityUseCase {
   private communityRepo: ICommunityRepository
@@ -19,7 +20,7 @@ export default class CommunityUseCase {
    * @param arg CreateCommunityParam
    * @returns
    */
-  createCommunity({
+  async createCommunity({
     name,
     slug,
     introduction,
@@ -37,6 +38,17 @@ export default class CommunityUseCase {
       createdAt: new Date(),
       updatedAt: new Date(),
     })
+
+    const newPlan = new Plan({
+      name: `${name}の無料プラン`,
+      introduction: `${name}の無料プランです。`,
+      pricePerMonth: 0,
+      trailPeriod: null,
+      numberOfApplicants: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    community.addPlan(newPlan)
 
     return this.communityRepo.createCommunity(community)
   }
