@@ -1,19 +1,32 @@
-import PChannelRepository from '../../adapter/repository/ChannelRepository/PChannelRepository'
+import { testCommunity } from '../../../test/test-data'
+import { InMemoryChannelRepository } from '../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
+import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
 
-const testCommunityId = '3d109f8e-3248-419e-b125-284638dce331'
 const testUserId = '5243148e-1f08-2d5c-afac-c8c0b4c94285'
 
 describe('ChannelUseCase', () => {
-  const channelRepo = new PChannelRepository()
+  const communityRepo = new InMemoryCommunityRepository()
+  const channelRepo = new InMemoryChannelRepository()
   const channelUseCase = new ChannelUseCase(channelRepo)
+
+  beforeAll(async () => {
+    // テストデータの作成
+    await communityRepo.createCommunity(testCommunity)
+  })
+
+  afterAll(() => {
+    // テストデータ削除
+    communityRepo.clean()
+    channelRepo.clean()
+  })
 
   describe('createChannel', () => {
     it('チャンネル作成時に作成したユーザーがオーナーに追加される', async () => {
       const param: CreateChannelProps = {
         userId: testUserId,
-        communityId: testCommunityId,
+        communityId: testCommunity.getCommunityId(),
         name: 'test community',
         isPrivate: false,
         slug: 'test-community',
@@ -29,7 +42,7 @@ describe('ChannelUseCase', () => {
     it('チャンネルに所属していないユーザーは更新できない', async () => {
       const createParam: CreateChannelProps = {
         userId: testUserId,
-        communityId: testCommunityId,
+        communityId: testCommunity.getCommunityId(),
         name: 'test community2',
         isPrivate: false,
         slug: 'test-community2',
@@ -57,7 +70,7 @@ describe('ChannelUseCase', () => {
     it('チャンネルに所属しているユーザーはチャンネル情報を更新できる', async () => {
       const createParam: CreateChannelProps = {
         userId: testUserId,
-        communityId: testCommunityId,
+        communityId: testCommunity.getCommunityId(),
         name: 'test community3',
         isPrivate: false,
         slug: 'test-community3',

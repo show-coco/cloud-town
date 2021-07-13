@@ -1,42 +1,26 @@
-import { v4 } from 'uuid'
-import prisma from '../../../prisma'
-import PCommunityRepository from '../../adapter/repository/CommunityRepository/PCommunityRepository'
+import { testCommunity } from '../../../test/test-data'
+import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
 import CommunityUseCase from './CommunityUseCase'
 import { CreateCommunityParam } from './CommunityUseCaseParam'
 
 describe('CommunityUseCase', () => {
-  let communityUseCase: CommunityUseCase
-
-  beforeEach(() => {
-    communityUseCase = new CommunityUseCase(new PCommunityRepository())
-  })
+  const communityRepo = new InMemoryCommunityRepository()
+  const communityUseCase = new CommunityUseCase(communityRepo)
 
   describe('getCommunityById', () => {
     it('コミュニティが取得できる', async () => {
       // THEN
 
       // DBのコミュニティの全削除
-      await prisma.community.deleteMany({})
-      // DBが全削除できているか
-      expect(await prisma.community.findMany()).toHaveLength(0)
-
-      const uuid = v4()
+      communityRepo.clean()
 
       // demoデータの挿入
-      const demoCommunity: Parameters<typeof prisma.community.create> = [
-        {
-          data: {
-            id: uuid,
-            name: '山田太郎',
-            slug: 'abcdef',
-            introduction: '<p>Hello</p>',
-          },
-        },
-      ]
-      const pDemoCommunity = await prisma.community.create(demoCommunity[0])
+      const demoCommunity = await communityRepo.createCommunity(testCommunity)
 
       // WHEN
-      const actual = await communityUseCase.getCommunityById(pDemoCommunity.id)
+      const actual = await communityUseCase.getCommunityById(
+        demoCommunity.getCommunityId()
+      )
 
       // THEN
       expect(actual).not.toBeNull()
@@ -44,24 +28,9 @@ describe('CommunityUseCase', () => {
         return
       }
 
-      expect(actual.getName()).toBe(demoCommunity[0].data.name)
-      expect(actual.getSlug()).toBe(demoCommunity[0].data.slug)
-      expect(actual.getIntroduction()).toBe(demoCommunity[0].data.introduction)
-    })
-
-    it('コミュニティが登録されていないとき、コミュニティが存在しない', async () => {
-      // THEN
-
-      // DBのコミュニティの全削除
-      await prisma.community.deleteMany({})
-      // DBが全削除できているか
-      expect(await prisma.community.findMany()).toHaveLength(0)
-
-      // WHEN
-      const actual = await prisma.community.findMany()
-
-      // THEN
-      expect(actual).toHaveLength(0)
+      expect(actual.getName()).toBe(testCommunity.getName())
+      expect(actual.getSlug()).toBe(testCommunity.getSlug())
+      expect(actual.getIntroduction()).toBe(testCommunity.getIntroduction())
     })
   })
 
