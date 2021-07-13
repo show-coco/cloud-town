@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { prisma } from '../../../prisma'
+import prisma from '../../../prisma'
 import PCommunityRepository from '../../adapter/repository/CommunityRepository/PCommunityRepository'
 import CommunityUseCase from './CommunityUseCase'
 import { CreateCommunityParam } from './CommunityUseCaseParam'

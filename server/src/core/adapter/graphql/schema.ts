@@ -23,6 +23,12 @@ export const typeDefs = gql`
     isPrivate: Boolean
   }
 
+  input ChangeChannelOwnerInput {
+    id: String!
+    currentOwnerId: String!
+    nextOwnerId: String!
+  }
+
   type Query {
     community: Community
   }
@@ -48,5 +54,6 @@ export const typeDefs = gql`
     createCommunity(input: CreateCommunityInput!): Community!
     createChannel(input: CreateChannelInput!): Channel!
     updateChannel(input: UpdateChannelInput!): Channel!
+    changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
   }
 `

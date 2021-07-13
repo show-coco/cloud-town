@@ -1,29 +1,19 @@
 import PChannelRepository from '../../adapter/repository/ChannelRepository/PChannelRepository'
-import PUserRepository from '../../adapter/repository/UserRepository/PUserRepository'
-import User from '../../domain/entities/User'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
 
+const testCommunityId = '3d109f8e-3248-419e-b125-284638dce331'
+const testUserId = '5243148e-1f08-2d5c-afac-c8c0b4c94285'
+
 describe('ChannelUseCase', () => {
   const channelRepo = new PChannelRepository()
-  const userRepo = new PUserRepository()
   const channelUseCase = new ChannelUseCase(channelRepo)
-  let user: User
-  const communityId = '04756361-b592-4ade-9094-f8f1a390e4f2'
-
-  beforeAll(async () => {
-    user = await userRepo.createUser(
-      'Test User',
-      'google-test',
-      'test@example.com'
-    )
-  })
 
   describe('createChannel', () => {
     it('チャンネル作成時に作成したユーザーがオーナーに追加される', async () => {
       const param: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
+        userId: testUserId,
+        communityId: testCommunityId,
         name: 'test community',
         isPrivate: false,
         slug: 'test-community',
@@ -38,8 +28,8 @@ describe('ChannelUseCase', () => {
   describe('updateChannel', () => {
     it('チャンネルに所属していないユーザーは更新できない', async () => {
       const createParam: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
+        userId: testUserId,
+        communityId: testCommunityId,
         name: 'test community2',
         isPrivate: false,
         slug: 'test-community2',
@@ -64,10 +54,10 @@ describe('ChannelUseCase', () => {
       }
     })
 
-    it('チャンネルに所属しているユーザーは更新できる', async () => {
+    it('チャンネルに所属しているユーザーはチャンネル情報を更新できる', async () => {
       const createParam: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
+        userId: testUserId,
+        communityId: testCommunityId,
         name: 'test community3',
         isPrivate: false,
         slug: 'test-community3',
@@ -75,7 +65,7 @@ describe('ChannelUseCase', () => {
 
       const channel = await channelUseCase.createChannel(createParam)
 
-      const existsUserId = user.getId()
+      const existsUserId = testUserId
 
       const updateParam: UpdateChannelProps = {
         id: channel.id,

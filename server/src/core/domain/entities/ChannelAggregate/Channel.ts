@@ -8,6 +8,7 @@ export default class Channel {
   private _slug: string
   private _isPrivate: boolean
   private _channelMembers: ChannelMember[] = []
+  private _communityId: string
 
   constructor({
     id,
@@ -15,18 +16,21 @@ export default class Channel {
     slug,
     isPrivate,
     channelMember,
+    communityId,
   }: {
     id?: string
     name: string
     slug: string
     isPrivate: boolean
     channelMember?: ChannelMember[]
+    communityId: string
   }) {
     this.id = id || v4()
     this._name = name
     this._slug = slug
     this._isPrivate = isPrivate
     this._channelMembers = channelMember || []
+    this._communityId = communityId
   }
 
   get name(): string {
@@ -43,6 +47,10 @@ export default class Channel {
 
   get channelMembers(): ChannelMember[] {
     return this._channelMembers
+  }
+
+  get communityId(): string {
+    return this._communityId
   }
 
   existsInChannel(userId: string): boolean {
@@ -63,12 +71,21 @@ export default class Channel {
       role: ChannelRole.OWNER,
     })
 
-    this._channelMembers?.push(owner)
+    this._channelMembers.push(owner)
   }
 
-  changeOwner(userId: string): void {
-    this.removeCurrentOwner()
-    this.addOwner(userId)
+  changeOwner(currentOwnerId: string, nextOwnerId: string): void {
+    const currentOwner = this.currentOwner()
+    if (currentOwner?.userId !== currentOwnerId)
+      throw new Error("This user doesn't have authorization to change owner.")
+
+    const owner = this.currentOwner()
+    const member = this.getMember(nextOwnerId)
+    if (!owner) throw new Error("Owner doesn't exists")
+    if (!member) throw new Error("Member doesn't exists")
+
+    owner.changeRole(ChannelRole.ADMIN)
+    member.changeRole(ChannelRole.OWNER)
   }
 
   changeName(name: string): void {
@@ -83,15 +100,15 @@ export default class Channel {
     this._isPrivate = isPrivate
   }
 
-  private removeCurrentOwner(): void {
-    this._channelMembers.filter(
-      (channelMember) => channelMember.role !== ChannelRole.OWNER
-    )
-  }
-
   currentOwner(): ChannelMember | undefined {
     return this._channelMembers.find(
       (channelMember) => channelMember.role === ChannelRole.OWNER
+    )
+  }
+
+  getMember(userId: string): ChannelMember | undefined {
+    return this._channelMembers.find(
+      (channelMember) => channelMember.userId === userId
     )
   }
 }
