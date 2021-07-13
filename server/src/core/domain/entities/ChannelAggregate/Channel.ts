@@ -81,8 +81,8 @@ export default class Channel {
 
     const owner = this.currentOwner()
     const member = this.getMember(nextOwnerId)
-    if (!owner) throw new Error("Owner doesn't exists")
-    if (!member) throw new Error("Member doesn't exists")
+    if (!owner) throw new Error("Owner doesn't exists.")
+    if (!member) throw new Error("Member doesn't exists.")
 
     owner.changeRole(ChannelRole.ADMIN)
     member.changeRole(ChannelRole.OWNER)

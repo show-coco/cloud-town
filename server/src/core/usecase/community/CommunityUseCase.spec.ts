@@ -1,4 +1,4 @@
-import { testCommunity } from '../../../test/test-data'
+import { createTestCommunity } from '../../../test/test-data'
 import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
 import CommunityUseCase from './CommunityUseCase'
 import { CreateCommunityParam } from './CommunityUseCaseParam'
@@ -15,7 +15,8 @@ describe('CommunityUseCase', () => {
       communityRepo.clean()
 
       // demoデータの挿入
-      const demoCommunity = await communityRepo.createCommunity(testCommunity)
+      const demo = createTestCommunity()
+      const demoCommunity = await communityRepo.createCommunity(demo)
 
       // WHEN
       const actual = await communityUseCase.getCommunityById(
@@ -28,9 +29,9 @@ describe('CommunityUseCase', () => {
         return
       }
 
-      expect(actual.getName()).toBe(testCommunity.getName())
-      expect(actual.getSlug()).toBe(testCommunity.getSlug())
-      expect(actual.getIntroduction()).toBe(testCommunity.getIntroduction())
+      expect(actual.getName()).toBe(demo.getName())
+      expect(actual.getSlug()).toBe(demo.getSlug())
+      expect(actual.getIntroduction()).toBe(demo.getIntroduction())
     })
   })
 
