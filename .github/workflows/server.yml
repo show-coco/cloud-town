@@ -8,7 +8,9 @@ on:
       - "!.editorconfig"
       - "!.gitignore"
       - "!.gitattributes"
-
+defaults:
+  run:
+    working-directory: ./server
 
 jobs:
   build:
@@ -26,18 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: package Install
         run: yarn install
-        working-directory: ./server
-      - name: copy dotenv
-        run: cp .env.ci .env
-        working-directory: ./server
-      - name: docker
-        run: docker-compose up -d
-      # - name: migrate db
-      #   run: yarn run migrate
-      #   working-directory: ./server
       - name: check type
         run: yarn run check-types
-        working-directory: ./server
-      # - name: test
-      #   run: yarn run test
-      #   working-directory: ./server
+      - name: test
+        run: yarn run test

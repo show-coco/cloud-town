@@ -1,7 +1,11 @@
 import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
 import Channel from '../../domain/entities/ChannelAggregate/Channel'
 import ChatService from '../../domain/services/ChatService'
-import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
+import {
+  ChangeOwnerProps,
+  CreateChannelProps,
+  UpdateChannelProps,
+} from './ChannelUseCaseProps'
 
 export default class ChannelUseCase {
   private channelRepo: IChannelRepository
@@ -23,7 +27,7 @@ export default class ChannelUseCase {
       throw new Error("User doesn't have authorization to create channel.")
     }
 
-    const channel = new Channel({ name, slug, isPrivate })
+    const channel = new Channel({ name, slug, isPrivate, communityId })
     channel.addOwner(userId)
 
     const newChannel = await this.channelRepo.save(channel)
@@ -47,8 +51,21 @@ export default class ChannelUseCase {
     if (isPrivate) channel.changeIsPrivate(isPrivate)
     if (slug) channel.changeSlug(slug)
 
-    await this.channelRepo.save(channel)
+    const updatedChannel = await this.channelRepo.save(channel)
 
-    return channel
+    return updatedChannel
+  }
+
+  async changeOwner({
+    id,
+    currentOwnerId,
+    nextOwnerId,
+  }: ChangeOwnerProps): Promise<Channel> {
+    const channel = await this.channelRepo.getChannelById(id)
+
+    channel.changeOwner(currentOwnerId, nextOwnerId)
+
+    const updatedChannel = await this.channelRepo.save(channel)
+    return updatedChannel
   }
 }

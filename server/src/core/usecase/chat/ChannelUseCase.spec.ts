@@ -1,56 +1,64 @@
-import PChannelRepository from '../../adapter/repository/ChannelRepository/PChannelRepository'
-import PUserRepository from '../../adapter/repository/UserRepository/PUserRepository'
-import User from '../../domain/entities/User'
+import {
+  createTestChannel,
+  createTestChannelAdmin,
+  createTestChannelCommon,
+  createTestChannelOwner,
+  createTestCommunity,
+  testuser1,
+} from '../../../test/test-data'
+import { InMemoryChannelRepository } from '../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
+import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
+import Channel from '../../domain/entities/ChannelAggregate/Channel'
+import Community from '../../domain/entities/Community'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
 
 describe('ChannelUseCase', () => {
-  const channelRepo = new PChannelRepository()
-  const userRepo = new PUserRepository()
+  const communityRepo = new InMemoryCommunityRepository()
+  const channelRepo = new InMemoryChannelRepository()
   const channelUseCase = new ChannelUseCase(channelRepo)
-  let user: User
-  const communityId = '04756361-b592-4ade-9094-f8f1a390e4f2'
+  let testCommunity: Community
+  let testChannel: Channel
 
-  beforeAll(async () => {
-    user = await userRepo.createUser(
-      'Test User',
-      'google-test',
-      'test@example.com'
-    )
+  beforeEach(async () => {
+    // テストデータの作成
+    communityRepo.clean()
+    channelRepo.clean()
+    testCommunity = createTestCommunity()
+    testChannel = createTestChannel()
+    console.log(testChannel)
+    await communityRepo.createCommunity(testCommunity)
+    await channelRepo.save(testChannel)
+  })
+
+  afterAll(() => {
+    // テストデータ削除
+    communityRepo.clean()
+    channelRepo.clean()
   })
 
   describe('createChannel', () => {
     it('チャンネル作成時に作成したユーザーがオーナーに追加される', async () => {
-      const param: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
+      const createParam: CreateChannelProps = {
+        userId: testuser1.getId(),
+        communityId: testCommunity.getCommunityId(),
         name: 'test community',
         isPrivate: false,
         slug: 'test-community',
       }
 
-      const actual = await channelUseCase.createChannel(param)
+      const actual = await channelUseCase.createChannel(createParam)
 
-      expect(actual.currentOwner()?.userId).toBe(param.userId)
+      expect(actual.currentOwner()?.userId).toBe(createParam.userId)
     })
   })
 
   describe('updateChannel', () => {
-    it('チャンネルに所属していないユーザーは更新できない', async () => {
-      const createParam: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
-        name: 'test community2',
-        isPrivate: false,
-        slug: 'test-community2',
-      }
-
-      const channel = await channelUseCase.createChannel(createParam)
-
+    it('チャンネルに所属していないユーザーはチャンネル情報を更新できない', async () => {
       const notExistsUserId = 'abcde'
 
       const updateParam: UpdateChannelProps = {
-        id: channel.id,
+        id: testChannel.id,
         userId: notExistsUserId,
         name: 'updated',
         isPrivate: false,
@@ -64,22 +72,10 @@ describe('ChannelUseCase', () => {
       }
     })
 
-    it('チャンネルに所属しているユーザーは更新できる', async () => {
-      const createParam: CreateChannelProps = {
-        userId: user.getId(),
-        communityId,
-        name: 'test community3',
-        isPrivate: false,
-        slug: 'test-community3',
-      }
-
-      const channel = await channelUseCase.createChannel(createParam)
-
-      const existsUserId = user.getId()
-
+    it('チャンネルに所属しているユーザーはチャンネル情報を更新できる', async () => {
       const updateParam: UpdateChannelProps = {
-        id: channel.id,
-        userId: existsUserId,
+        id: testChannel.id,
+        userId: createTestChannelOwner().userId || '',
         name: 'updated',
         isPrivate: true,
         slug: 'updated',
@@ -90,6 +86,52 @@ describe('ChannelUseCase', () => {
       expect(actual.name).toBe(updateParam.name)
       expect(actual.slug).toBe(updateParam.slug)
       expect(actual.isPrivate).toBe(updateParam.isPrivate)
+    })
+  })
+
+  describe('changeOwner', () => {
+    it('チャンネルのオーナーはオーナー権限をメンバーに委譲できる', async () => {
+      await channelUseCase.changeOwner({
+        id: testChannel.id,
+        nextOwnerId: createTestChannelCommon().userId,
+        currentOwnerId: createTestChannelOwner().userId,
+      })
+
+      const actual = await channelRepo.getChannelById(testChannel.id)
+      expect(actual.currentOwner()?.userId).toBe(
+        createTestChannelCommon().userId
+      )
+    })
+
+    it('チャンネルのオーナー以外はオーナー権限をメンバーに委譲できない', async () => {
+      try {
+        await channelUseCase.changeOwner({
+          id: testChannel.id,
+          nextOwnerId: createTestChannelCommon().userId,
+          currentOwnerId: createTestChannelAdmin().userId,
+        })
+      } catch (error) {
+        expect(error).toEqual(
+          new Error("This user doesn't have authorization to change owner.")
+        )
+      }
+
+      const actual = await channelRepo.getChannelById(testChannel.id)
+      expect(actual.currentOwner()?.userId).toBe(
+        createTestChannelOwner().userId
+      )
+
+      try {
+        await channelUseCase.changeOwner({
+          id: testChannel.id,
+          nextOwnerId: createTestChannelCommon().userId,
+          currentOwnerId: createTestChannelCommon().userId,
+        })
+      } catch (error) {
+        expect(error).toEqual(
+          new Error("This user doesn't have authorization to change owner.")
+        )
+      }
     })
   })
 })

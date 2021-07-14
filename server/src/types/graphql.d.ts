@@ -15,6 +15,12 @@ export type Scalars = {
   Date: any;
 };
 
+export type ChangeChannelOwnerInput = {
+  id: Scalars['String'];
+  currentOwnerId: Scalars['String'];
+  nextOwnerId: Scalars['String'];
+};
+
 export type Channel = {
   __typename?: 'Channel';
   id: Scalars['String'];
@@ -52,6 +58,7 @@ export type Mutation = {
   createCommunity: Community;
   createChannel: Channel;
   updateChannel: Channel;
+  changeChannelOwner: Channel;
 };
 
 
@@ -67,6 +74,11 @@ export type MutationCreateChannelArgs = {
 
 export type MutationUpdateChannelArgs = {
   input: UpdateChannelInput;
+};
+
+
+export type MutationChangeChannelOwnerArgs = {
+  input: ChangeChannelOwnerInput;
 };
 
 export type Query = {
@@ -160,8 +172,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Channel: ResolverTypeWrapper<Channel>;
+  ChangeChannelOwnerInput: ChangeChannelOwnerInput;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Channel: ResolverTypeWrapper<Channel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Community: ResolverTypeWrapper<Community>;
   CreateChannelInput: CreateChannelInput;
@@ -174,8 +187,9 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Channel: Channel;
+  ChangeChannelOwnerInput: ChangeChannelOwnerInput;
   String: Scalars['String'];
+  Channel: Channel;
   Boolean: Scalars['Boolean'];
   Community: Community;
   CreateChannelInput: CreateChannelInput;
@@ -212,6 +226,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createCommunity?: Resolver<ResolversTypes['Community'], ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
   createChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
   updateChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationUpdateChannelArgs, 'input'>>;
+  changeChannelOwner?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationChangeChannelOwnerArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

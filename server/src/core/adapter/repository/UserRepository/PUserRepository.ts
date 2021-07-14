@@ -1,6 +1,6 @@
 import { User as PUser } from '@prisma/client'
 import User from '../../../domain/entities/User'
-import { prisma } from '../../../../prisma'
+import prisma from '../../../../prisma'
 import IUserRepository from './IUserRepository'
 
 export default class PUserRepository implements IUserRepository {

@@ -53,7 +53,6 @@ export const resolvers: Resolvers = {
       }
     },
     createChannel: async (_parent, args, context: Context) => {
-      // TODO: 認証ミドルウェアを作成する
       if (!context.user) throw new Error('Not Authenticated')
 
       const { name, slug, isPrivate, communityId } = args.input
@@ -80,7 +79,6 @@ export const resolvers: Resolvers = {
       const { id, name, slug, isPrivate } = args.input
 
       if (
-        typeof id === 'string' &&
         typeof name === 'string' &&
         typeof slug === 'string' &&
         typeof isPrivate === 'boolean'
@@ -93,15 +91,16 @@ export const resolvers: Resolvers = {
           userId: context.user.sub,
         })
 
-        return {
-          id: channel.id,
-          name: channel.name,
-          slug: channel.slug,
-          isPrivate: channel.isPrivate,
-        }
+        return channel
       } else {
         throw new Error('Input type is strange')
       }
+    },
+    changeChannelOwner: async (_parent, args, context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const channel = await channelUseCase.changeOwner({ ...args.input })
+      return channel
     },
   },
 }

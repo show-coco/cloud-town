@@ -1,5 +1,5 @@
 import { Community as PCommunity } from '@prisma/client'
-import { prisma } from '../../../../prisma'
+import prisma from '../../../../prisma'
 import Community from '../../../domain/entities/Community'
 import ICommunityRepository from './ICommunityRepository'
 

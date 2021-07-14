@@ -4,7 +4,7 @@ export default class ChannelMember {
   readonly id?: number
   readonly userId: string
   readonly channelId: string
-  readonly role: ChannelRole
+  private _role: ChannelRole
 
   constructor({
     id,
@@ -20,6 +20,14 @@ export default class ChannelMember {
     this.id = id
     this.userId = userId
     this.channelId = channelId
-    this.role = role
+    this._role = role
+  }
+
+  get role(): ChannelRole {
+    return this._role
+  }
+
+  changeRole(role: ChannelRole): void {
+    this._role = role
   }
 }
