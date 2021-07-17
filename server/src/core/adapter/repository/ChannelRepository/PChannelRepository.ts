@@ -127,6 +127,17 @@ export default class PChannelRepository implements IChannelRepository {
     }
   }
 
+  async delete(channel: Channel): Promise<void> {
+    await prisma.channel.update({
+      data: {
+        deleted_at: channel.deletedAt,
+      },
+      where: {
+        id: channel.id,
+      },
+    })
+  }
+
   private converter(
     channel: PChannel & {
       ChannelMember: PChannelMember[]

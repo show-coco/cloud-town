@@ -36,6 +36,13 @@ export class InMemoryChannelRepository implements IChannelRepository {
     })
   }
 
+  delete(channel: Channel): Promise<void> {
+    return new Promise((resolve) => {
+      this.channels.filter((c) => c.id !== channel.id)
+      resolve()
+    })
+  }
+
   clean(): void {
     this.channels = []
   }

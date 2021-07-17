@@ -81,4 +81,17 @@ export default class ChannelUseCase {
     const updatedChannel = await this.channelRepo.save(channel)
     return updatedChannel
   }
+
+  async deleteChannel({
+    id,
+    userId,
+  }: {
+    id: string
+    userId: string
+  }): Promise<void> {
+    const channel = await this.channelRepo.getChannelById(id)
+    channel.deleteChannel(userId)
+
+    await this.channelRepo.delete(channel)
+  }
 }
