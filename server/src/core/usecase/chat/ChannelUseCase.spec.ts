@@ -40,7 +40,7 @@ describe('ChannelUseCase', () => {
   describe('createChannel', () => {
     it('チャンネル作成時に作成したユーザーがオーナーに追加される', async () => {
       const createParam: CreateChannelProps = {
-        userId: testuser1.getId(),
+        userId: testuser1.id,
         communityId: testCommunity.getCommunityId(),
         name: 'test community',
         isPrivate: false,

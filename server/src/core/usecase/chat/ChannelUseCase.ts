@@ -1,5 +1,6 @@
 import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
 import Channel from '../../domain/entities/ChannelAggregate/Channel'
+import User from '../../domain/entities/User'
 import ChatService from '../../domain/services/ChatService'
 import {
   ChangeOwnerProps,
@@ -12,6 +13,14 @@ export default class ChannelUseCase {
 
   constructor(channelRepo: IChannelRepository) {
     this.channelRepo = channelRepo
+  }
+
+  async getChannelList(communityId: string): Promise<Channel[]> {
+    const channelList = await this.channelRepo.getChannelListByCommunityId(
+      communityId
+    )
+
+    return channelList
   }
 
   async createChannel({
@@ -33,6 +42,10 @@ export default class ChannelUseCase {
     const newChannel = await this.channelRepo.save(channel)
 
     return newChannel
+  }
+
+  async getMemberList(id: string): Promise<User[]> {
+    return await this.channelRepo.getMemberListByChannelId(id)
   }
 
   async updateChannel({

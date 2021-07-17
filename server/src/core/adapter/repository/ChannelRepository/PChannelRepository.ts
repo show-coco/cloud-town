@@ -6,8 +6,22 @@ import {
 import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import IChannelRepository from './IChannelRepository'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import User from '../../../domain/entities/User'
 
 export default class PChannelRepository implements IChannelRepository {
+  async getChannelListByCommunityId(communityId: string): Promise<Channel[]> {
+    const result = await prisma.channel.findMany({
+      where: {
+        community_id: communityId,
+      },
+      include: { ChannelMember: true },
+    })
+
+    const cChannelList = result.map((channel) => this.converter(channel))
+
+    return cChannelList
+  }
+
   async getChannelById(id: string): Promise<Channel> {
     const channel = await prisma.channel.findFirst({
       where: { id },
@@ -19,6 +33,32 @@ export default class PChannelRepository implements IChannelRepository {
     }
 
     return this.converter(channel)
+  }
+
+  async getMemberListByChannelId(id: string): Promise<User[]> {
+    const channel = await prisma.channel.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        ChannelMember: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    })
+
+    if (!channel) throw new Error('Channel not found')
+
+    const userList: User[] = channel.ChannelMember.map<User>(
+      (member) =>
+        new User({
+          ...member.user,
+          googleId: member.user.google_id,
+        })
+    )
+    return userList
   }
 
   async save(channel: Channel): Promise<Channel> {
