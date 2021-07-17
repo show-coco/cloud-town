@@ -41,7 +41,7 @@ export const testuser3 = new User({
 export const createTestChannelAdmin = (): ChannelMember =>
   new ChannelMember({
     id: 1,
-    userId: testuser1.getId(),
+    userId: testuser1.id,
     channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
     role: ChannelRole.ADMIN,
   })
@@ -49,7 +49,7 @@ export const createTestChannelAdmin = (): ChannelMember =>
 export const createTestChannelOwner = (): ChannelMember =>
   new ChannelMember({
     id: 2,
-    userId: testuser2.getId(),
+    userId: testuser2.id,
     channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
     role: ChannelRole.OWNER,
   })
@@ -57,7 +57,7 @@ export const createTestChannelOwner = (): ChannelMember =>
 export const createTestChannelCommon = (): ChannelMember =>
   new ChannelMember({
     id: 3,
-    userId: testuser3.getId(),
+    userId: testuser3.id,
     channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
     role: ChannelRole.COMMON,
   })
