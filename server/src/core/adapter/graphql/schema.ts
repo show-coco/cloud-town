@@ -23,6 +23,10 @@ export const typeDefs = gql`
     isPrivate: Boolean
   }
 
+  input GetCommunityInput {
+    id: String!
+  }
+
   input ChangeChannelOwnerInput {
     id: String!
     currentOwnerId: String!
@@ -30,16 +34,17 @@ export const typeDefs = gql`
   }
 
   type Query {
-    community: Community
+    community(input: GetCommunityInput!): Community
   }
 
   type Community {
-    id: String
-    name: String
-    slug: String
-    introduction: String
-    createdAt: Date
-    updatedAt: Date
+    id: String!
+    name: String!
+    slug: String!
+    introduction: String!
+    createdAt: Date!
+    updatedAt: Date!
+    channels: [Channel!]
   }
 
   type Channel {
@@ -47,7 +52,15 @@ export const typeDefs = gql`
     slug: String!
     name: String!
     isPrivate: Boolean!
+    members: [User!]
     # createdAt: Date!
+  }
+
+  type User {
+    id: String!
+    name: String!
+    slug: String!
+    email: String!
   }
 
   type Mutation {
