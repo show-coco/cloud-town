@@ -59,7 +59,7 @@ export type CreatePlanInputWithNoCommunityId = {
   name?: Maybe<Scalars['String']>;
   introduction: Scalars['String'];
   pricePerMonth: Scalars['Int'];
-  trailPeriod: Scalars['String'];
+  trialPeriod: Scalars['String'];
   numberOfApplicants: Scalars['Int'];
 };
 
@@ -102,7 +102,7 @@ export type Plan = {
   name?: Maybe<Scalars['String']>;
   introduction?: Maybe<Scalars['String']>;
   pricePerMonth?: Maybe<Scalars['Int']>;
-  trailPeriod: Scalars['String'];
+  trialPeriod: Scalars['String'];
   numberOfApplicants: Scalars['Int'];
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
@@ -286,7 +286,7 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   introduction?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   pricePerMonth?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  trailPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  trialPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   numberOfApplicants?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;

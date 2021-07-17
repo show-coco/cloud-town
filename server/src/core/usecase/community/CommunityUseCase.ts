@@ -47,7 +47,7 @@ export default class CommunityUseCase {
           name: plan.name,
           introduction: plan.introduction,
           pricePerMonth: plan.pricePerMonth,
-          trailPeriod: plan.trailPeriod,
+          trialPeriod: plan.trialPeriod,
           numberOfApplicants: plan.numberOfApplicants,
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -1,4 +1,4 @@
-import { TrailPeriod } from '@prisma/client'
+import { TrialPeriod } from '@prisma/client'
 import { v4 } from 'uuid'
 
 export default class Plan {
@@ -10,7 +10,7 @@ export default class Plan {
   /** ひと月あたりの金額 */
   private _pricePerMonth: number
   /** 無料期間 */
-  private _trailPeriod: TrailPeriod | null
+  private _trialPeriod: TrialPeriod | null
   /** 募集人数 */
   private _numberOfApplicants: number | null
   private _createdAt: Date
@@ -21,7 +21,7 @@ export default class Plan {
     name,
     introduction,
     pricePerMonth,
-    trailPeriod,
+    trialPeriod,
     numberOfApplicants,
     createdAt,
     updatedAt,
@@ -30,7 +30,7 @@ export default class Plan {
     name: string
     introduction: string
     pricePerMonth: number
-    trailPeriod: TrailPeriod | null
+    trialPeriod: TrialPeriod | null
     numberOfApplicants: number | null
     createdAt: Date
     updatedAt: Date
@@ -39,7 +39,7 @@ export default class Plan {
     this._name = name
     this._introduction = introduction
     this._pricePerMonth = pricePerMonth
-    this._trailPeriod = trailPeriod
+    this._trialPeriod = trialPeriod
     this._numberOfApplicants = numberOfApplicants
     this._createdAt = createdAt
     this._updatedAt = updatedAt
@@ -66,8 +66,8 @@ export default class Plan {
   }
 
   /** 無料期間 */
-  getTrailPeriod(): TrailPeriod | null {
-    return this._trailPeriod
+  getTrialPeriod(): TrialPeriod | null {
+    return this._trialPeriod
   }
 
   /** 募集人数 */

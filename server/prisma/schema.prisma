@@ -111,7 +111,7 @@ model ChannelMember {
 }
 
 /// チャンネルのユーザー権限
-enum TrailPeriod {
+enum TrialPeriod {
   /// 初月無料
   FREE_FOR_THE_FIRST_MONTH
 }
@@ -126,7 +126,7 @@ model Plan {
   /// ひと月あたりの金額
   price_per_month      Int
   /// 無料期間
-  trail_period         TrailPeriod?
+  trial_period         TrialPeriod?
   /// 募集人数
   number_of_applicants Int?
   deleted_at           DateTime?

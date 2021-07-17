@@ -75,7 +75,7 @@ export const resolvers: Resolvers = {
             name: communityPlan.getPlan().getName(),
             introduction: communityPlan.getPlan().getIntroduction(),
             pricePerMonth: communityPlan.getPlan().getPricePerMonth(),
-            trailPeriod: communityPlan.getPlan().getTrailPeriod() as string,
+            trialPeriod: communityPlan.getPlan().getTrialPeriod() as string,
             numberOfApplicants: communityPlan
               .getPlan()
               .getNumberOfApplicants() as number,

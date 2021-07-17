@@ -14,7 +14,7 @@ export const typeDefs = gql`
     name: String
     introduction: String!
     pricePerMonth: Int!
-    trailPeriod: String!
+    trialPeriod: String!
     numberOfApplicants: Int!
   }
 
@@ -61,7 +61,7 @@ export const typeDefs = gql`
     name: String
     introduction: String
     pricePerMonth: Int
-    trailPeriod: String!
+    trialPeriod: String!
     numberOfApplicants: Int!
     createdAt: Date
     updatedAt: Date
