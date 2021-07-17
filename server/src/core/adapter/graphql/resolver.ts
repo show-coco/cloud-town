@@ -59,6 +59,7 @@ export const resolvers: Resolvers = {
         name: args.input.name,
         slug: args.input.slug,
         introduction: args.input.introduction,
+        plans: args.input.plans || [],
       })
 
       return {

@@ -24,6 +24,7 @@ export default class CommunityUseCase {
     name,
     slug,
     introduction,
+    plans,
   }: CreateCommunityParam): Promise<Community> {
     console.log('CommunityUseCase createCommunity args', {
       name,
@@ -39,16 +40,22 @@ export default class CommunityUseCase {
       updatedAt: new Date(),
     })
 
-    const newPlan = new Plan({
-      name: `${name}の無料プラン`,
-      introduction: `${name}の無料プランです。`,
-      pricePerMonth: 0,
-      trailPeriod: null,
-      numberOfApplicants: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    const newPlans =
+      plans &&
+      plans.map((plan) => {
+        return new Plan({
+          name: plan.name,
+          introduction: plan.introduction,
+          pricePerMonth: plan.pricePerMonth,
+          trailPeriod: plan.trailPeriod,
+          numberOfApplicants: plan.numberOfApplicants,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      })
+    newPlans.forEach((newPlan) => {
+      community.addPlan(newPlan)
     })
-    community.addPlan(newPlan)
 
     return this.communityRepo.createCommunity(community)
   }

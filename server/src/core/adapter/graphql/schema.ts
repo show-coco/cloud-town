@@ -7,6 +7,15 @@ export const typeDefs = gql`
     name: String!
     slug: String!
     introduction: String!
+    plans: [CreatePlanInputWithNoCommunityId]
+  }
+
+  input CreatePlanInputWithNoCommunityId {
+    name: String
+    introduction: String!
+    pricePerMonth: Int!
+    trailPeriod: String!
+    numberOfApplicants: Int!
   }
 
   input CreateChannelInput {

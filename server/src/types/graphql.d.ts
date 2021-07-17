@@ -52,6 +52,15 @@ export type CreateCommunityInput = {
   name: Scalars['String'];
   slug: Scalars['String'];
   introduction: Scalars['String'];
+  plans?: Maybe<Array<Maybe<CreatePlanInputWithNoCommunityId>>>;
+};
+
+export type CreatePlanInputWithNoCommunityId = {
+  name?: Maybe<Scalars['String']>;
+  introduction: Scalars['String'];
+  pricePerMonth: Scalars['Int'];
+  trailPeriod: Scalars['String'];
+  numberOfApplicants: Scalars['Int'];
 };
 
 
@@ -210,11 +219,12 @@ export type ResolversTypes = ResolversObject<{
   Community: ResolverTypeWrapper<Community>;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreatePlanInputWithNoCommunityId: CreatePlanInputWithNoCommunityId;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   GetCommunityInput: GetCommunityInput;
   Mutation: ResolverTypeWrapper<{}>;
   Plan: ResolverTypeWrapper<Plan>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Query: ResolverTypeWrapper<{}>;
   UpdateChannelInput: UpdateChannelInput;
   User: ResolverTypeWrapper<User>;
@@ -229,11 +239,12 @@ export type ResolversParentTypes = ResolversObject<{
   Community: Community;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreatePlanInputWithNoCommunityId: CreatePlanInputWithNoCommunityId;
+  Int: Scalars['Int'];
   Date: Scalars['Date'];
   GetCommunityInput: GetCommunityInput;
   Mutation: {};
   Plan: Plan;
-  Int: Scalars['Int'];
   Query: {};
   UpdateChannelInput: UpdateChannelInput;
   User: User;
