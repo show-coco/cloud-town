@@ -1,4 +1,4 @@
-import { prisma } from '../../../../prisma'
+import prisma from '../../../../prisma'
 import {
   Channel as PChannel,
   ChannelMember as PChannelMember,
@@ -6,8 +6,22 @@ import {
 import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import IChannelRepository from './IChannelRepository'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import User from '../../../domain/entities/User'
 
 export default class PChannelRepository implements IChannelRepository {
+  async getChannelListByCommunityId(communityId: string): Promise<Channel[]> {
+    const result = await prisma.channel.findMany({
+      where: {
+        community_id: communityId,
+      },
+      include: { ChannelMember: true },
+    })
+
+    const cChannelList = result.map((channel) => this.converter(channel))
+
+    return cChannelList
+  }
+
   async getChannelById(id: string): Promise<Channel> {
     const channel = await prisma.channel.findFirst({
       where: { id },
@@ -21,6 +35,32 @@ export default class PChannelRepository implements IChannelRepository {
     return this.converter(channel)
   }
 
+  async getMemberListByChannelId(id: string): Promise<User[]> {
+    const channel = await prisma.channel.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        ChannelMember: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    })
+
+    if (!channel) throw new Error('Channel not found')
+
+    const userList: User[] = channel.ChannelMember.map<User>(
+      (member) =>
+        new User({
+          ...member.user,
+          googleId: member.user.google_id,
+        })
+    )
+    return userList
+  }
+
   async save(channel: Channel): Promise<Channel> {
     const exists = await prisma.channel.findFirst({ where: { id: channel.id } })
 
@@ -31,6 +71,7 @@ export default class PChannelRepository implements IChannelRepository {
           name: channel.name,
           slug: channel.slug,
           is_private: channel.isPrivate,
+          community_id: channel.communityId,
           ChannelMember: {
             createMany: {
               data: channel.channelMembers?.map((member) => ({
@@ -46,21 +87,11 @@ export default class PChannelRepository implements IChannelRepository {
 
       return this.converter(created)
     } else {
-      const updated = await prisma.channel.update({
+      const updatedChannel = await prisma.channel.update({
         data: {
           name: channel.name,
           slug: channel.slug,
           is_private: channel.isPrivate,
-          ChannelMember: {
-            updateMany: channel.channelMembers.map((member) => ({
-              data: {
-                role: member.role,
-              },
-              where: {
-                id: member.id,
-              },
-            })),
-          },
         },
         where: {
           id: channel.id,
@@ -68,7 +99,31 @@ export default class PChannelRepository implements IChannelRepository {
         include: { ChannelMember: true },
       })
 
-      return this.converter(updated)
+      // MEMO: upsertManyがまだ使用できないため繰り返しupsertを実行 (issue: https://github.com/prisma/prisma/issues/4134)
+      const channelMembers = await Promise.all(
+        channel.channelMembers.map(async (member) => {
+          const updatedChannelMember = await prisma.channelMember.upsert({
+            create: {
+              user_id: member.userId,
+              channel_id: member.channelId,
+              role: member.role,
+            },
+            update: {
+              channel_id: member.channelId,
+              role: member.role,
+            },
+            where: {
+              id: member.id,
+            },
+          })
+
+          return updatedChannelMember
+        })
+      )
+
+      updatedChannel.ChannelMember = channelMembers
+
+      return this.converter(updatedChannel)
     }
   }
 
@@ -92,6 +147,7 @@ export default class PChannelRepository implements IChannelRepository {
       slug: channel.slug,
       isPrivate: channel.is_private,
       channelMember: channelMembers,
+      communityId: channel.community_id,
     })
   }
 }

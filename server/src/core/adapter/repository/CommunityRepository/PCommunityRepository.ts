@@ -3,7 +3,7 @@ import {
   CommunityPlan as PCommunityPlan,
   Plan as PPlan,
 } from '@prisma/client'
-import { prisma } from '../../../../prisma'
+import prisma from '../../../../prisma'
 import Community from '../../../domain/entities/CommunityAggregate/Community'
 import CommunityPlan from '../../../domain/entities/CommunityAggregate/CommunityPlan'
 import Plan from '../../../domain/entities/CommunityAggregate/Plan'

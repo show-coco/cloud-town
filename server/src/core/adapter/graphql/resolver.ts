@@ -16,8 +16,9 @@ export const resolvers: Resolvers = {
   Date: dateScalar,
 
   Query: {
-    community: async (_parent, _args, context: Context) => {
-      const com = await communityUseCase.getCommunityById('uuid')
+    community: async (_parent, args, _context: Context) => {
+      const { id } = args.input
+      const com = await communityUseCase.getCommunityById(id)
 
       if (!com) return null
 
@@ -31,8 +32,25 @@ export const resolvers: Resolvers = {
       }
     },
   },
+  Community: {
+    channels: async (community) => {
+      return channelUseCase.getChannelList(community.id)
+    },
+  },
+  Channel: {
+    members: async (channel) => {
+      const members = await channelUseCase.getMemberList(channel.id)
+
+      return members.map((member) => ({
+        id: member.id,
+        slug: member.slug,
+        name: member.name,
+        email: member.email,
+      }))
+    },
+  },
   Mutation: {
-    createCommunity: async (_parent, args, context: Context) => {
+    createCommunity: async (_parent, args, _context: Context) => {
       console.log('resolvers createCommunity args', {
         args,
       })
@@ -67,7 +85,6 @@ export const resolvers: Resolvers = {
       }
     },
     createChannel: async (_parent, args, context: Context) => {
-      // TODO: 認証ミドルウェアを作成する
       if (!context.user) throw new Error('Not Authenticated')
 
       const { name, slug, isPrivate, communityId } = args.input
@@ -94,7 +111,6 @@ export const resolvers: Resolvers = {
       const { id, name, slug, isPrivate } = args.input
 
       if (
-        typeof id === 'string' &&
         typeof name === 'string' &&
         typeof slug === 'string' &&
         typeof isPrivate === 'boolean'
@@ -107,15 +123,16 @@ export const resolvers: Resolvers = {
           userId: context.user.sub,
         })
 
-        return {
-          id: channel.id,
-          name: channel.name,
-          slug: channel.slug,
-          isPrivate: channel.isPrivate,
-        }
+        return channel
       } else {
         throw new Error('Input type is strange')
       }
+    },
+    changeChannelOwner: async (_parent, args, context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const channel = await channelUseCase.changeOwner({ ...args.input })
+      return channel
     },
   },
 }

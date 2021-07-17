@@ -1,14 +1,14 @@
 import { v4 } from 'uuid'
 
 export default class User {
-  private id: string
+  private _id: string
   /** スラッグ */
-  private slug: string
+  private _slug: string
   /** メールアドレス */
-  private email: string
+  private _email: string
   /** 表示名 */
-  private name: string
-  private googleId: string
+  private _name: string
+  private _googleId: string
 
   constructor({
     id,
@@ -23,33 +23,33 @@ export default class User {
     name: string
     googleId: string
   }) {
-    this.id = id || v4()
-    this.slug = slug
-    this.email = email
-    this.name = name
-    this.googleId = googleId
+    this._id = id || v4()
+    this._slug = slug
+    this._email = email
+    this._name = name
+    this._googleId = googleId
   }
 
-  getId(): string {
-    return this.id
+  get id(): string {
+    return this._id
   }
 
   /** スラッグ */
-  getSlug(): string {
-    return this.slug
+  get slug(): string {
+    return this._slug
   }
 
   /** メールアドレス */
-  getEmail(): string {
-    return this.email
+  get email(): string {
+    return this._email
   }
 
   /** 表示名 */
-  getName(): string {
-    return this.name
+  get name(): string {
+    return this._name
   }
 
-  getGoogleId(): string {
-    return this.googleId
+  get googleId(): string {
+    return this._googleId
   }
 }

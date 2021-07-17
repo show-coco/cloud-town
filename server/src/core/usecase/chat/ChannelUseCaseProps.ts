@@ -13,3 +13,9 @@ export interface UpdateChannelProps {
   isPrivate?: boolean
   userId: string
 }
+
+export interface ChangeOwnerProps {
+  id: string
+  currentOwnerId: string
+  nextOwnerId: string
+}

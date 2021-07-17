@@ -44,6 +44,7 @@ model Community {
   updated_at       DateTime          @updatedAt
   CommunityMembers CommunityMember[]
   CommunityPlans   CommunityPlan[]
+  Channel          Channel[]
 }
 
 /// コミュニティのユーザー権限
@@ -80,6 +81,8 @@ model Channel {
   name          String
   /// 秘公開かどうか
   is_private    Boolean
+  channel       Community       @relation(fields: [community_id], references: [id])
+  community_id  String
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   ChannelMember ChannelMember[]
