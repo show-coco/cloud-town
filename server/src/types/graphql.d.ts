@@ -32,7 +32,6 @@ export type Channel = {
 
 export type Community = {
   __typename?: 'Community';
-<<<<<<< HEAD
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
@@ -40,15 +39,6 @@ export type Community = {
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
   plans?: Maybe<Array<Maybe<Plan>>>;
-=======
-  id: Scalars['String'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  introduction: Scalars['String'];
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  channels?: Maybe<Array<Channel>>;
->>>>>>> origin/main
 };
 
 export type CreateChannelInput = {
@@ -92,6 +82,11 @@ export type MutationUpdateChannelArgs = {
   input: UpdateChannelInput;
 };
 
+
+export type MutationChangeChannelOwnerArgs = {
+  input: ChangeChannelOwnerInput;
+};
+
 export type Plan = {
   __typename?: 'Plan';
   id?: Maybe<Scalars['String']>;
@@ -102,7 +97,7 @@ export type Plan = {
   numberOfApplicants: Scalars['Int'];
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
-}
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -254,7 +249,6 @@ export type ChannelResolvers<ContextType = Context, ParentType extends Resolvers
 }>;
 
 export type CommunityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']> = ResolversObject<{
-<<<<<<< HEAD
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   slug?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -262,15 +256,6 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
   createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   plans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
-=======
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  introduction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType>;
->>>>>>> origin/main
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
