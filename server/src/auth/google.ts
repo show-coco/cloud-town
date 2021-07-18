@@ -1,6 +1,7 @@
 import passport from 'passport'
 import passportGoogle, { IOAuth2StrategyOption } from 'passport-google-oauth'
 import UserRepository from '../core/adapter/repository/UserRepository/PUserRepository'
+import User from '../core/domain/entities/User'
 import { settings } from '../settings'
 
 const passportConfig: IOAuth2StrategyOption = {
@@ -18,15 +19,21 @@ if (passportConfig.clientID) {
       done
     ) {
       const userRepo = new UserRepository()
-      let user = await userRepo.getUserByGoogleId(profile.id)
-      if (!user && profile.emails) {
-        user = await userRepo.createUser(
-          profile.displayName,
-          profile.id,
-          profile.emails[0].value
-        )
+      try {
+        const user = await userRepo.getUserByGoogleId(profile.id)
+        done(null, user)
+      } catch (error) {
+        if (profile.emails) {
+          const newUser = new User({
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            slug: profile.id,
+            googleId: profile.id,
+          })
+          const user = await userRepo.createUser(newUser)
+          return done(null, user)
+        }
       }
-      return done(null, user)
     })
   )
 }

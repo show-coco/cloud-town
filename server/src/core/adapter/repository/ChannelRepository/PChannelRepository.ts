@@ -2,43 +2,26 @@ import prisma from '../../../../prisma'
 import {
   Channel as PChannel,
   ChannelMember as PChannelMember,
+  ChannelRole,
+  User as PUser,
 } from '@prisma/client'
 import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import IChannelRepository from './IChannelRepository'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
-import User from '../../../domain/entities/User'
+
+type ExtendedChannel =
+  | PChannel & {
+      ChannelMember: (PChannelMember & {
+        user: PUser
+      })[]
+    }
 
 export default class PChannelRepository implements IChannelRepository {
   async getChannelListByCommunityId(communityId: string): Promise<Channel[]> {
     const result = await prisma.channel.findMany({
       where: {
         community_id: communityId,
-      },
-      include: { ChannelMember: true },
-    })
-
-    const cChannelList = result.map((channel) => this.converter(channel))
-
-    return cChannelList
-  }
-
-  async getChannelById(id: string): Promise<Channel> {
-    const channel = await prisma.channel.findFirst({
-      where: { id },
-      include: { ChannelMember: true },
-    })
-
-    if (!channel) {
-      throw new Error(`Channel not found`)
-    }
-
-    return this.converter(channel)
-  }
-
-  async getMemberListByChannelId(id: string): Promise<User[]> {
-    const channel = await prisma.channel.findFirst({
-      where: {
-        id,
+        deleted_at: null,
       },
       include: {
         ChannelMember: {
@@ -49,13 +32,58 @@ export default class PChannelRepository implements IChannelRepository {
       },
     })
 
+    const cChannelList = result.map((channel) => this.converter(channel))
+
+    return cChannelList
+  }
+
+  async getChannelById(id: string): Promise<Channel> {
+    const channel = await prisma.channel.findFirst({
+      where: { id, deleted_at: null },
+      include: {
+        ChannelMember: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    })
+
+    if (!channel) {
+      throw new Error(`Channel not found`)
+    }
+
+    return this.converter(channel)
+  }
+
+  async getMemberListByChannelId(id: string): Promise<ChannelMember[]> {
+    const channel = await prisma.channel.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        ChannelMember: {
+          include: {
+            user: true,
+          },
+          where: {
+            NOT: {
+              role: ChannelRole.Leaved,
+            },
+          },
+        },
+      },
+    })
+
     if (!channel) throw new Error('Channel not found')
 
-    const userList: User[] = channel.ChannelMember.map<User>(
+    const userList: ChannelMember[] = channel.ChannelMember.map<ChannelMember>(
       (member) =>
-        new User({
+        new ChannelMember({
           ...member.user,
           googleId: member.user.google_id,
+          role: member.role,
+          memberId: member.id,
         })
     )
     return userList
@@ -75,14 +103,19 @@ export default class PChannelRepository implements IChannelRepository {
           ChannelMember: {
             createMany: {
               data: channel.channelMembers?.map((member) => ({
-                id: member.id,
-                user_id: member.userId,
+                user_id: member.id,
                 role: member.role,
               })),
             },
           },
         },
-        include: { ChannelMember: true },
+        include: {
+          ChannelMember: {
+            include: {
+              user: true,
+            },
+          },
+        },
       })
 
       return this.converter(created)
@@ -96,7 +129,13 @@ export default class PChannelRepository implements IChannelRepository {
         where: {
           id: channel.id,
         },
-        include: { ChannelMember: true },
+        include: {
+          ChannelMember: {
+            include: {
+              user: true,
+            },
+          },
+        },
       })
 
       // MEMO: upsertManyがまだ使用できないため繰り返しupsertを実行 (issue: https://github.com/prisma/prisma/issues/4134)
@@ -104,16 +143,19 @@ export default class PChannelRepository implements IChannelRepository {
         channel.channelMembers.map(async (member) => {
           const updatedChannelMember = await prisma.channelMember.upsert({
             create: {
-              user_id: member.userId,
-              channel_id: member.channelId,
+              channel_id: channel.id,
+              user_id: member.id,
               role: member.role,
             },
             update: {
-              channel_id: member.channelId,
+              channel_id: channel.id,
               role: member.role,
             },
             where: {
-              id: member.id,
+              id: member.memberId,
+            },
+            include: {
+              user: true,
             },
           })
 
@@ -138,17 +180,14 @@ export default class PChannelRepository implements IChannelRepository {
     })
   }
 
-  private converter(
-    channel: PChannel & {
-      ChannelMember: PChannelMember[]
-    }
-  ): Channel {
+  private converter(channel: ExtendedChannel): Channel {
     const channelMembers = channel.ChannelMember.map(
       (member) =>
         new ChannelMember({
-          ...member,
-          userId: member.user_id,
-          channelId: member.channel_id,
+          ...member.user,
+          googleId: member.user.google_id,
+          memberId: member.id,
+          role: member.role,
         })
     )
 

@@ -27,7 +27,23 @@ export type Channel = {
   slug: Scalars['String'];
   name: Scalars['String'];
   isPrivate: Scalars['Boolean'];
-  members?: Maybe<Array<User>>;
+  members?: Maybe<Array<ChannelMember>>;
+};
+
+export type ChannelMember = {
+  __typename?: 'ChannelMember';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  email: Scalars['String'];
+  role: ChannelRole;
+};
+
+export const enum ChannelRole {
+  Owner = 'OWNER',
+  Admin = 'ADMIN',
+  Common = 'COMMON',
+  Leaved = 'LEAVED'
 };
 
 export type Community = {
@@ -59,13 +75,13 @@ export type DeleteChannelInput = {
   id: Scalars['String'];
 };
 
-export type DeleteResponse = {
-  __typename?: 'DeleteResponse';
-  ok: Scalars['Boolean'];
-};
-
 export type GetCommunityInput = {
   id: Scalars['String'];
+};
+
+export type LeaveChannelInput = {
+  id: Scalars['String'];
+  nextOwnerId?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -74,7 +90,8 @@ export type Mutation = {
   createChannel: Channel;
   updateChannel: Channel;
   changeChannelOwner: Channel;
-  deleteChannel: DeleteResponse;
+  deleteChannel: MutationResponse;
+  leaveChannel: MutationResponse;
 };
 
 
@@ -102,6 +119,16 @@ export type MutationDeleteChannelArgs = {
   input: DeleteChannelInput;
 };
 
+
+export type MutationLeaveChannelArgs = {
+  input: LeaveChannelInput;
+};
+
+export type MutationResponse = {
+  __typename?: 'MutationResponse';
+  ok: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
   community?: Maybe<Community>;
@@ -117,14 +144,6 @@ export type UpdateChannelInput = {
   name?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   isPrivate?: Maybe<Scalars['Boolean']>;
-};
-
-export type User = {
-  __typename?: 'User';
-  id: Scalars['String'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  email: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -210,17 +229,19 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>;
   Channel: ResolverTypeWrapper<Channel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ChannelMember: ResolverTypeWrapper<ChannelMember>;
+  ChannelRole: ChannelRole;
   Community: ResolverTypeWrapper<Community>;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DeleteChannelInput: DeleteChannelInput;
-  DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   GetCommunityInput: GetCommunityInput;
+  LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
+  MutationResponse: ResolverTypeWrapper<MutationResponse>;
   Query: ResolverTypeWrapper<{}>;
   UpdateChannelInput: UpdateChannelInput;
-  User: ResolverTypeWrapper<User>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -229,17 +250,18 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   Channel: Channel;
   Boolean: Scalars['Boolean'];
+  ChannelMember: ChannelMember;
   Community: Community;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Date: Scalars['Date'];
   DeleteChannelInput: DeleteChannelInput;
-  DeleteResponse: DeleteResponse;
   GetCommunityInput: GetCommunityInput;
+  LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
+  MutationResponse: MutationResponse;
   Query: {};
   UpdateChannelInput: UpdateChannelInput;
-  User: User;
 }>;
 
 export type ChannelResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
@@ -247,7 +269,16 @@ export type ChannelResolvers<ContextType = Context, ParentType extends Resolvers
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isPrivate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  members?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
+  members?: Resolver<Maybe<Array<ResolversTypes['ChannelMember']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ChannelMemberResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ChannelMember'] = ResolversParentTypes['ChannelMember']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['ChannelRole'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -266,39 +297,32 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
-export type DeleteResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']> = ResolversObject<{
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCommunity?: Resolver<ResolversTypes['Community'], ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
   createChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
   updateChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationUpdateChannelArgs, 'input'>>;
   changeChannelOwner?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationChangeChannelOwnerArgs, 'input'>>;
-  deleteChannel?: Resolver<ResolversTypes['DeleteResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
+  deleteChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
+  leaveChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationLeaveChannelArgs, 'input'>>;
+}>;
+
+export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<QueryCommunityArgs, 'input'>>;
 }>;
 
-export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
+  ChannelMember?: ChannelMemberResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
   Date?: GraphQLScalarType;
-  DeleteResponse?: DeleteResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  MutationResponse?: MutationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
 }>;
 
 

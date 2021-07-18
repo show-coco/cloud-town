@@ -89,11 +89,13 @@ model Channel {
 /// チャンネルのユーザー権限
 enum ChannelRole {
   /// 一般
-  COMMON
+  Common
   /// 管理者
-  ADMIN
+  Admin
   /// オーナー
-  OWNER
+  Owner
+  /// 脱退済み
+  Leaved
 }
 
 /// チャンネルに所属するユーザー

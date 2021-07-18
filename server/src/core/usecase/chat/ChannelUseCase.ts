@@ -1,18 +1,23 @@
 import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
+import IUserRepository from '../../adapter/repository/UserRepository/IUserRepository'
 import Channel from '../../domain/entities/ChannelAggregate/Channel'
-import User from '../../domain/entities/User'
+import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
 import ChatService from '../../domain/services/ChatService'
 import {
   ChangeOwnerProps,
   CreateChannelProps,
+  DeleteChannelParam,
+  LeaveChannelParam,
   UpdateChannelProps,
-} from './ChannelUseCaseProps'
+} from './ChannelUseCaseParam'
 
 export default class ChannelUseCase {
   private channelRepo: IChannelRepository
+  private userRepo: IUserRepository
 
-  constructor(channelRepo: IChannelRepository) {
+  constructor(channelRepo: IChannelRepository, userRepo: IUserRepository) {
     this.channelRepo = channelRepo
+    this.userRepo = userRepo
   }
 
   async getChannelList(communityId: string): Promise<Channel[]> {
@@ -31,20 +36,21 @@ export default class ChannelUseCase {
     userId,
   }: CreateChannelProps): Promise<Channel> {
     const canCreate = ChatService.canCreateChannel(userId, communityId)
+    const user = await this.userRepo.getUserById(userId)
 
     if (!canCreate) {
       throw new Error("User doesn't have authorization to create channel.")
     }
 
     const channel = new Channel({ name, slug, isPrivate, communityId })
-    channel.addOwner(userId)
+    channel.addOwner(user)
 
     const newChannel = await this.channelRepo.save(channel)
 
     return newChannel
   }
 
-  async getMemberList(id: string): Promise<User[]> {
+  async getMemberList(id: string): Promise<ChannelMember[]> {
     return await this.channelRepo.getMemberListByChannelId(id)
   }
 
@@ -82,16 +88,21 @@ export default class ChannelUseCase {
     return updatedChannel
   }
 
-  async deleteChannel({
-    id,
-    userId,
-  }: {
-    id: string
-    userId: string
-  }): Promise<void> {
+  async deleteChannel({ id, userId }: DeleteChannelParam): Promise<void> {
     const channel = await this.channelRepo.getChannelById(id)
-    channel.deleteChannel(userId)
+    channel.delete(userId)
 
     await this.channelRepo.delete(channel)
+  }
+
+  async leaveChannel({
+    id,
+    userId,
+    nextOwnerId,
+  }: LeaveChannelParam): Promise<void> {
+    const channel = await this.channelRepo.getChannelById(id)
+    channel.leave(userId, nextOwnerId)
+
+    await this.channelRepo.save(channel)
   }
 }

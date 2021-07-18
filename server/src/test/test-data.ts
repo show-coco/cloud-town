@@ -40,26 +40,35 @@ export const testuser3 = new User({
 
 export const createTestChannelAdmin = (): ChannelMember =>
   new ChannelMember({
-    id: 1,
-    userId: testuser1.id,
-    channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
-    role: ChannelRole.ADMIN,
+    id: testuser1.id,
+    slug: testuser1.slug,
+    googleId: testuser1.googleId,
+    email: testuser1.email,
+    name: testuser1.name,
+    memberId: 1,
+    role: ChannelRole.Admin,
   })
 
 export const createTestChannelOwner = (): ChannelMember =>
   new ChannelMember({
-    id: 2,
-    userId: testuser2.id,
-    channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
-    role: ChannelRole.OWNER,
+    id: testuser2.id,
+    slug: testuser2.slug,
+    googleId: testuser2.googleId,
+    email: testuser2.email,
+    name: testuser2.name,
+    memberId: 2,
+    role: ChannelRole.Owner,
   })
 
 export const createTestChannelCommon = (): ChannelMember =>
   new ChannelMember({
-    id: 3,
-    userId: testuser3.id,
-    channelId: 'a4b2d1f6-f034-4dd6-8009-399ada731b32',
-    role: ChannelRole.COMMON,
+    id: testuser3.id,
+    slug: testuser3.slug,
+    googleId: testuser3.googleId,
+    email: testuser3.email,
+    name: testuser3.name,
+    memberId: 3,
+    role: ChannelRole.Common,
   })
 
 export const createTestChannel = (): Channel =>

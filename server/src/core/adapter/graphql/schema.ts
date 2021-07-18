@@ -37,6 +37,11 @@ export const typeDefs = gql`
     nextOwnerId: String!
   }
 
+  input LeaveChannelInput {
+    id: String!
+    nextOwnerId: String
+  }
+
   type Query {
     community(input: GetCommunityInput!): Community
   }
@@ -56,18 +61,26 @@ export const typeDefs = gql`
     slug: String!
     name: String!
     isPrivate: Boolean!
-    members: [User!]
+    members: [ChannelMember!]
     # createdAt: Date!
   }
 
-  type User {
+  enum ChannelRole {
+    OWNER
+    ADMIN
+    COMMON
+    LEAVED
+  }
+
+  type ChannelMember {
     id: String!
     name: String!
     slug: String!
     email: String!
+    role: ChannelRole!
   }
 
-  type DeleteResponse {
+  type MutationResponse {
     ok: Boolean!
   }
 
@@ -76,6 +89,7 @@ export const typeDefs = gql`
     createChannel(input: CreateChannelInput!): Channel!
     updateChannel(input: UpdateChannelInput!): Channel!
     changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
-    deleteChannel(input: DeleteChannelInput!): DeleteResponse!
+    deleteChannel(input: DeleteChannelInput!): MutationResponse!
+    leaveChannel(input: LeaveChannelInput!): MutationResponse!
   }
 `
