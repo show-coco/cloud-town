@@ -120,5 +120,17 @@ export const resolvers: Resolvers = {
       const channel = await channelUseCase.changeOwner({ ...args.input })
       return channel
     },
+    deleteChannel: async (_parent, args, context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id } = args.input
+      const userId = context.user.sub
+
+      await channelUseCase.deleteChannel({ id, userId })
+
+      return {
+        ok: true,
+      }
+    },
   },
 }

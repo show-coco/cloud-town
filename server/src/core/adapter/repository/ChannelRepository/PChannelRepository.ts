@@ -29,7 +29,7 @@ export default class PChannelRepository implements IChannelRepository {
     })
 
     if (!channel) {
-      throw new Error(`Channel which id is ${id} does't exists.`)
+      throw new Error(`Channel not found`)
     }
 
     return this.converter(channel)
@@ -125,6 +125,17 @@ export default class PChannelRepository implements IChannelRepository {
 
       return this.converter(updatedChannel)
     }
+  }
+
+  async delete(channel: Channel): Promise<void> {
+    await prisma.channel.update({
+      data: {
+        deleted_at: channel.deletedAt,
+      },
+      where: {
+        id: channel.id,
+      },
+    })
   }
 
   private converter(

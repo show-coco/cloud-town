@@ -80,6 +80,7 @@ model Channel {
   is_private    Boolean
   channel       Community       @relation(fields: [community_id], references: [id])
   community_id  String
+  deleted_at    DateTime?
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   ChannelMember ChannelMember[]

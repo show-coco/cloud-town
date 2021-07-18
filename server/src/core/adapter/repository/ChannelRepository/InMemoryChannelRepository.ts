@@ -17,7 +17,8 @@ export class InMemoryChannelRepository implements IChannelRepository {
   getChannelById(id: string): Promise<Channel> {
     return new Promise((resolve) => {
       const channel = this.channels.find((channel) => channel.id === id)
-      if (channel) resolve(channel)
+      if (!channel) throw new Error('Channel not found')
+      resolve(channel)
     })
   }
 
@@ -33,6 +34,13 @@ export class InMemoryChannelRepository implements IChannelRepository {
     return new Promise((resolve) => {
       this.channels.push(channel)
       resolve(channel)
+    })
+  }
+
+  delete(channel: Channel): Promise<void> {
+    return new Promise((resolve) => {
+      this.channels.filter((c) => c.id !== channel.id)
+      resolve()
     })
   }
 

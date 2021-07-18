@@ -6,4 +6,5 @@ export default interface IChannelRepository {
   getChannelById(id: string): Promise<Channel>
   getMemberListByChannelId(id: string): Promise<User[]>
   save(channel: Channel): Promise<Channel>
+  delete(channel: Channel): Promise<void>
 }

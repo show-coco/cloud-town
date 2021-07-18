@@ -23,6 +23,10 @@ export const typeDefs = gql`
     isPrivate: Boolean
   }
 
+  input DeleteChannelInput {
+    id: String!
+  }
+
   input GetCommunityInput {
     id: String!
   }
@@ -63,10 +67,15 @@ export const typeDefs = gql`
     email: String!
   }
 
+  type DeleteResponse {
+    ok: Boolean!
+  }
+
   type Mutation {
     createCommunity(input: CreateCommunityInput!): Community!
     createChannel(input: CreateChannelInput!): Channel!
     updateChannel(input: UpdateChannelInput!): Channel!
     changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
+    deleteChannel(input: DeleteChannelInput!): DeleteResponse!
   }
 `

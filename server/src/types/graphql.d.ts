@@ -55,6 +55,15 @@ export type CreateCommunityInput = {
 };
 
 
+export type DeleteChannelInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteResponse = {
+  __typename?: 'DeleteResponse';
+  ok: Scalars['Boolean'];
+};
+
 export type GetCommunityInput = {
   id: Scalars['String'];
 };
@@ -65,6 +74,7 @@ export type Mutation = {
   createChannel: Channel;
   updateChannel: Channel;
   changeChannelOwner: Channel;
+  deleteChannel: DeleteResponse;
 };
 
 
@@ -85,6 +95,11 @@ export type MutationUpdateChannelArgs = {
 
 export type MutationChangeChannelOwnerArgs = {
   input: ChangeChannelOwnerInput;
+};
+
+
+export type MutationDeleteChannelArgs = {
+  input: DeleteChannelInput;
 };
 
 export type Query = {
@@ -199,6 +214,8 @@ export type ResolversTypes = ResolversObject<{
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Date: ResolverTypeWrapper<Scalars['Date']>;
+  DeleteChannelInput: DeleteChannelInput;
+  DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   GetCommunityInput: GetCommunityInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -216,6 +233,8 @@ export type ResolversParentTypes = ResolversObject<{
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
   Date: Scalars['Date'];
+  DeleteChannelInput: DeleteChannelInput;
+  DeleteResponse: DeleteResponse;
   GetCommunityInput: GetCommunityInput;
   Mutation: {};
   Query: {};
@@ -247,11 +266,17 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
+export type DeleteResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']> = ResolversObject<{
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCommunity?: Resolver<ResolversTypes['Community'], ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
   createChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
   updateChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationUpdateChannelArgs, 'input'>>;
   changeChannelOwner?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationChangeChannelOwnerArgs, 'input'>>;
+  deleteChannel?: Resolver<ResolversTypes['DeleteResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -270,6 +295,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
   Date?: GraphQLScalarType;
+  DeleteResponse?: DeleteResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
