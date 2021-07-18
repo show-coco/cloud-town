@@ -109,6 +109,22 @@ export default class Channel {
     member.changeRole(ChannelRole.Leaved)
   }
 
+  join(user: User): void {
+    if (this.getMember(user.id))
+      throw new Error('The user has already joined the channel')
+
+    const member = new ChannelMember({
+      id: user.id,
+      googleId: user.googleId,
+      slug: user.slug,
+      name: user.name,
+      email: user.email,
+      role: ChannelRole.Common,
+    })
+
+    this._channelMembers.push(member)
+  }
+
   getMember(userId: string): ChannelMember | undefined {
     return this._channelMembers.find(
       (channelMember) => channelMember.id === userId

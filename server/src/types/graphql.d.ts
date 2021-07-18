@@ -79,6 +79,10 @@ export type GetCommunityInput = {
   id: Scalars['String'];
 };
 
+export type JoinChannelInput = {
+  id: Scalars['String'];
+};
+
 export type LeaveChannelInput = {
   id: Scalars['String'];
   nextOwnerId?: Maybe<Scalars['String']>;
@@ -92,6 +96,7 @@ export type Mutation = {
   changeChannelOwner: Channel;
   deleteChannel: MutationResponse;
   leaveChannel: MutationResponse;
+  joinChannel: Channel;
 };
 
 
@@ -122,6 +127,11 @@ export type MutationDeleteChannelArgs = {
 
 export type MutationLeaveChannelArgs = {
   input: LeaveChannelInput;
+};
+
+
+export type MutationJoinChannelArgs = {
+  input: JoinChannelInput;
 };
 
 export type MutationResponse = {
@@ -237,6 +247,7 @@ export type ResolversTypes = ResolversObject<{
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DeleteChannelInput: DeleteChannelInput;
   GetCommunityInput: GetCommunityInput;
+  JoinChannelInput: JoinChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
@@ -257,6 +268,7 @@ export type ResolversParentTypes = ResolversObject<{
   Date: Scalars['Date'];
   DeleteChannelInput: DeleteChannelInput;
   GetCommunityInput: GetCommunityInput;
+  JoinChannelInput: JoinChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
   MutationResponse: MutationResponse;
@@ -304,6 +316,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   changeChannelOwner?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationChangeChannelOwnerArgs, 'input'>>;
   deleteChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
   leaveChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationLeaveChannelArgs, 'input'>>;
+  joinChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationJoinChannelArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

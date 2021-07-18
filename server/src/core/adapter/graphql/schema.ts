@@ -42,6 +42,10 @@ export const typeDefs = gql`
     nextOwnerId: String
   }
 
+  input JoinChannelInput {
+    id: String!
+  }
+
   type Query {
     community(input: GetCommunityInput!): Community
   }
@@ -91,5 +95,6 @@ export const typeDefs = gql`
     changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
     deleteChannel(input: DeleteChannelInput!): MutationResponse!
     leaveChannel(input: LeaveChannelInput!): MutationResponse!
+    joinChannel(input: JoinChannelInput!): Channel!
   }
 `

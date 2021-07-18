@@ -7,6 +7,7 @@ import {
   ChangeOwnerProps,
   CreateChannelProps,
   DeleteChannelParam,
+  JoinChannelParam,
   LeaveChannelParam,
   UpdateChannelProps,
 } from './ChannelUseCaseParam'
@@ -104,5 +105,14 @@ export default class ChannelUseCase {
     channel.leave(userId, nextOwnerId)
 
     await this.channelRepo.save(channel)
+  }
+
+  async joinChannel({ id, userId }: JoinChannelParam): Promise<Channel> {
+    const channel = await this.channelRepo.getChannelById(id)
+    const user = await this.userRepo.getUserById(userId)
+
+    channel.join(user)
+
+    return this.channelRepo.save(channel)
   }
 }

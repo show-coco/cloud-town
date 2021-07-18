@@ -30,3 +30,8 @@ export interface LeaveChannelParam {
   userId: string
   nextOwnerId?: string
 }
+
+export interface JoinChannelParam {
+  id: string
+  userId: string
+}
