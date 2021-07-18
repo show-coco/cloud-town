@@ -61,15 +61,23 @@ export const typeDefs = gql`
     slug: String!
     name: String!
     isPrivate: Boolean!
-    members: [User!]
+    members: [ChannelMember!]
     # createdAt: Date!
   }
 
-  type User {
+  enum ChannelRole {
+    OWNER
+    ADMIN
+    COMMON
+    LEAVED
+  }
+
+  type ChannelMember {
     id: String!
     name: String!
     slug: String!
     email: String!
+    role: ChannelRole!
   }
 
   type MutationResponse {

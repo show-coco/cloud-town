@@ -22,13 +22,14 @@ export default class PUserRepository implements IUserRepository {
     return this.converter(pUser)
   }
 
-  async createUser(
-    name: string,
-    externalId: string,
-    email: string
-  ): Promise<User> {
+  async createUser(user: User): Promise<User> {
     const pUser = await prisma.user.create({
-      data: { google_id: externalId, name, email, slug: externalId },
+      data: {
+        name: user.name,
+        slug: user.slug,
+        email: user.email,
+        google_id: user.googleId,
+      },
     })
 
     console.log('pUser', pUser)

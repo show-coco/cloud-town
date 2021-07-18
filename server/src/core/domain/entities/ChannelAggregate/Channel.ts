@@ -1,5 +1,6 @@
 import { ChannelRole } from '@prisma/client'
 import { v4 } from 'uuid'
+import User from '../User'
 import ChannelMember from './ChannelMember'
 
 export default class Channel {
@@ -36,20 +37,23 @@ export default class Channel {
 
   existsInChannel(userId: string): boolean {
     return this._channelMembers.some(
-      (channelMember) => channelMember.userId === userId
+      (channelMember) => channelMember.id === userId
     )
   }
 
-  addOwner(userId: string): void {
+  addOwner(user: User): void {
     // チャンネルのオーナーは1人
     if (this.currentOwner) {
       throw new Error('Owner already exists.')
     }
 
     const owner = new ChannelMember({
-      userId,
-      channelId: this.id,
-      role: ChannelRole.OWNER,
+      id: user.id,
+      googleId: user.googleId,
+      slug: user.slug,
+      name: user.name,
+      email: user.email,
+      role: ChannelRole.Owner,
     })
 
     this._channelMembers.push(owner)
@@ -59,7 +63,7 @@ export default class Channel {
     const currentOwner = this.currentOwner
 
     // オーナー権限を委譲できるのは現在オーナーのメンバーのみ
-    if (currentOwner?.userId !== currentOwnerId)
+    if (currentOwner?.id !== currentOwnerId)
       throw new Error("This user doesn't have authorization to change owner.")
 
     const owner = this.currentOwner
@@ -67,8 +71,8 @@ export default class Channel {
     if (!owner) throw new Error("Owner doesn't exists.")
     if (!member) throw new Error("Member doesn't exists.")
 
-    owner.changeRole(ChannelRole.ADMIN)
-    member.changeRole(ChannelRole.OWNER)
+    owner.changeRole(ChannelRole.Admin)
+    member.changeRole(ChannelRole.Owner)
   }
 
   changeName(name: string): void {
@@ -102,26 +106,26 @@ export default class Channel {
     const member = this.getMember(userId)
     if (!member) throw new Error('Member is not found')
 
-    member.changeRole(ChannelRole.LEAVED)
+    member.changeRole(ChannelRole.Leaved)
   }
 
   getMember(userId: string): ChannelMember | undefined {
     return this._channelMembers.find(
-      (channelMember) => channelMember.userId === userId
+      (channelMember) => channelMember.id === userId
     )
   }
 
   private isOwner(userId: string): boolean {
-    return this.getMember(userId)?.role === ChannelRole.OWNER
+    return this.getMember(userId)?.role === ChannelRole.Owner
   }
 
   private isAdmin(userId: string): boolean {
-    return this.getMember(userId)?.role === ChannelRole.ADMIN
+    return this.getMember(userId)?.role === ChannelRole.Admin
   }
 
   get currentOwner(): ChannelMember | undefined {
     return this._channelMembers.find(
-      (channelMember) => channelMember.role === ChannelRole.OWNER
+      (channelMember) => channelMember.role === ChannelRole.Owner
     )
   }
 

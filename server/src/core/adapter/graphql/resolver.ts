@@ -1,16 +1,18 @@
-import { Resolvers } from '../../../types/graphql'
+import { Resolvers, ChannelRole } from '../../../types/graphql'
 import ChatUseCase from '../../usecase/chat/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'
 import { Context } from '../../../types/context'
 import { dateScalar } from './scalar'
+import PUserRepository from '../repository/UserRepository/PUserRepository'
 
 const communityRepo = new PCommunityRepository()
 const communityUseCase = new CommunityUseCase(communityRepo)
 
 const channelRepo = new PChannelRepository()
-const channelUseCase = new ChatUseCase(channelRepo)
+const userRepo = new PUserRepository()
+const channelUseCase = new ChatUseCase(channelRepo, userRepo)
 
 export const resolvers: Resolvers = {
   Date: dateScalar,
@@ -41,12 +43,30 @@ export const resolvers: Resolvers = {
     members: async (channel) => {
       const members = await channelUseCase.getMemberList(channel.id)
 
-      return members.map((member) => ({
-        id: member.id,
-        slug: member.slug,
-        name: member.name,
-        email: member.email,
-      }))
+      return members.map((member) => {
+        let role: ChannelRole
+        switch (member.role) {
+          case 'Admin':
+            role = ChannelRole.Admin
+            break
+          case 'Common':
+            role = ChannelRole.Common
+            break
+          case 'Leaved':
+            role = ChannelRole.Leaved
+            break
+          case 'Owner':
+            role = ChannelRole.Owner
+        }
+
+        return {
+          id: member.id,
+          slug: member.slug,
+          name: member.name,
+          email: member.email,
+          role,
+        }
+      })
     },
   },
   Mutation: {

@@ -1,4 +1,5 @@
 import Channel from '../../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
 import User from '../../../domain/entities/User'
 import IChannelRepository from './IChannelRepository'
 
@@ -22,7 +23,7 @@ export class InMemoryChannelRepository implements IChannelRepository {
     })
   }
 
-  getMemberListByChannelId(id: string): Promise<User[]> {
+  getMemberListByChannelId(id: string): Promise<ChannelMember[]> {
     return new Promise((resolve) => {
       this.channels.find((channel) => {
         return channel.id === id
