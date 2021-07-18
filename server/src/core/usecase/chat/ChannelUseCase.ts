@@ -5,8 +5,10 @@ import ChatService from '../../domain/services/ChatService'
 import {
   ChangeOwnerProps,
   CreateChannelProps,
+  DeleteChannelParam,
+  LeaveChannelParam,
   UpdateChannelProps,
-} from './ChannelUseCaseProps'
+} from './ChannelUseCaseParam'
 
 export default class ChannelUseCase {
   private channelRepo: IChannelRepository
@@ -82,16 +84,23 @@ export default class ChannelUseCase {
     return updatedChannel
   }
 
-  async deleteChannel({
-    id,
-    userId,
-  }: {
-    id: string
-    userId: string
-  }): Promise<void> {
+  async deleteChannel({ id, userId }: DeleteChannelParam): Promise<void> {
     const channel = await this.channelRepo.getChannelById(id)
-    channel.deleteChannel(userId)
+    channel.delete(userId)
 
     await this.channelRepo.delete(channel)
+  }
+
+  async leaveChannel({
+    id,
+    userId,
+    nextOwnerId,
+  }: LeaveChannelParam): Promise<void> {
+    const channel = await this.channelRepo.getChannelById(id)
+    channel.leave(userId, nextOwnerId)
+
+    console.log(channel)
+
+    await this.channelRepo.save(channel)
   }
 }

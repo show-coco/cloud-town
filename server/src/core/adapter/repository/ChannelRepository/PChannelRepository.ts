@@ -2,6 +2,7 @@ import prisma from '../../../../prisma'
 import {
   Channel as PChannel,
   ChannelMember as PChannelMember,
+  ChannelRole,
 } from '@prisma/client'
 import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import IChannelRepository from './IChannelRepository'
@@ -13,6 +14,7 @@ export default class PChannelRepository implements IChannelRepository {
     const result = await prisma.channel.findMany({
       where: {
         community_id: communityId,
+        deleted_at: null,
       },
       include: { ChannelMember: true },
     })
@@ -24,7 +26,7 @@ export default class PChannelRepository implements IChannelRepository {
 
   async getChannelById(id: string): Promise<Channel> {
     const channel = await prisma.channel.findFirst({
-      where: { id },
+      where: { id, deleted_at: null },
       include: { ChannelMember: true },
     })
 
@@ -44,6 +46,11 @@ export default class PChannelRepository implements IChannelRepository {
         ChannelMember: {
           include: {
             user: true,
+          },
+          where: {
+            NOT: {
+              role: ChannelRole.LEAVED,
+            },
           },
         },
       },

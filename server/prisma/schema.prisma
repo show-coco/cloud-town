@@ -94,6 +94,8 @@ enum ChannelRole {
   ADMIN
   /// オーナー
   OWNER
+  /// 脱退済み
+  LEAVED
 }
 
 /// チャンネルに所属するユーザー

@@ -11,7 +11,7 @@ import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityR
 import Channel from '../../domain/entities/ChannelAggregate/Channel'
 import Community from '../../domain/entities/Community'
 import ChannelUseCase from './ChannelUseCase'
-import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseProps'
+import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseParam'
 
 describe('ChannelUseCase', () => {
   const communityRepo = new InMemoryCommunityRepository()

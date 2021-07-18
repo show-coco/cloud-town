@@ -132,5 +132,24 @@ export const resolvers: Resolvers = {
         ok: true,
       }
     },
+    leaveChannel: async (_parent, args, context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, nextOwnerId } = args.input
+      const userId = context.user.sub
+
+      if (
+        typeof nextOwnerId === 'string' ||
+        typeof nextOwnerId === 'undefined'
+      ) {
+        await channelUseCase.leaveChannel({ id, nextOwnerId, userId })
+
+        return {
+          ok: true,
+        }
+      }
+
+      throw new Error('Input type is strange')
+    },
   },
 }

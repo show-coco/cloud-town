@@ -37,6 +37,11 @@ export const typeDefs = gql`
     nextOwnerId: String!
   }
 
+  input LeaveChannelInput {
+    id: String!
+    nextOwnerId: String
+  }
+
   type Query {
     community(input: GetCommunityInput!): Community
   }
@@ -67,7 +72,7 @@ export const typeDefs = gql`
     email: String!
   }
 
-  type DeleteResponse {
+  type MutationResponse {
     ok: Boolean!
   }
 
@@ -76,6 +81,7 @@ export const typeDefs = gql`
     createChannel(input: CreateChannelInput!): Channel!
     updateChannel(input: UpdateChannelInput!): Channel!
     changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
-    deleteChannel(input: DeleteChannelInput!): DeleteResponse!
+    deleteChannel(input: DeleteChannelInput!): MutationResponse!
+    leaveChannel(input: LeaveChannelInput!): MutationResponse!
   }
 `

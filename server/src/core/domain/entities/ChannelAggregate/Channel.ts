@@ -83,12 +83,26 @@ export default class Channel {
     this._isPrivate = isPrivate
   }
 
-  deleteChannel(userId: string): void {
+  delete(userId: string): void {
     // 削除できるのはオーナーかアドミンのみ
     if (!this.isOwner(userId) && !this.isAdmin(userId))
       throw new Error('User does not have authorization to delete the channel')
 
     this._deletedAt = new Date()
+  }
+
+  leave(userId: string, nextOwnerId?: string): void {
+    // オーナーが脱退するとき、次のオーナーが指定されていなければならない
+    if (this.isOwner(userId) && nextOwnerId) {
+      this.changeOwner(userId, nextOwnerId)
+    } else if (this.isOwner(userId) && !nextOwnerId) {
+      throw new Error('The next owner is not specified')
+    }
+
+    const member = this.getMember(userId)
+    if (!member) throw new Error('Member is not found')
+
+    member.changeRole(ChannelRole.LEAVED)
   }
 
   getMember(userId: string): ChannelMember | undefined {

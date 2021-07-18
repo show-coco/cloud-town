@@ -19,3 +19,14 @@ export interface ChangeOwnerProps {
   currentOwnerId: string
   nextOwnerId: string
 }
+
+export interface DeleteChannelParam {
+  id: string
+  userId: string
+}
+
+export interface LeaveChannelParam {
+  id: string
+  userId: string
+  nextOwnerId?: string
+}

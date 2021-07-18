@@ -59,13 +59,13 @@ export type DeleteChannelInput = {
   id: Scalars['String'];
 };
 
-export type DeleteResponse = {
-  __typename?: 'DeleteResponse';
-  ok: Scalars['Boolean'];
-};
-
 export type GetCommunityInput = {
   id: Scalars['String'];
+};
+
+export type LeaveChannelInput = {
+  id: Scalars['String'];
+  nextOwnerId?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -74,7 +74,8 @@ export type Mutation = {
   createChannel: Channel;
   updateChannel: Channel;
   changeChannelOwner: Channel;
-  deleteChannel: DeleteResponse;
+  deleteChannel: MutationResponse;
+  leaveChannel: MutationResponse;
 };
 
 
@@ -100,6 +101,16 @@ export type MutationChangeChannelOwnerArgs = {
 
 export type MutationDeleteChannelArgs = {
   input: DeleteChannelInput;
+};
+
+
+export type MutationLeaveChannelArgs = {
+  input: LeaveChannelInput;
+};
+
+export type MutationResponse = {
+  __typename?: 'MutationResponse';
+  ok: Scalars['Boolean'];
 };
 
 export type Query = {
@@ -215,9 +226,10 @@ export type ResolversTypes = ResolversObject<{
   CreateCommunityInput: CreateCommunityInput;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DeleteChannelInput: DeleteChannelInput;
-  DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   GetCommunityInput: GetCommunityInput;
+  LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
+  MutationResponse: ResolverTypeWrapper<MutationResponse>;
   Query: ResolverTypeWrapper<{}>;
   UpdateChannelInput: UpdateChannelInput;
   User: ResolverTypeWrapper<User>;
@@ -234,9 +246,10 @@ export type ResolversParentTypes = ResolversObject<{
   CreateCommunityInput: CreateCommunityInput;
   Date: Scalars['Date'];
   DeleteChannelInput: DeleteChannelInput;
-  DeleteResponse: DeleteResponse;
   GetCommunityInput: GetCommunityInput;
+  LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
+  MutationResponse: MutationResponse;
   Query: {};
   UpdateChannelInput: UpdateChannelInput;
   User: User;
@@ -266,17 +279,18 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
-export type DeleteResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']> = ResolversObject<{
-  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCommunity?: Resolver<ResolversTypes['Community'], ParentType, ContextType, RequireFields<MutationCreateCommunityArgs, 'input'>>;
   createChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationCreateChannelArgs, 'input'>>;
   updateChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationUpdateChannelArgs, 'input'>>;
   changeChannelOwner?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationChangeChannelOwnerArgs, 'input'>>;
-  deleteChannel?: Resolver<ResolversTypes['DeleteResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
+  deleteChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
+  leaveChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationLeaveChannelArgs, 'input'>>;
+}>;
+
+export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -295,8 +309,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
   Date?: GraphQLScalarType;
-  DeleteResponse?: DeleteResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  MutationResponse?: MutationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
