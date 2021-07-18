@@ -102,7 +102,7 @@ export default class Channel {
   }
 
   private isAdmin(userId: string): boolean {
-    return this.getMember(userId)?.role === ChannelRole.OWNER
+    return this.getMember(userId)?.role === ChannelRole.ADMIN
   }
 
   get currentOwner(): ChannelMember | undefined {

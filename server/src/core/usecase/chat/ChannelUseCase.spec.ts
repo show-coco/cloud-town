@@ -49,7 +49,7 @@ describe('ChannelUseCase', () => {
 
       const actual = await channelUseCase.createChannel(createParam)
 
-      expect(actual.currentOwner()?.userId).toBe(createParam.userId)
+      expect(actual.currentOwner?.userId).toBe(createParam.userId)
     })
   })
 
@@ -98,9 +98,7 @@ describe('ChannelUseCase', () => {
       })
 
       const actual = await channelRepo.getChannelById(testChannel.id)
-      expect(actual.currentOwner()?.userId).toBe(
-        createTestChannelCommon().userId
-      )
+      expect(actual.currentOwner?.userId).toBe(createTestChannelCommon().userId)
     })
 
     it('チャンネルのオーナー以外はオーナー権限をメンバーに委譲できない', async () => {
@@ -117,9 +115,7 @@ describe('ChannelUseCase', () => {
       }
 
       const actual = await channelRepo.getChannelById(testChannel.id)
-      expect(actual.currentOwner()?.userId).toBe(
-        createTestChannelOwner().userId
-      )
+      expect(actual.currentOwner?.userId).toBe(createTestChannelOwner().userId)
 
       try {
         await channelUseCase.changeOwner({
@@ -132,6 +128,50 @@ describe('ChannelUseCase', () => {
           new Error("This user doesn't have authorization to change owner.")
         )
       }
+    })
+  })
+
+  describe('deleteChannel', () => {
+    it('チャンネルのオーナーはチャンネルを削除できる', async () => {
+      await channelUseCase.deleteChannel({
+        id: createTestChannel().id,
+        userId: createTestChannelOwner().userId,
+      })
+
+      try {
+        await channelRepo.getChannelById(createTestChannel().id)
+      } catch (error) {
+        expect(error).toEqual(new Error('Channel not found'))
+      }
+    })
+
+    it('チャンネルのアドミンはチャンネルを削除できる', async () => {
+      await channelUseCase.deleteChannel({
+        id: createTestChannel().id,
+        userId: createTestChannelAdmin().userId,
+      })
+
+      try {
+        await channelRepo.getChannelById(createTestChannel().id)
+      } catch (error) {
+        expect(error).toEqual(new Error('Channel not found'))
+      }
+    })
+
+    it('チャンネルのコモンはチャンネルを削除できない', async () => {
+      try {
+        await channelUseCase.deleteChannel({
+          id: createTestChannel().id,
+          userId: createTestChannelCommon().userId,
+        })
+      } catch (error) {
+        expect(error).toEqual(
+          new Error('User does not have authorization to delete the channel')
+        )
+      }
+
+      const channel = await channelRepo.getChannelById(createTestChannel().id)
+      expect(channel.id).toBe(createTestChannel().id)
     })
   })
 })
