@@ -10,6 +10,7 @@ import {
 import { InMemoryChannelRepository } from '../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
 import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
 import Channel from '../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
 import Community from '../../domain/entities/Community'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseParam'
@@ -20,6 +21,9 @@ describe('ChannelUseCase', () => {
   const channelUseCase = new ChannelUseCase(channelRepo)
   let testCommunity: Community
   let testChannel: Channel
+  let testChannelOwner: ChannelMember
+  let testChannelAdmin: ChannelMember
+  let testChannelCommon: ChannelMember
 
   beforeEach(async () => {
     // テストデータの作成
@@ -27,7 +31,9 @@ describe('ChannelUseCase', () => {
     channelRepo.clean()
     testCommunity = createTestCommunity()
     testChannel = createTestChannel()
-    console.log(testChannel)
+    testChannelOwner = createTestChannelOwner()
+    testChannelAdmin = createTestChannelAdmin()
+    testChannelCommon = createTestChannelCommon()
     await communityRepo.createCommunity(testCommunity)
     await channelRepo.save(testChannel)
   })
@@ -76,7 +82,7 @@ describe('ChannelUseCase', () => {
     it('チャンネルに所属しているユーザーはチャンネル情報を更新できる', async () => {
       const updateParam: UpdateChannelProps = {
         id: testChannel.id,
-        userId: createTestChannelOwner().userId || '',
+        userId: testChannelOwner.userId || '',
         name: 'updated',
         isPrivate: true,
         slug: 'updated',
@@ -94,20 +100,20 @@ describe('ChannelUseCase', () => {
     it('チャンネルのオーナーはオーナー権限をメンバーに委譲できる', async () => {
       await channelUseCase.changeOwner({
         id: testChannel.id,
-        nextOwnerId: createTestChannelCommon().userId,
-        currentOwnerId: createTestChannelOwner().userId,
+        nextOwnerId: testChannelCommon.userId,
+        currentOwnerId: testChannelOwner.userId,
       })
 
       const actual = await channelRepo.getChannelById(testChannel.id)
-      expect(actual.currentOwner?.userId).toBe(createTestChannelCommon().userId)
+      expect(actual.currentOwner?.userId).toBe(testChannelCommon.userId)
     })
 
     it('チャンネルのオーナー以外はオーナー権限をメンバーに委譲できない', async () => {
       try {
         await channelUseCase.changeOwner({
           id: testChannel.id,
-          nextOwnerId: createTestChannelCommon().userId,
-          currentOwnerId: createTestChannelAdmin().userId,
+          nextOwnerId: testChannelCommon.userId,
+          currentOwnerId: testChannelAdmin.userId,
         })
       } catch (error) {
         expect(error).toEqual(
@@ -116,13 +122,13 @@ describe('ChannelUseCase', () => {
       }
 
       const actual = await channelRepo.getChannelById(testChannel.id)
-      expect(actual.currentOwner?.userId).toBe(createTestChannelOwner().userId)
+      expect(actual.currentOwner?.userId).toBe(testChannelOwner.userId)
 
       try {
         await channelUseCase.changeOwner({
           id: testChannel.id,
-          nextOwnerId: createTestChannelCommon().userId,
-          currentOwnerId: createTestChannelCommon().userId,
+          nextOwnerId: testChannelCommon.userId,
+          currentOwnerId: testChannelCommon.userId,
         })
       } catch (error) {
         expect(error).toEqual(
@@ -136,7 +142,7 @@ describe('ChannelUseCase', () => {
     it('チャンネルのオーナーはチャンネルを削除できる', async () => {
       await channelUseCase.deleteChannel({
         id: createTestChannel().id,
-        userId: createTestChannelOwner().userId,
+        userId: testChannelOwner.userId,
       })
 
       try {
@@ -149,7 +155,7 @@ describe('ChannelUseCase', () => {
     it('チャンネルのアドミンはチャンネルを削除できる', async () => {
       await channelUseCase.deleteChannel({
         id: createTestChannel().id,
-        userId: createTestChannelAdmin().userId,
+        userId: testChannelAdmin.userId,
       })
 
       try {
@@ -163,7 +169,7 @@ describe('ChannelUseCase', () => {
       try {
         await channelUseCase.deleteChannel({
           id: createTestChannel().id,
-          userId: createTestChannelCommon().userId,
+          userId: testChannelCommon.userId,
         })
       } catch (error) {
         expect(error).toEqual(
@@ -180,11 +186,11 @@ describe('ChannelUseCase', () => {
     it('アドミンは次のオーナー指定なしで脱退できる', async () => {
       await channelUseCase.leaveChannel({
         id: createTestChannel().id,
-        userId: createTestChannelAdmin().userId,
+        userId: testChannelAdmin.userId,
       })
 
       const channel = await channelRepo.getChannelById(createTestChannel().id)
-      expect(channel.getMember(createTestChannelAdmin().userId)?.role).toEqual(
+      expect(channel.getMember(testChannelAdmin.userId)?.role).toEqual(
         ChannelRole.LEAVED
       )
     })
@@ -192,11 +198,11 @@ describe('ChannelUseCase', () => {
     it('コモンは次のオーナー指定なしで脱退できる', async () => {
       await channelUseCase.leaveChannel({
         id: createTestChannel().id,
-        userId: createTestChannelCommon().userId,
+        userId: testChannelCommon.userId,
       })
 
       const channel = await channelRepo.getChannelById(createTestChannel().id)
-      expect(channel.getMember(createTestChannelCommon().userId)?.role).toEqual(
+      expect(channel.getMember(testChannelCommon.userId)?.role).toEqual(
         ChannelRole.LEAVED
       )
     })
@@ -205,14 +211,14 @@ describe('ChannelUseCase', () => {
       try {
         await channelUseCase.leaveChannel({
           id: createTestChannel().id,
-          userId: createTestChannelOwner().userId,
+          userId: testChannelOwner.userId,
         })
       } catch (error) {
         expect(error).toEqual(new Error('The next owner is not specified'))
       }
 
       const channel = await channelRepo.getChannelById(createTestChannel().id)
-      expect(channel.getMember(createTestChannelOwner().userId)?.role).toEqual(
+      expect(channel.getMember(testChannelOwner.userId)?.role).toEqual(
         ChannelRole.OWNER
       )
     })
@@ -221,18 +227,18 @@ describe('ChannelUseCase', () => {
       try {
         await channelUseCase.leaveChannel({
           id: createTestChannel().id,
-          userId: createTestChannelOwner().userId,
-          nextOwnerId: createTestChannelCommon().userId,
+          userId: testChannelOwner.userId,
+          nextOwnerId: testChannelCommon.userId,
         })
       } catch (error) {
         expect(error).toEqual(new Error('The next owner is not specified'))
       }
 
       const channel = await channelRepo.getChannelById(createTestChannel().id)
-      expect(channel.getMember(createTestChannelOwner().userId)?.role).toEqual(
+      expect(channel.getMember(testChannelOwner.userId)?.role).toEqual(
         ChannelRole.LEAVED
       )
-      expect(channel.getMember(createTestChannelCommon().userId)?.role).toEqual(
+      expect(channel.getMember(testChannelCommon.userId)?.role).toEqual(
         ChannelRole.OWNER
       )
     })
