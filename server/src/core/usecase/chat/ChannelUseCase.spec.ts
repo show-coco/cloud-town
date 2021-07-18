@@ -1,3 +1,4 @@
+import { ChannelRole } from '@prisma/client'
 import {
   createTestChannel,
   createTestChannelAdmin,
@@ -172,6 +173,68 @@ describe('ChannelUseCase', () => {
 
       const channel = await channelRepo.getChannelById(createTestChannel().id)
       expect(channel.id).toBe(createTestChannel().id)
+    })
+  })
+
+  describe('leave', () => {
+    it('アドミンは次のオーナー指定なしで脱退できる', async () => {
+      await channelUseCase.leaveChannel({
+        id: createTestChannel().id,
+        userId: createTestChannelAdmin().userId,
+      })
+
+      const channel = await channelRepo.getChannelById(createTestChannel().id)
+      expect(channel.getMember(createTestChannelAdmin().userId)?.role).toEqual(
+        ChannelRole.LEAVED
+      )
+    })
+
+    it('コモンは次のオーナー指定なしで脱退できる', async () => {
+      await channelUseCase.leaveChannel({
+        id: createTestChannel().id,
+        userId: createTestChannelCommon().userId,
+      })
+
+      const channel = await channelRepo.getChannelById(createTestChannel().id)
+      expect(channel.getMember(createTestChannelCommon().userId)?.role).toEqual(
+        ChannelRole.LEAVED
+      )
+    })
+
+    it('オーナーは次のオーナー指定しなければ脱退できない', async () => {
+      try {
+        await channelUseCase.leaveChannel({
+          id: createTestChannel().id,
+          userId: createTestChannelOwner().userId,
+        })
+      } catch (error) {
+        expect(error).toEqual(new Error('The next owner is not specified'))
+      }
+
+      const channel = await channelRepo.getChannelById(createTestChannel().id)
+      expect(channel.getMember(createTestChannelOwner().userId)?.role).toEqual(
+        ChannelRole.OWNER
+      )
+    })
+
+    it('オーナーは次のオーナーを指定して脱退できる', async () => {
+      try {
+        await channelUseCase.leaveChannel({
+          id: createTestChannel().id,
+          userId: createTestChannelOwner().userId,
+          nextOwnerId: createTestChannelCommon().userId,
+        })
+      } catch (error) {
+        expect(error).toEqual(new Error('The next owner is not specified'))
+      }
+
+      const channel = await channelRepo.getChannelById(createTestChannel().id)
+      expect(channel.getMember(createTestChannelOwner().userId)?.role).toEqual(
+        ChannelRole.LEAVED
+      )
+      expect(channel.getMember(createTestChannelCommon().userId)?.role).toEqual(
+        ChannelRole.OWNER
+      )
     })
   })
 })

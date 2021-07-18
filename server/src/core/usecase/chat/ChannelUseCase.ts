@@ -99,8 +99,6 @@ export default class ChannelUseCase {
     const channel = await this.channelRepo.getChannelById(id)
     channel.leave(userId, nextOwnerId)
 
-    console.log(channel)
-
     await this.channelRepo.save(channel)
   }
 }
