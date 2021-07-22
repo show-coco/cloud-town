@@ -14,6 +14,14 @@ export const createTestCommunity = (): Community =>
     updatedAt: new Date(),
   })
 
+export const testuser0 = new User({
+  id: '09b913db-3733-4e65-9f48-6a74af892495',
+  name: 'test user',
+  slug: 'test-user',
+  email: 'test@example.com',
+  googleId: '123456abcde',
+})
+
 export const testuser1 = new User({
   id: 'a9b913db-3733-4e65-9f48-6a74af892495',
   name: 'test user',

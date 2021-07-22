@@ -5,6 +5,7 @@ import {
   createTestChannelCommon,
   createTestChannelOwner,
   createTestCommunity,
+  testuser0,
   testuser1,
   testuser2,
   testuser3,
@@ -38,6 +39,7 @@ describe('ChannelUseCase', () => {
     testChannelOwner = createTestChannelOwner()
     testChannelAdmin = createTestChannelAdmin()
     testChannelCommon = createTestChannelCommon()
+    await userRepo.createUser(testuser0)
     await userRepo.createUser(testuser1)
     await userRepo.createUser(testuser2)
     await userRepo.createUser(testuser3)
@@ -248,6 +250,19 @@ describe('ChannelUseCase', () => {
       expect(channel.getMember(testChannelCommon.id)?.role).toEqual(
         ChannelRole.Owner
       )
+    })
+  })
+
+  describe('channelUseCase.joinChannel', () => {
+    it('ユーザーはチャンネルに参加できる', async () => {
+      await channelUseCase.joinChannel({
+        id: testChannel.id,
+        userId: testuser0.id,
+      })
+
+      const channel = await channelRepo.getChannelById(testChannel.id)
+      const member = channel.getMember(testuser0.id)
+      expect(member?.id).toEqual(testuser0.id)
     })
   })
 })
