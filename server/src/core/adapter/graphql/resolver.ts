@@ -1,5 +1,5 @@
 import { Resolvers, ChannelRole } from '../../../types/graphql'
-import ChatUseCase from '../../usecase/chat/ChannelUseCase'
+import ChatUseCase from '../../usecase/chat/channel/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'

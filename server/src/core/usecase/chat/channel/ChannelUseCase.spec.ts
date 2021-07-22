@@ -10,13 +10,13 @@ import {
   testuser1,
   testuser2,
   testuser3,
-} from '../../../test/test-data'
-import { InMemoryChannelRepository } from '../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
-import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
-import InMemoryUserRepository from '../../adapter/repository/UserRepository/InMemoryUserRepository'
-import Channel from '../../domain/entities/ChannelAggregate/Channel'
-import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
-import Community from '../../domain/entities/Community'
+} from '../../../../test/test-data'
+import { InMemoryChannelRepository } from '../../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
+import { InMemoryCommunityRepository } from '../../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
+import InMemoryUserRepository from '../../../adapter/repository/UserRepository/InMemoryUserRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import Community from '../../../domain/entities/Community'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseParam'
 

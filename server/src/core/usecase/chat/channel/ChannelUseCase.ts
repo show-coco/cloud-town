@@ -1,8 +1,8 @@
-import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
-import IUserRepository from '../../adapter/repository/UserRepository/IUserRepository'
-import Channel from '../../domain/entities/ChannelAggregate/Channel'
-import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
-import ChatService from '../../domain/services/ChatService'
+import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
+import IUserRepository from '../../../adapter/repository/UserRepository/IUserRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import ChatService from '../../../domain/services/ChatService'
 import {
   ChangeOwnerProps,
   CreateChannelProps,
