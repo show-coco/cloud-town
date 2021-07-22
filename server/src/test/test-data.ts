@@ -92,3 +92,17 @@ export const createTestChannel = (): Channel =>
     ],
     communityId: createTestCommunity().getCommunityId(),
   })
+
+export const createTestPrivateChannel = (): Channel =>
+  new Channel({
+    id: 'c4b2d1f6-f034-4dd6-8009-399ada731b32',
+    name: 'test channel',
+    slug: 'test-channel',
+    isPrivate: true,
+    channelMember: [
+      createTestChannelOwner(),
+      createTestChannelAdmin(),
+      createTestChannelCommon(),
+    ],
+    communityId: createTestCommunity().getCommunityId(),
+  })

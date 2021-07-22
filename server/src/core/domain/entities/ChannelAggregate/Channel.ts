@@ -113,6 +113,9 @@ export default class Channel {
     if (this.getMember(user.id))
       throw new Error('The user has already joined the channel')
 
+    if (this._isPrivate)
+      throw new Error('This channel is private. Only invited users can join.')
+
     const member = new ChannelMember({
       id: user.id,
       googleId: user.googleId,

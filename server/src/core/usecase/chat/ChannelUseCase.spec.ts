@@ -5,6 +5,7 @@ import {
   createTestChannelCommon,
   createTestChannelOwner,
   createTestCommunity,
+  createTestPrivateChannel,
   testuser0,
   testuser1,
   testuser2,
@@ -26,6 +27,7 @@ describe('ChannelUseCase', () => {
   const channelUseCase = new ChannelUseCase(channelRepo, userRepo)
   let testCommunity: Community
   let testChannel: Channel
+  let testPrivateChannel: Channel
   let testChannelOwner: ChannelMember
   let testChannelAdmin: ChannelMember
   let testChannelCommon: ChannelMember
@@ -39,12 +41,14 @@ describe('ChannelUseCase', () => {
     testChannelOwner = createTestChannelOwner()
     testChannelAdmin = createTestChannelAdmin()
     testChannelCommon = createTestChannelCommon()
+    testPrivateChannel = createTestPrivateChannel()
     await userRepo.createUser(testuser0)
     await userRepo.createUser(testuser1)
     await userRepo.createUser(testuser2)
     await userRepo.createUser(testuser3)
     await communityRepo.createCommunity(testCommunity)
     await channelRepo.save(testChannel)
+    await channelRepo.save(testPrivateChannel)
   })
 
   afterAll(() => {
@@ -254,7 +258,7 @@ describe('ChannelUseCase', () => {
   })
 
   describe('channelUseCase.joinChannel', () => {
-    it('ユーザーはチャンネルに参加できる', async () => {
+    it('ユーザーはパブリックチャンネルに参加できる', async () => {
       await channelUseCase.joinChannel({
         id: testChannel.id,
         userId: testuser0.id,
@@ -263,6 +267,23 @@ describe('ChannelUseCase', () => {
       const channel = await channelRepo.getChannelById(testChannel.id)
       const member = channel.getMember(testuser0.id)
       expect(member?.id).toEqual(testuser0.id)
+    })
+
+    it('ユーザーはプライベートチャンネルに参加できない', async () => {
+      try {
+        await channelUseCase.joinChannel({
+          id: testPrivateChannel.id,
+          userId: testuser0.id,
+        })
+      } catch (error) {
+        expect(error).toEqual(
+          new Error('This channel is private. Only invited users can join.')
+        )
+      }
+
+      const channel = await channelRepo.getChannelById(testChannel.id)
+      const member = channel.getMember(testuser0.id)
+      expect(member?.id).toBeUndefined()
     })
   })
 })
