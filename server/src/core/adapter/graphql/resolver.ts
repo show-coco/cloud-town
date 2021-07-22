@@ -171,5 +171,13 @@ export const resolvers: Resolvers = {
 
       throw new Error('Input type is strange')
     },
+    joinChannel: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id } = args.input
+      const userId = context.user.sub
+
+      return channelUseCase.joinChannel({ id, userId })
+    },
   },
 }

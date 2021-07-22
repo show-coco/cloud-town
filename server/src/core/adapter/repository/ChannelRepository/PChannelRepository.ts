@@ -152,7 +152,7 @@ export default class PChannelRepository implements IChannelRepository {
               role: member.role,
             },
             where: {
-              id: member.memberId,
+              id: member.memberId || 0, // MEMO: issue(https://github.com/prisma/prisma/issues/5233)
             },
             include: {
               user: true,
