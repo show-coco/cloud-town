@@ -128,6 +128,30 @@ export default class Channel {
     this._channelMembers.push(member)
   }
 
+  addMembers(inviterId: string, users: User[]): void {
+    if (!this.canAdd(inviterId))
+      throw new Error(
+        'User does not have authorization to add members to the channel'
+      )
+
+    const members = users.map((user) => {
+      if (this.getMember(user.id))
+        throw new Error('The user has already joined the channel')
+
+      return new ChannelMember({
+        id: user.id,
+        googleId: user.googleId,
+        slug: user.slug,
+        name: user.name,
+        email: user.email,
+        role: ChannelRole.Common,
+      })
+    })
+    console.log(members)
+
+    this._channelMembers = [...this._channelMembers, ...members]
+  }
+
   kickMember(kickerId: string, memberId: string): void {
     if (!this.canKick(kickerId))
       throw new Error("You don't have the authority to kick user")
@@ -142,6 +166,10 @@ export default class Channel {
   }
 
   canKick(userId: string): boolean {
+    return this.isAdmin(userId) || this.isOwner(userId)
+  }
+
+  canAdd(userId: string): boolean {
     return this.isAdmin(userId) || this.isOwner(userId)
   }
 

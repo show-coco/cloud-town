@@ -12,6 +12,13 @@ export default class InMemoryUserRepository implements IUserRepository {
     })
   }
 
+  getUsersByIds(ids: string[]): Promise<User[]> {
+    return new Promise((resolve) => {
+      const users = this.users.filter((user) => ids.includes(user.id))
+      resolve(users)
+    })
+  }
+
   getUserByGoogleId(googleId: string): Promise<User> {
     throw new Error('Method not implemented.')
   }

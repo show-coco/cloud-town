@@ -4,6 +4,7 @@ import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
 import ChatService from '../../../domain/services/ChatService'
 import {
+  AddMembersParam,
   ChangeOwnerProps,
   CreateChannelProps,
   DeleteChannelParam,
@@ -125,6 +126,18 @@ export default class ChannelUseCase {
     const channel = await this.channelRepo.getChannelById(id)
 
     channel.kickMember(userId, memberId)
+    return this.channelRepo.save(channel)
+  }
+
+  async addMembers({
+    id,
+    userId,
+    memberIds,
+  }: AddMembersParam): Promise<Channel> {
+    const channel = await this.channelRepo.getChannelById(id)
+    const users = await this.userRepo.getUsersByIds(memberIds)
+
+    channel.addMembers(userId, users)
     return this.channelRepo.save(channel)
   }
 }
