@@ -1,13 +1,14 @@
-import IChannelRepository from '../../adapter/repository/ChannelRepository/IChannelRepository'
-import IUserRepository from '../../adapter/repository/UserRepository/IUserRepository'
-import Channel from '../../domain/entities/ChannelAggregate/Channel'
-import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
-import ChatService from '../../domain/services/ChatService'
+import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
+import IUserRepository from '../../../adapter/repository/UserRepository/IUserRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import ChatService from '../../../domain/services/ChatService'
 import {
   ChangeOwnerProps,
   CreateChannelProps,
   DeleteChannelParam,
   JoinChannelParam,
+  KickMemberParam,
   LeaveChannelParam,
   UpdateChannelProps,
 } from './ChannelUseCaseParam'
@@ -113,6 +114,17 @@ export default class ChannelUseCase {
 
     channel.join(user)
 
+    return this.channelRepo.save(channel)
+  }
+
+  async kickMember({
+    id,
+    userId,
+    memberId,
+  }: KickMemberParam): Promise<Channel> {
+    const channel = await this.channelRepo.getChannelById(id)
+
+    channel.kickMember(userId, memberId)
     return this.channelRepo.save(channel)
   }
 }

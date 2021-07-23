@@ -10,13 +10,13 @@ import {
   testuser1,
   testuser2,
   testuser3,
-} from '../../../test/test-data'
-import { InMemoryChannelRepository } from '../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
-import { InMemoryCommunityRepository } from '../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
-import InMemoryUserRepository from '../../adapter/repository/UserRepository/InMemoryUserRepository'
-import Channel from '../../domain/entities/ChannelAggregate/Channel'
-import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
-import Community from '../../domain/entities/Community'
+} from '../../../../test/test-data'
+import { InMemoryChannelRepository } from '../../../adapter/repository/ChannelRepository/InMemoryChannelRepository'
+import { InMemoryCommunityRepository } from '../../../adapter/repository/CommunityRepository/InMemoryCommunityRepository'
+import InMemoryUserRepository from '../../../adapter/repository/UserRepository/InMemoryUserRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
+import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import Community from '../../../domain/entities/Community'
 import ChannelUseCase from './ChannelUseCase'
 import { CreateChannelProps, UpdateChannelProps } from './ChannelUseCaseParam'
 
@@ -257,7 +257,7 @@ describe('ChannelUseCase', () => {
     })
   })
 
-  describe('channelUseCase.joinChannel', () => {
+  describe('joinChannel', () => {
     it('ユーザーはパブリックチャンネルに参加できる', async () => {
       await channelUseCase.joinChannel({
         id: testChannel.id,
@@ -284,6 +284,36 @@ describe('ChannelUseCase', () => {
       const channel = await channelRepo.getChannelById(testChannel.id)
       const member = channel.getMember(testuser0.id)
       expect(member?.id).toBeUndefined()
+    })
+  })
+
+  describe('kickMember', () => {
+    it('チャンネルメンバーをキックできる', async () => {
+      await channelUseCase.kickMember({
+        id: testChannel.id,
+        userId: testChannelOwner.id,
+        memberId: testChannelCommon.id,
+      })
+
+      const channel = await channelRepo.getChannelById(testChannel.id)
+      const member = channel.getMember(testChannelCommon.id)
+      expect(member?.role).toEqual(ChannelRole.Leaved)
+    })
+
+    it('オーナーはキックされない', async () => {
+      try {
+        await channelUseCase.kickMember({
+          id: testChannel.id,
+          userId: testChannelAdmin.id,
+          memberId: testChannelOwner.id,
+        })
+      } catch (error) {
+        expect(error).toEqual(new Error('Channel owner cannot be kicked'))
+      }
+
+      const channel = await channelRepo.getChannelById(testChannel.id)
+      const member = channel.getMember(testChannelOwner.id)
+      expect(member?.role).toEqual(ChannelRole.Owner)
     })
   })
 })

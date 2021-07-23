@@ -128,6 +128,23 @@ export default class Channel {
     this._channelMembers.push(member)
   }
 
+  kickMember(kickerId: string, memberId: string): void {
+    if (!this.canKick(kickerId))
+      throw new Error("You don't have the authority to kick user")
+
+    if (this.isOwner(memberId))
+      throw new Error('Channel owner cannot be kicked')
+
+    const member = this.getMember(memberId)
+    if (!member) throw new Error('Member is not found')
+
+    member.changeRole(ChannelRole.Leaved)
+  }
+
+  canKick(userId: string): boolean {
+    return this.isAdmin(userId) || this.isOwner(userId)
+  }
+
   getMember(userId: string): ChannelMember | undefined {
     return this._channelMembers.find(
       (channelMember) => channelMember.id === userId

@@ -35,3 +35,9 @@ export interface JoinChannelParam {
   id: string
   userId: string
 }
+
+export interface KickMemberParam {
+  id: string
+  userId: string
+  memberId: string
+}

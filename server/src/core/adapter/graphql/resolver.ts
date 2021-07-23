@@ -1,5 +1,5 @@
 import { Resolvers, ChannelRole } from '../../../types/graphql'
-import ChatUseCase from '../../usecase/chat/ChannelUseCase'
+import ChatUseCase from '../../usecase/chat/channel/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
 import PCommunityRepository from '../repository/CommunityRepository/PCommunityRepository'
@@ -178,6 +178,14 @@ export const resolvers: Resolvers = {
       const userId = context.user.sub
 
       return channelUseCase.joinChannel({ id, userId })
+    },
+    kickMemberFromChannel: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, memberId } = args.input
+      const userId = context.user.sub
+
+      return channelUseCase.kickMember({ id, userId, memberId })
     },
   },
 }
