@@ -14,9 +14,7 @@ export default class InMemoryUserRepository implements IUserRepository {
 
   getUsersByIds(ids: string[]): Promise<User[]> {
     return new Promise((resolve) => {
-      const users = this.users.filter((user) => {
-        ids.includes(user.id)
-      })
+      const users = this.users.filter((user) => ids.includes(user.id))
       resolve(users)
     })
   }

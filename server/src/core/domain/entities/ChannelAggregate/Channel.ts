@@ -147,6 +147,7 @@ export default class Channel {
         role: ChannelRole.Common,
       })
     })
+    console.log(members)
 
     this._channelMembers = [...this._channelMembers, ...members]
   }

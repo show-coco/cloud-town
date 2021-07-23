@@ -288,7 +288,7 @@ describe('ChannelUseCase', () => {
   })
 
   describe('kickMember', () => {
-    it('チャンネルメンバーをキックできる', async () => {
+    it('アドミンとオーナーはチャンネルメンバーをキックできる', async () => {
       await channelUseCase.kickMember({
         id: testChannel.id,
         userId: testChannelOwner.id,
@@ -314,6 +314,24 @@ describe('ChannelUseCase', () => {
       const channel = await channelRepo.getChannelById(testChannel.id)
       const member = channel.getMember(testChannelOwner.id)
       expect(member?.role).toEqual(ChannelRole.Owner)
+    })
+  })
+
+  describe('addMembers', () => {
+    it('アドミンとオーナーはメンバーを追加できる', async () => {
+      let channel = await channelRepo.getChannelById(testChannel.id)
+      let member = channel.getMember(testuser0.id)
+      expect(member).toBeUndefined()
+
+      await channelUseCase.addMembers({
+        id: testChannel.id,
+        userId: testChannelAdmin.id,
+        memberIds: [testuser0.id],
+      })
+
+      channel = await channelRepo.getChannelById(testChannel.id)
+      member = channel.getMember(testuser0.id)
+      expect(member?.role).toEqual(ChannelRole.Common)
     })
   })
 })
