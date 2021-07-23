@@ -33,6 +33,12 @@ export const resolvers: Resolvers = {
         updatedAt: com.getUpdatedAt(),
       }
     },
+    channel: async (_parent, args, _context: Context) => {
+      const { id } = args.input
+      const channel = await channelUseCase.getChannelDetailsById(id)
+
+      return channel
+    },
   },
   Community: {
     channels: async (community) => {
