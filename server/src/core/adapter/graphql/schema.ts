@@ -51,6 +51,11 @@ export const typeDefs = gql`
     memberId: String!
   }
 
+  input AddMemberToChannelInput {
+    id: String!
+    memberIds: [String!]!
+  }
+
   type Query {
     community(input: GetCommunityInput!): Community
   }
@@ -102,5 +107,6 @@ export const typeDefs = gql`
     leaveChannel(input: LeaveChannelInput!): MutationResponse!
     joinChannel(input: JoinChannelInput!): Channel!
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
+    addMemberToChannel(input: AddMemberToChannelInput!): Channel!
   }
 `

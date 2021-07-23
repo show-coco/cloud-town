@@ -12,6 +12,13 @@ export default class PUserRepository implements IUserRepository {
     return this.converter(pUser)
   }
 
+  async getUsersByIds(ids: string[]): Promise<User[]> {
+    const pUsers = await prisma.user.findMany({ where: { id: { in: ids } } })
+
+    const users = pUsers.map((pUser) => this.converter(pUser))
+    return users
+  }
+
   async getUserByGoogleId(googleId: string): Promise<User> {
     const pUser = await prisma.user.findFirst({
       where: { google_id: googleId },

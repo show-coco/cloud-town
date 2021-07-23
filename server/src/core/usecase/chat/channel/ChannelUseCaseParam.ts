@@ -41,3 +41,9 @@ export interface KickMemberParam {
   userId: string
   memberId: string
 }
+
+export interface AddMembersParam {
+  id: string
+  userId: string
+  memberIds: string[]
+}
