@@ -83,6 +83,11 @@ export type JoinChannelInput = {
   id: Scalars['String'];
 };
 
+export type KickMemberFromChannelInput = {
+  id: Scalars['String'];
+  memberId: Scalars['String'];
+};
+
 export type LeaveChannelInput = {
   id: Scalars['String'];
   nextOwnerId?: Maybe<Scalars['String']>;
@@ -97,6 +102,7 @@ export type Mutation = {
   deleteChannel: MutationResponse;
   leaveChannel: MutationResponse;
   joinChannel: Channel;
+  kickMemberFromChannel: Channel;
 };
 
 
@@ -132,6 +138,11 @@ export type MutationLeaveChannelArgs = {
 
 export type MutationJoinChannelArgs = {
   input: JoinChannelInput;
+};
+
+
+export type MutationKickMemberFromChannelArgs = {
+  input: KickMemberFromChannelInput;
 };
 
 export type MutationResponse = {
@@ -248,6 +259,7 @@ export type ResolversTypes = ResolversObject<{
   DeleteChannelInput: DeleteChannelInput;
   GetCommunityInput: GetCommunityInput;
   JoinChannelInput: JoinChannelInput;
+  KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
@@ -269,6 +281,7 @@ export type ResolversParentTypes = ResolversObject<{
   DeleteChannelInput: DeleteChannelInput;
   GetCommunityInput: GetCommunityInput;
   JoinChannelInput: JoinChannelInput;
+  KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
   MutationResponse: MutationResponse;
@@ -317,6 +330,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   deleteChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationDeleteChannelArgs, 'input'>>;
   leaveChannel?: Resolver<ResolversTypes['MutationResponse'], ParentType, ContextType, RequireFields<MutationLeaveChannelArgs, 'input'>>;
   joinChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationJoinChannelArgs, 'input'>>;
+  kickMemberFromChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationKickMemberFromChannelArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

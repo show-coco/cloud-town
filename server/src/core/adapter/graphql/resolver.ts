@@ -179,5 +179,13 @@ export const resolvers: Resolvers = {
 
       return channelUseCase.joinChannel({ id, userId })
     },
+    kickMemberFromChannel: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, memberId } = args.input
+      const userId = context.user.sub
+
+      return channelUseCase.kickMember({ id, userId, memberId })
+    },
   },
 }
