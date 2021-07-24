@@ -3,6 +3,10 @@ import { gql } from 'apollo-server-express'
 export const typeDefs = gql`
   scalar Date
 
+  input GetCommunityInput {
+    id: String!
+  }
+
   input CreateCommunityInput {
     name: String!
     slug: String!
@@ -27,7 +31,12 @@ export const typeDefs = gql`
     id: String!
   }
 
-  input GetCommunityInput {
+  input GetChannelsInput {
+    joining: Boolean
+    isPrivate: Boolean
+  }
+
+  input GetChannelInput {
     id: String!
   }
 
@@ -56,10 +65,6 @@ export const typeDefs = gql`
     memberIds: [String!]!
   }
 
-  type Query {
-    community(input: GetCommunityInput!): Community
-  }
-
   type Community {
     id: String!
     name: String!
@@ -67,7 +72,7 @@ export const typeDefs = gql`
     introduction: String!
     createdAt: Date!
     updatedAt: Date!
-    channels: [Channel!]
+    channels(input: GetChannelsInput): [Channel!]
   }
 
   type Channel {
@@ -96,6 +101,11 @@ export const typeDefs = gql`
 
   type MutationResponse {
     ok: Boolean!
+  }
+
+  type Query {
+    community(input: GetCommunityInput!): Community
+    channel(input: GetChannelInput!): Channel!
   }
 
   type Mutation {

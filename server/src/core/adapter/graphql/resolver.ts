@@ -33,10 +33,32 @@ export const resolvers: Resolvers = {
         updatedAt: com.getUpdatedAt(),
       }
     },
+    channel: async (_parent, args, _context: Context) => {
+      const { id } = args.input
+      const channel = await channelUseCase.getChannelDetailsById(id)
+
+      return channel
+    },
   },
   Community: {
-    channels: async (community) => {
-      return channelUseCase.getChannelList(community.id)
+    channels: async (community, args, context) => {
+      const { id } = community
+      const isPrivate = args.input?.isPrivate
+      const joining = args.input?.joining
+
+      if (
+        (typeof isPrivate === 'boolean' || typeof isPrivate === 'undefined') &&
+        (typeof joining === 'boolean' || typeof joining === 'undefined')
+      ) {
+        return channelUseCase.getChannelList({
+          communityId: id,
+          isPrivate,
+          userId: context.user?.sub,
+          joining,
+        })
+      }
+
+      throw new Error('Input type is strange')
     },
   },
   Channel: {
