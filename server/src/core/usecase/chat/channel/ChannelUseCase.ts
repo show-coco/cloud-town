@@ -8,6 +8,7 @@ import {
   ChangeOwnerProps,
   CreateChannelProps,
   DeleteChannelParam,
+  GetChannelList,
   JoinChannelParam,
   KickMemberParam,
   LeaveChannelParam,
@@ -29,9 +30,17 @@ export default class ChannelUseCase {
     return channel
   }
 
-  async getChannelList(communityId: string): Promise<Channel[]> {
+  async getChannelList({
+    communityId,
+    isPrivate,
+    userId,
+    joining,
+  }: GetChannelList): Promise<Channel[]> {
     const channelList = await this.channelRepo.getChannelListByCommunityId(
-      communityId
+      communityId,
+      isPrivate,
+      userId,
+      joining
     )
 
     return channelList

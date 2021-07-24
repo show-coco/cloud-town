@@ -1,3 +1,10 @@
+export interface GetChannelList {
+  communityId: string
+  joining?: boolean
+  userId?: string
+  isPrivate?: boolean
+}
+
 export interface CreateChannelProps {
   name: string
   slug: string

@@ -3,7 +3,7 @@ import passport from 'passport'
 import { tokenGenerator } from '../../../../auth/tokenGenerator'
 
 function generateUserToken(req: Request, res: Response) {
-  console.log(req.user)
+  console.log('req.user', req.user)
   const accessToken = tokenGenerator(req.user.id)
   res.redirect(`http://localhost:3000/authenticated?token=${accessToken}`)
 }

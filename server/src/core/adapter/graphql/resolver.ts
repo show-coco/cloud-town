@@ -41,8 +41,24 @@ export const resolvers: Resolvers = {
     },
   },
   Community: {
-    channels: async (community) => {
-      return channelUseCase.getChannelList(community.id)
+    channels: async (community, args, context) => {
+      const { id } = community
+      const isPrivate = args.input?.isPrivate
+      const joining = args.input?.joining
+
+      if (
+        (typeof isPrivate === 'boolean' || typeof isPrivate === 'undefined') &&
+        (typeof joining === 'boolean' || typeof joining === 'undefined')
+      ) {
+        return channelUseCase.getChannelList({
+          communityId: id,
+          isPrivate,
+          userId: context.user?.sub,
+          joining,
+        })
+      }
+
+      throw new Error('Input type is strange')
     },
   },
   Channel: {

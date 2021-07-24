@@ -17,10 +17,16 @@ type ExtendedChannel =
     }
 
 export default class PChannelRepository implements IChannelRepository {
-  async getChannelListByCommunityId(communityId: string): Promise<Channel[]> {
+  async getChannelListByCommunityId(
+    communityId: string,
+    isPrivate?: boolean,
+    userId?: string,
+    joining?: boolean
+  ): Promise<Channel[]> {
     const result = await prisma.channel.findMany({
       where: {
         community_id: communityId,
+        is_private: isPrivate,
         deleted_at: null,
       },
       include: {
@@ -32,9 +38,44 @@ export default class PChannelRepository implements IChannelRepository {
       },
     })
 
-    const cChannelList = result.map((channel) => this.converter(channel))
+    let channelList = result.map((channel) => this.converter(channel))
 
-    return cChannelList
+    // ユーザーが不参加のチャンネルリストを抽出
+    if (joining === false) {
+      channelList = channelList.filter((channel) => {
+        // チャンネルにユーザーがいない
+        const notExists =
+          channel.channelMembers.findIndex((member) => member.id === userId) ===
+          -1
+
+        if (notExists) return true
+
+        // チャンネルから既に退会している
+        const leaved =
+          channel.channelMembers.findIndex(
+            (member) =>
+              member.id === userId && member.role === ChannelRole.Leaved
+          ) !== -1
+
+        if (leaved) return true
+        return false
+      })
+    }
+
+    // ユーザーが参加中のチャンネルリストを抽出
+    if (joining) {
+      channelList = channelList.filter((channel) => {
+        const exists =
+          channel.channelMembers.findIndex(
+            (member) =>
+              member.id === userId && member.role !== ChannelRole.Leaved
+          ) !== -1
+
+        return exists
+      })
+    }
+
+    return channelList
   }
 
   async getChannelById(id: string): Promise<Channel> {

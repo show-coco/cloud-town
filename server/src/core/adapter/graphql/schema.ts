@@ -31,6 +31,11 @@ export const typeDefs = gql`
     id: String!
   }
 
+  input GetChannelsInput {
+    joining: Boolean
+    isPrivate: Boolean
+  }
+
   input GetChannelInput {
     id: String!
   }
@@ -67,7 +72,7 @@ export const typeDefs = gql`
     introduction: String!
     createdAt: Date!
     updatedAt: Date!
-    channels: [Channel!]
+    channels(input: GetChannelsInput): [Channel!]
   }
 
   type Channel {

@@ -62,6 +62,11 @@ export type Community = {
   channels?: Maybe<Array<Channel>>;
 };
 
+
+export type CommunityChannelsArgs = {
+  input?: Maybe<GetChannelsInput>;
+};
+
 export type CreateChannelInput = {
   slug: Scalars['String'];
   name: Scalars['String'];
@@ -82,6 +87,11 @@ export type DeleteChannelInput = {
 
 export type GetChannelInput = {
   id: Scalars['String'];
+};
+
+export type GetChannelsInput = {
+  joining?: Maybe<Scalars['Boolean']>;
+  isPrivate?: Maybe<Scalars['Boolean']>;
 };
 
 export type GetCommunityInput = {
@@ -280,6 +290,7 @@ export type ResolversTypes = ResolversObject<{
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DeleteChannelInput: DeleteChannelInput;
   GetChannelInput: GetChannelInput;
+  GetChannelsInput: GetChannelsInput;
   GetCommunityInput: GetCommunityInput;
   JoinChannelInput: JoinChannelInput;
   KickMemberFromChannelInput: KickMemberFromChannelInput;
@@ -304,6 +315,7 @@ export type ResolversParentTypes = ResolversObject<{
   Date: Scalars['Date'];
   DeleteChannelInput: DeleteChannelInput;
   GetChannelInput: GetChannelInput;
+  GetChannelsInput: GetChannelsInput;
   GetCommunityInput: GetCommunityInput;
   JoinChannelInput: JoinChannelInput;
   KickMemberFromChannelInput: KickMemberFromChannelInput;
@@ -339,7 +351,7 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
   introduction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType>;
+  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<CommunityChannelsArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
