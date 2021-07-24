@@ -170,7 +170,7 @@ export default class Channel {
   }
 
   canAdd(userId: string): boolean {
-    return this.isAdmin(userId) || this.isOwner(userId)
+    return Boolean(this.getMember(userId))
   }
 
   getMember(userId: string): ChannelMember | undefined {
