@@ -12,11 +12,11 @@ import PCommunityRepository from '../repository/CommunityRepository/PCommunityRe
 import { Context } from '../../../types/context'
 import { dateScalar } from './scalar'
 import PUserRepository from '../repository/UserRepository/PUserRepository'
-import MessageUseCase, {
-  ThreadModel,
-} from '../../usecase/chat/message/MessageUseCase'
 import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
 import PThreadRepository from '../repository/ThreadRepository/PThreadRepository'
+import MessageUseCase, {
+  ThreadUCOutput,
+} from '../../usecase/chat/message/MessageUseCase'
 
 const communityRepo = new PCommunityRepository()
 const channelRepo = new PChannelRepository()
@@ -225,7 +225,7 @@ export const resolvers: Resolvers = {
   },
 }
 
-const threadMapToSchema = (thread: ThreadModel): GThread => {
+const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
   return {
     id: thread.id,
     content: thread.content,

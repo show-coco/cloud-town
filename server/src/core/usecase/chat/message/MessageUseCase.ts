@@ -1,10 +1,9 @@
 import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
 import IThreadReporsitory from '../../../adapter/repository/ThreadRepository/IThreadRepository'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
-import Reply from '../../../domain/entities/ThreadAggregate/Reply'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 
-type ReplyModel = {
+export type ReplyUCOutput = {
   id: string
   content: string
   channelId: string
@@ -14,15 +13,8 @@ type ReplyModel = {
   readers?: ChannelMember[]
 }
 
-export type ThreadModel = {
-  id: string
-  content: string
-  channelId: string
-  slug: string
-  pinned: boolean
-  sender: ChannelMember
-  replies?: ReplyModel[]
-  readers?: ChannelMember[]
+export type ThreadUCOutput = ReplyUCOutput & {
+  replies?: ReplyUCOutput[]
 }
 
 export default class MessageUseCase {
@@ -42,7 +34,7 @@ export default class MessageUseCase {
     senderId: string
     content: string
     channelId: string
-  }): Promise<ThreadModel> {
+  }): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(channelId)
     const sender = channel.getMember(senderId)
 
@@ -51,7 +43,7 @@ export default class MessageUseCase {
     const newThread = Thread.create({ content, channelId, senderId })
     const thread = await this.threadRepo.save(newThread)
 
-    const replies = thread.replies?.map<ReplyModel>((reply) => {
+    const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
       const replier = channel.getMember(reply.id)
       if (!replier) throw new Error('Channel member is not found')
       return {
