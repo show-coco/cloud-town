@@ -81,7 +81,6 @@ export const typeDefs = gql`
     introduction: String!
     createdAt: Date!
     updatedAt: Date!
-    channels: [Channel!]
     plans: [Plan]
     channels(input: GetChannelsInput): [Channel!]
   }
