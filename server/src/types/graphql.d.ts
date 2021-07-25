@@ -59,12 +59,8 @@ export type Community = {
   introduction?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
+  channels?: Maybe<Array<Channel>>;
   plans?: Maybe<Array<Maybe<Plan>>>;
-};
-
-
-export type CommunityChannelsArgs = {
-  input?: Maybe<GetChannelsInput>;
 };
 
 export type CreateChannelInput = {
@@ -154,17 +150,6 @@ export type MutationChangeChannelOwnerArgs = {
   input: ChangeChannelOwnerInput;
 };
 
-export type Plan = {
-  __typename?: 'Plan';
-  id?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  introduction?: Maybe<Scalars['String']>;
-  pricePerMonth?: Maybe<Scalars['Int']>;
-  trialPeriod: Scalars['String'];
-  numberOfApplicants: Scalars['Int'];
-  createdAt?: Maybe<Scalars['Date']>;
-  updatedAt?: Maybe<Scalars['Date']>;
-}
 
 export type MutationDeleteChannelArgs = {
   input: DeleteChannelInput;
@@ -193,6 +178,24 @@ export type MutationAddMemberToChannelArgs = {
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
+};
+
+export type Plan = {
+  __typename?: 'Plan';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  introduction?: Maybe<Scalars['String']>;
+  pricePerMonth?: Maybe<Scalars['Int']>;
+  trialPeriod: Scalars['String'];
+  numberOfApplicants: Scalars['Int'];
+  createdAt?: Maybe<Scalars['Date']>;
+  updatedAt?: Maybe<Scalars['Date']>;
+  channels?: Maybe<Array<Channel>>;
+};
+
+
+export type PlanChannelsArgs = {
+  input?: Maybe<GetChannelsInput>;
 };
 
 export type Query = {
@@ -318,8 +321,8 @@ export type ResolversTypes = ResolversObject<{
   KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
-  Plan: ResolverTypeWrapper<Plan>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
+  Plan: ResolverTypeWrapper<Plan>;
   Query: ResolverTypeWrapper<{}>;
   UpdateChannelInput: UpdateChannelInput;
 }>;
@@ -346,8 +349,8 @@ export type ResolversParentTypes = ResolversObject<{
   KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
-  Plan: Plan;
   MutationResponse: MutationResponse;
+  Plan: Plan;
   Query: {};
   UpdateChannelInput: UpdateChannelInput;
 }>;
@@ -377,14 +380,8 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
   introduction?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType>;
   plans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  introduction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<CommunityChannelsArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -404,6 +401,11 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addMemberToChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationAddMemberToChannelArgs, 'input'>>;
 }>;
 
+export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = ResolversObject<{
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -413,15 +415,9 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   numberOfApplicants?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<PlanChannelsArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
-
-export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<QueryCommunityArgs, 'input'>>;
-export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-    ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-    __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-  }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<QueryCommunityArgs, 'input'>>;
@@ -434,8 +430,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Community?: CommunityResolvers<ContextType>;
   Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
-  Plan?: PlanResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
+  Plan?: PlanResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 
