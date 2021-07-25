@@ -75,12 +75,12 @@ export const typeDefs = gql`
   }
 
   type Community {
-    id: String
-    name: String
-    slug: String
-    introduction: String
-    createdAt: Date
-    updatedAt: Date
+    id: String!
+    name: String!
+    slug: String!
+    introduction: String!
+    createdAt: Date!
+    updatedAt: Date!
     channels: [Channel!]
     plans: [Plan]
   }
