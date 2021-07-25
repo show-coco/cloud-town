@@ -3,6 +3,10 @@ import { gql } from 'apollo-server-express'
 export const typeDefs = gql`
   scalar Date
 
+  input GetCommunityInput {
+    id: String!
+  }
+
   input CreateCommunityInput {
     name: String!
     slug: String!
@@ -32,7 +36,16 @@ export const typeDefs = gql`
     isPrivate: Boolean
   }
 
-  input GetCommunityInput {
+  input DeleteChannelInput {
+    id: String!
+  }
+
+  input GetChannelsInput {
+    joining: Boolean
+    isPrivate: Boolean
+  }
+
+  input GetChannelInput {
     id: String!
   }
 
@@ -42,8 +55,23 @@ export const typeDefs = gql`
     nextOwnerId: String!
   }
 
-  type Query {
-    community(input: GetCommunityInput!): Community
+  input LeaveChannelInput {
+    id: String!
+    nextOwnerId: String
+  }
+
+  input JoinChannelInput {
+    id: String!
+  }
+
+  input KickMemberFromChannelInput {
+    id: String!
+    memberId: String!
+  }
+
+  input AddMemberToChannelInput {
+    id: String!
+    memberIds: [String!]!
   }
 
   type Community {
@@ -66,6 +94,7 @@ export const typeDefs = gql`
     numberOfApplicants: Int!
     createdAt: Date
     updatedAt: Date
+    channels(input: GetChannelsInput): [Channel!]
   }
 
   type Channel {
@@ -73,15 +102,32 @@ export const typeDefs = gql`
     slug: String!
     name: String!
     isPrivate: Boolean!
-    members: [User!]
+    members: [ChannelMember!]
     # createdAt: Date!
   }
 
-  type User {
+  enum ChannelRole {
+    OWNER
+    ADMIN
+    COMMON
+    LEAVED
+  }
+
+  type ChannelMember {
     id: String!
     name: String!
     slug: String!
     email: String!
+    role: ChannelRole!
+  }
+
+  type MutationResponse {
+    ok: Boolean!
+  }
+
+  type Query {
+    community(input: GetCommunityInput!): Community
+    channel(input: GetChannelInput!): Channel!
   }
 
   type Mutation {
@@ -89,5 +135,10 @@ export const typeDefs = gql`
     createChannel(input: CreateChannelInput!): Channel!
     updateChannel(input: UpdateChannelInput!): Channel!
     changeChannelOwner(input: ChangeChannelOwnerInput!): Channel!
+    deleteChannel(input: DeleteChannelInput!): MutationResponse!
+    leaveChannel(input: LeaveChannelInput!): MutationResponse!
+    joinChannel(input: JoinChannelInput!): Channel!
+    kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
+    addMemberToChannel(input: AddMemberToChannelInput!): Channel!
   }
 `

@@ -1,5 +1,6 @@
 import { ChannelRole } from '@prisma/client'
 import { v4 } from 'uuid'
+import User from '../User'
 import ChannelMember from './ChannelMember'
 
 export default class Channel {
@@ -9,6 +10,7 @@ export default class Channel {
   private _isPrivate: boolean
   private _channelMembers: ChannelMember[] = []
   private _communityId: string
+  private _deletedAt?: Date
 
   constructor({
     id,
@@ -33,6 +35,164 @@ export default class Channel {
     this._communityId = communityId
   }
 
+  existsInChannel(userId: string): boolean {
+    return this._channelMembers.some(
+      (channelMember) => channelMember.id === userId
+    )
+  }
+
+  addOwner(user: User): void {
+    // チャンネルのオーナーは1人
+    if (this.currentOwner) {
+      throw new Error('Owner already exists.')
+    }
+
+    const owner = new ChannelMember({
+      id: user.id,
+      googleId: user.googleId,
+      slug: user.slug,
+      name: user.name,
+      email: user.email,
+      role: ChannelRole.Owner,
+    })
+
+    this._channelMembers.push(owner)
+  }
+
+  changeOwner(currentOwnerId: string, nextOwnerId: string): void {
+    const currentOwner = this.currentOwner
+
+    // オーナー権限を委譲できるのは現在オーナーのメンバーのみ
+    if (currentOwner?.id !== currentOwnerId)
+      throw new Error("This user doesn't have authorization to change owner.")
+
+    const owner = this.currentOwner
+    const member = this.getMember(nextOwnerId)
+    if (!owner) throw new Error("Owner doesn't exists.")
+    if (!member) throw new Error("Member doesn't exists.")
+
+    owner.changeRole(ChannelRole.Admin)
+    member.changeRole(ChannelRole.Owner)
+  }
+
+  changeName(name: string): void {
+    this._name = name
+  }
+
+  changeSlug(slug: string): void {
+    this._slug = slug
+  }
+
+  changeIsPrivate(isPrivate: boolean): void {
+    this._isPrivate = isPrivate
+  }
+
+  delete(userId: string): void {
+    // 削除できるのはオーナーかアドミンのみ
+    if (!this.isOwner(userId) && !this.isAdmin(userId))
+      throw new Error('User does not have authorization to delete the channel')
+
+    this._deletedAt = new Date()
+  }
+
+  leave(userId: string, nextOwnerId?: string): void {
+    // オーナーが脱退するとき、次のオーナーが指定されていなければならない
+    if (this.isOwner(userId) && nextOwnerId) {
+      this.changeOwner(userId, nextOwnerId)
+    } else if (this.isOwner(userId) && !nextOwnerId) {
+      throw new Error('The next owner is not specified')
+    }
+
+    const member = this.getMember(userId)
+    if (!member) throw new Error('Member is not found')
+
+    member.changeRole(ChannelRole.Leaved)
+  }
+
+  join(user: User): void {
+    if (this.getMember(user.id))
+      throw new Error('The user has already joined the channel')
+
+    if (this._isPrivate)
+      throw new Error('This channel is private. Only invited users can join.')
+
+    const member = new ChannelMember({
+      id: user.id,
+      googleId: user.googleId,
+      slug: user.slug,
+      name: user.name,
+      email: user.email,
+      role: ChannelRole.Common,
+    })
+
+    this._channelMembers.push(member)
+  }
+
+  addMembers(inviterId: string, users: User[]): void {
+    if (!this.canAdd(inviterId))
+      throw new Error(
+        'User does not have authorization to add members to the channel'
+      )
+
+    const members = users.map((user) => {
+      if (this.getMember(user.id))
+        throw new Error('The user has already joined the channel')
+
+      return new ChannelMember({
+        id: user.id,
+        googleId: user.googleId,
+        slug: user.slug,
+        name: user.name,
+        email: user.email,
+        role: ChannelRole.Common,
+      })
+    })
+    console.log(members)
+
+    this._channelMembers = [...this._channelMembers, ...members]
+  }
+
+  kickMember(kickerId: string, memberId: string): void {
+    if (!this.canKick(kickerId))
+      throw new Error("You don't have the authority to kick user")
+
+    if (this.isOwner(memberId))
+      throw new Error('Channel owner cannot be kicked')
+
+    const member = this.getMember(memberId)
+    if (!member) throw new Error('Member is not found')
+
+    member.changeRole(ChannelRole.Leaved)
+  }
+
+  canKick(userId: string): boolean {
+    return this.isAdmin(userId) || this.isOwner(userId)
+  }
+
+  canAdd(userId: string): boolean {
+    return Boolean(this.getMember(userId))
+  }
+
+  getMember(userId: string): ChannelMember | undefined {
+    return this._channelMembers.find(
+      (channelMember) => channelMember.id === userId
+    )
+  }
+
+  private isOwner(userId: string): boolean {
+    return this.getMember(userId)?.role === ChannelRole.Owner
+  }
+
+  private isAdmin(userId: string): boolean {
+    return this.getMember(userId)?.role === ChannelRole.Admin
+  }
+
+  get currentOwner(): ChannelMember | undefined {
+    return this._channelMembers.find(
+      (channelMember) => channelMember.role === ChannelRole.Owner
+    )
+  }
+
   get name(): string {
     return this._name
   }
@@ -53,62 +213,7 @@ export default class Channel {
     return this._communityId
   }
 
-  existsInChannel(userId: string): boolean {
-    return this._channelMembers.some(
-      (channelMember) => channelMember.userId === userId
-    )
-  }
-
-  // チャンネルのオーナーは1人
-  addOwner(userId: string): void {
-    if (this.currentOwner()) {
-      throw new Error('Owner already exists.')
-    }
-
-    const owner = new ChannelMember({
-      userId,
-      channelId: this.id,
-      role: ChannelRole.OWNER,
-    })
-
-    this._channelMembers.push(owner)
-  }
-
-  changeOwner(currentOwnerId: string, nextOwnerId: string): void {
-    const currentOwner = this.currentOwner()
-    if (currentOwner?.userId !== currentOwnerId)
-      throw new Error("This user doesn't have authorization to change owner.")
-
-    const owner = this.currentOwner()
-    const member = this.getMember(nextOwnerId)
-    if (!owner) throw new Error("Owner doesn't exists.")
-    if (!member) throw new Error("Member doesn't exists.")
-
-    owner.changeRole(ChannelRole.ADMIN)
-    member.changeRole(ChannelRole.OWNER)
-  }
-
-  changeName(name: string): void {
-    this._name = name
-  }
-
-  changeSlug(slug: string): void {
-    this._slug = slug
-  }
-
-  changeIsPrivate(isPrivate: boolean): void {
-    this._isPrivate = isPrivate
-  }
-
-  currentOwner(): ChannelMember | undefined {
-    return this._channelMembers.find(
-      (channelMember) => channelMember.role === ChannelRole.OWNER
-    )
-  }
-
-  getMember(userId: string): ChannelMember | undefined {
-    return this._channelMembers.find(
-      (channelMember) => channelMember.userId === userId
-    )
+  get deletedAt(): Date | undefined {
+    return this._deletedAt
   }
 }

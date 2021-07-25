@@ -83,6 +83,7 @@ model Channel {
   is_private    Boolean
   channel       Community       @relation(fields: [community_id], references: [id])
   community_id  String
+  deleted_at    DateTime?
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   ChannelMember ChannelMember[]
@@ -91,11 +92,13 @@ model Channel {
 /// チャンネルのユーザー権限
 enum ChannelRole {
   /// 一般
-  COMMON
+  Common
   /// 管理者
-  ADMIN
+  Admin
   /// オーナー
-  OWNER
+  Owner
+  /// 脱退済み
+  Leaved
 }
 
 /// チャンネルに所属するユーザー
