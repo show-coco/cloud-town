@@ -2,6 +2,7 @@ import ICommunityRepository from '../../adapter/repository/CommunityRepository/I
 import { CreateCommunityParam } from './CommunityUseCaseParam'
 import Community from '../../domain/entities/CommunityAggregate/Community'
 import Plan from '../../domain/entities/CommunityAggregate/Plan'
+import { TrialPeriod } from '@prisma/client'
 
 export default class CommunityUseCase {
   private communityRepo: ICommunityRepository
@@ -43,11 +44,20 @@ export default class CommunityUseCase {
     const newPlans =
       plans &&
       plans.map((plan) => {
+        const isTrialPeriod = (v: string | null): v is TrialPeriod => {
+          if (!v) {
+            return false
+          }
+          return (Object.values(TrialPeriod) as string[]).includes(v)
+        }
+
         return new Plan({
           name: plan.name,
           introduction: plan.introduction,
           pricePerMonth: plan.pricePerMonth,
-          trialPeriod: plan.trialPeriod,
+          trialPeriod: isTrialPeriod(plan.trialPeriod)
+            ? plan.trialPeriod
+            : null,
           numberOfApplicants: plan.numberOfApplicants,
           createdAt: new Date(),
           updatedAt: new Date(),

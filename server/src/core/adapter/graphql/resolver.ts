@@ -101,7 +101,22 @@ export const resolvers: Resolvers = {
         name: args.input.name,
         slug: args.input.slug,
         introduction: args.input.introduction,
-        plans: args.input.plans || [],
+        plans:
+          args.input.plans
+            ?.map((plan) => {
+              if (!plan) {
+                return undefined
+              }
+
+              return {
+                name: plan.name?.toString(),
+                introduction: plan.introduction,
+                pricePerMonth: plan.pricePerMonth,
+                trialPeriod: plan.trialPeriod,
+                numberOfApplicants: plan.numberOfApplicants,
+              }
+            })
+            .filter((v) => v !== undefined) || [],
       })
 
       return {
