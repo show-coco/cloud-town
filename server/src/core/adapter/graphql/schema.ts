@@ -84,6 +84,28 @@ export const typeDefs = gql`
     # createdAt: Date!
   }
 
+  input PostThreadInput {
+    channelId: String!
+    content: String!
+  }
+
+  type Thread {
+    id: String!
+    content: String!
+    pinned: Boolean!
+    slug: String!
+    sender: ChannelMember!
+    replies: [Reply!]
+  }
+
+  type Reply {
+    id: String!
+    content: String!
+    slug: String!
+    pinned: Boolean!
+    sender: ChannelMember!
+  }
+
   enum ChannelRole {
     OWNER
     ADMIN
@@ -118,5 +140,6 @@ export const typeDefs = gql`
     joinChannel(input: JoinChannelInput!): Channel!
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
+    postThread(input: PostThreadInput!): Thread!
   }
 `

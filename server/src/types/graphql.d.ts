@@ -123,6 +123,7 @@ export type Mutation = {
   joinChannel: Channel;
   kickMemberFromChannel: Channel;
   addMemberToChannel: Channel;
+  postThread: Thread;
 };
 
 
@@ -170,9 +171,19 @@ export type MutationAddMemberToChannelArgs = {
   input: AddMemberToChannelInput;
 };
 
+
+export type MutationPostThreadArgs = {
+  input: PostThreadInput;
+};
+
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
+};
+
+export type PostThreadInput = {
+  channelId: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type Query = {
@@ -189,6 +200,25 @@ export type QueryCommunityArgs = {
 
 export type QueryChannelArgs = {
   input: GetChannelInput;
+};
+
+export type Reply = {
+  __typename?: 'Reply';
+  id: Scalars['String'];
+  content: Scalars['String'];
+  slug: Scalars['String'];
+  pinned: Scalars['Boolean'];
+  sender: ChannelMember;
+};
+
+export type Thread = {
+  __typename?: 'Thread';
+  id: Scalars['String'];
+  content: Scalars['String'];
+  pinned: Scalars['Boolean'];
+  slug: Scalars['String'];
+  sender: ChannelMember;
+  replies?: Maybe<Array<Reply>>;
 };
 
 export type UpdateChannelInput = {
@@ -297,7 +327,10 @@ export type ResolversTypes = ResolversObject<{
   LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
+  PostThreadInput: PostThreadInput;
   Query: ResolverTypeWrapper<{}>;
+  Reply: ResolverTypeWrapper<Reply>;
+  Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
 }>;
 
@@ -322,7 +355,10 @@ export type ResolversParentTypes = ResolversObject<{
   LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
   MutationResponse: MutationResponse;
+  PostThreadInput: PostThreadInput;
   Query: {};
+  Reply: Reply;
+  Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
 }>;
 
@@ -369,6 +405,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   joinChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationJoinChannelArgs, 'input'>>;
   kickMemberFromChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationKickMemberFromChannelArgs, 'input'>>;
   addMemberToChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationAddMemberToChannelArgs, 'input'>>;
+  postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
@@ -381,6 +418,25 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'input'>>;
 }>;
 
+export type ReplyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Reply'] = ResolversParentTypes['Reply']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ThreadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  replies?: Resolver<Maybe<Array<ResolversTypes['Reply']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Channel?: ChannelResolvers<ContextType>;
   ChannelMember?: ChannelMemberResolvers<ContextType>;
@@ -389,6 +445,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Reply?: ReplyResolvers<ContextType>;
+  Thread?: ThreadResolvers<ContextType>;
 }>;
 
 

@@ -1,4 +1,10 @@
-import { Resolvers, ChannelRole } from '../../../types/graphql'
+import {
+  Resolvers,
+  ChannelRole,
+  Thread as GThread,
+  ChannelMember as GChannelMember,
+  Reply as GReply,
+} from '../../../types/graphql'
 import ChatUseCase from '../../usecase/chat/channel/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
@@ -6,13 +12,21 @@ import PCommunityRepository from '../repository/CommunityRepository/PCommunityRe
 import { Context } from '../../../types/context'
 import { dateScalar } from './scalar'
 import PUserRepository from '../repository/UserRepository/PUserRepository'
+import MessageUseCase, {
+  ThreadModel,
+} from '../../usecase/chat/message/MessageUseCase'
+import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
+import PThreadRepository from '../repository/ThreadRepository/PThreadRepository'
 
 const communityRepo = new PCommunityRepository()
-const communityUseCase = new CommunityUseCase(communityRepo)
-
 const channelRepo = new PChannelRepository()
 const userRepo = new PUserRepository()
+const threadRepo = new PThreadRepository()
+
+const communityUseCase = new CommunityUseCase(communityRepo)
 const channelUseCase = new ChatUseCase(channelRepo, userRepo)
+
+const messageUseCase = new MessageUseCase(threadRepo, channelRepo)
 
 export const resolvers: Resolvers = {
   Date: dateScalar,
@@ -65,30 +79,7 @@ export const resolvers: Resolvers = {
     members: async (channel) => {
       const members = await channelUseCase.getMemberList(channel.id)
 
-      return members.map((member) => {
-        let role: ChannelRole
-        switch (member.role) {
-          case 'Admin':
-            role = ChannelRole.Admin
-            break
-          case 'Common':
-            role = ChannelRole.Common
-            break
-          case 'Leaved':
-            role = ChannelRole.Leaved
-            break
-          case 'Owner':
-            role = ChannelRole.Owner
-        }
-
-        return {
-          id: member.id,
-          slug: member.slug,
-          name: member.name,
-          email: member.email,
-          role,
-        }
-      })
+      return members.map((member) => channelMemberMapToSchema(member))
     },
   },
   Mutation: {
@@ -217,5 +208,61 @@ export const resolvers: Resolvers = {
 
       return channelUseCase.addMembers({ id, userId, memberIds })
     },
+    postThread: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { channelId, content } = args.input
+      const senderId = context.user.sub
+
+      const thread = await messageUseCase.postThread({
+        senderId,
+        channelId,
+        content,
+      })
+
+      return threadMapToSchema(thread)
+    },
   },
+}
+
+const threadMapToSchema = (thread: ThreadModel): GThread => {
+  return {
+    id: thread.id,
+    content: thread.content,
+    pinned: thread.pinned,
+    slug: thread.slug,
+    sender: channelMemberMapToSchema(thread.sender),
+    replies: thread.replies?.map<GReply>((reply) => ({
+      content: reply.content,
+      id: reply.id,
+      pinned: reply.pinned,
+      slug: reply.slug,
+      sender: channelMemberMapToSchema(reply.sender),
+    })),
+  }
+}
+
+const channelMemberMapToSchema = (member: ChannelMember): GChannelMember => {
+  let role: ChannelRole
+  switch (member.role) {
+    case 'Admin':
+      role = ChannelRole.Admin
+      break
+    case 'Common':
+      role = ChannelRole.Common
+      break
+    case 'Leaved':
+      role = ChannelRole.Leaved
+      break
+    case 'Owner':
+      role = ChannelRole.Owner
+  }
+
+  return {
+    id: member.id,
+    slug: member.slug,
+    name: member.name,
+    email: member.email,
+    role,
+  }
 }

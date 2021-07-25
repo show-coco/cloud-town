@@ -1,28 +1,74 @@
 import { v4 } from 'uuid'
 import ChannelMember from '../ChannelAggregate/ChannelMember'
 
-export type MessageProps = {
+export type MessageCreateProps = {
   content: string
-  sender: ChannelMember
   channelId: string
+  senderId: string
+}
+
+export type MessageConstructorProps = {
+  id: string
+  content: string
+  channelId: string
+  slug: string
+  pinned: boolean
+  senderId: string
+  readers?: ChannelMember[]
+}
+
+export type MessageRegenerateProps = {
+  content: string
+  channelId: string
+  senderId: string
+  slug: string
+  id: string
+  pinned: boolean
 }
 
 export default class Message {
-  private _id: string
-  private _content: string
-  private _slug: string
-  private _pinned: boolean
-  private _channelId: string
-  readonly _sender: ChannelMember
-  readonly _readers?: ChannelMember[]
+  protected _id: string
+  protected _content: string
+  protected _slug: string
+  protected _pinned: boolean
+  protected _channelId: string
+  protected _senderId: string
+  protected _readers?: ChannelMember[]
 
-  constructor({ content, sender, channelId }: MessageProps) {
+  protected constructor({
+    id,
+    content,
+    slug,
+    pinned,
+    channelId,
+    senderId,
+    readers,
+  }: MessageConstructorProps) {
+    this._id = id
     this._content = content
+    this._slug = slug
+    this._pinned = pinned
     this._channelId = channelId
-    this._sender = sender
-    this._slug = 'Cxxxxx' // TODO: スラッグを生成
-    this._id = v4()
-    this._pinned = false
+    this._senderId = senderId
+    this._readers = readers
+  }
+
+  static create(props: MessageCreateProps): Message {
+    const timestamp = new Date().getTime()
+    const slug = 'M' + timestamp.toString()
+    const id = v4()
+    const pinned = false
+
+    return new Message({
+      ...props,
+      id,
+      slug,
+      pinned,
+    })
+  }
+
+  static regenerate(props: MessageRegenerateProps): Message {
+    return new Message(props)
   }
 
   get id(): string {
@@ -41,8 +87,8 @@ export default class Message {
     return this._readers
   }
 
-  get sender(): ChannelMember {
-    return this._sender
+  get senderId(): string {
+    return this._senderId
   }
 
   get pinned(): boolean {
