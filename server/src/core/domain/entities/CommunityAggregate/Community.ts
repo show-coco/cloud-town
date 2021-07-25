@@ -1,4 +1,6 @@
 import { v4 } from 'uuid'
+import CommunityPlan from './CommunityPlan'
+import Plan from './Plan'
 
 export default class Community {
   private id: string
@@ -10,6 +12,7 @@ export default class Community {
   private introduction: string
   private createdAt: Date
   private updatedAt: Date
+  private _communityPlans: CommunityPlan[]
 
   constructor({
     id,
@@ -18,6 +21,7 @@ export default class Community {
     introduction,
     createdAt,
     updatedAt,
+    communityPlans,
   }: {
     id?: string
     name: string
@@ -25,6 +29,7 @@ export default class Community {
     introduction: string
     createdAt: Date
     updatedAt: Date
+    communityPlans?: CommunityPlan[]
   }) {
     this.id = id || v4()
     this.name = name
@@ -32,6 +37,7 @@ export default class Community {
     this.introduction = introduction
     this.createdAt = createdAt
     this.updatedAt = updatedAt
+    this._communityPlans = communityPlans || []
   }
 
   getCommunityId(): string {
@@ -59,5 +65,28 @@ export default class Community {
 
   getUpdatedAt(): Date {
     return this.updatedAt
+  }
+
+  getCommunityPlans(): CommunityPlan[] {
+    return this._communityPlans
+  }
+
+  /**
+   * Planの追加
+   *
+   * @param plan
+   */
+  addPlan(plan: Plan): void {
+    const communityId = this.id
+
+    const communityPlan = new CommunityPlan({
+      planId: plan.getId(),
+      communityId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      plan,
+    })
+
+    this._communityPlans.push(communityPlan)
   }
 }

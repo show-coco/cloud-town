@@ -1,4 +1,4 @@
-import Community from '../../../domain/entities/Community'
+import Community from '../../../domain/entities/CommunityAggregate/Community'
 
 export default interface ICommunityRepository {
   /**

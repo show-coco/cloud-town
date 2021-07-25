@@ -1,4 +1,4 @@
-import { Resolvers, ChannelRole } from '../../../types/graphql'
+import { Plan, Resolvers, ChannelRole } from '../../../types/graphql'
 import ChatUseCase from '../../usecase/chat/channel/ChannelUseCase'
 import CommunityUseCase from '../../usecase/community/CommunityUseCase'
 import PChannelRepository from '../repository/ChannelRepository/PChannelRepository'
@@ -6,6 +6,8 @@ import PCommunityRepository from '../repository/CommunityRepository/PCommunityRe
 import { Context } from '../../../types/context'
 import { dateScalar } from './scalar'
 import PUserRepository from '../repository/UserRepository/PUserRepository'
+import { TrialPeriod } from '@prisma/client'
+import { CreateCommunityParam } from '../../usecase/community/CommunityUseCaseParam'
 
 const communityRepo = new PCommunityRepository()
 const communityUseCase = new CommunityUseCase(communityRepo)
@@ -97,11 +99,29 @@ export const resolvers: Resolvers = {
         args,
       })
 
+      const plans =
+        args.input.plans
+          ?.map((plan) => {
+            if (!plan) {
+              return undefined
+            }
+
+            return {
+              name: plan.name?.toString(),
+              introduction: plan.introduction,
+              pricePerMonth: plan.pricePerMonth,
+              trialPeriod: plan.trialPeriod as string | TrialPeriod | null,
+              numberOfApplicants: plan.numberOfApplicants as number | null,
+            }
+          })
+          .filter((v) => !v) || []
+
       const com = await communityUseCase.createCommunity({
         name: args.input.name,
         slug: args.input.slug,
         introduction: args.input.introduction,
-      })
+        plans: plans,
+      } as CreateCommunityParam)
 
       return {
         id: com.getCommunityId(),
@@ -110,6 +130,20 @@ export const resolvers: Resolvers = {
         introduction: com.getIntroduction(),
         createdAt: com.getCreatedAt(),
         updatedAt: com.getUpdatedAt(),
+        plans: com.getCommunityPlans().map(
+          (communityPlan): Plan => ({
+            id: communityPlan.getPlan().getId(),
+            name: communityPlan.getPlan().getName(),
+            introduction: communityPlan.getPlan().getIntroduction(),
+            pricePerMonth: communityPlan.getPlan().getPricePerMonth(),
+            trialPeriod: communityPlan.getPlan().getTrialPeriod() as string,
+            numberOfApplicants: communityPlan
+              .getPlan()
+              .getNumberOfApplicants() as number,
+            createdAt: communityPlan.getPlan().getCreatedAt(),
+            updatedAt: communityPlan.getPlan().getUpdatedAt(),
+          })
+        ),
       }
     },
     createChannel: async (_parent, args, context: Context) => {

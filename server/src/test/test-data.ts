@@ -1,7 +1,7 @@
 import { ChannelRole } from '@prisma/client'
 import Channel from '../core/domain/entities/ChannelAggregate/Channel'
 import ChannelMember from '../core/domain/entities/ChannelAggregate/ChannelMember'
-import Community from '../core/domain/entities/Community'
+import Community from '../core/domain/entities/CommunityAggregate/Community'
 import User from '../core/domain/entities/User'
 
 export const createTestCommunity = (): Community =>

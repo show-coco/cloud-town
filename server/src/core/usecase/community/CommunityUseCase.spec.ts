@@ -42,6 +42,7 @@ describe('CommunityUseCase', () => {
         name: '山田太郎',
         slug: 'abcdef',
         introduction: '<p>Hello</p>',
+        plans: [],
       }
 
       // WHEN

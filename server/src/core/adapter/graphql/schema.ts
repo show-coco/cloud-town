@@ -11,6 +11,15 @@ export const typeDefs = gql`
     name: String!
     slug: String!
     introduction: String!
+    plans: [CreatePlanInputWithNoCommunityId]
+  }
+
+  input CreatePlanInputWithNoCommunityId {
+    name: String
+    introduction: String!
+    pricePerMonth: Int!
+    trialPeriod: String!
+    numberOfApplicants: Int!
   }
 
   input CreateChannelInput {
@@ -72,7 +81,19 @@ export const typeDefs = gql`
     introduction: String!
     createdAt: Date!
     updatedAt: Date!
+    plans: [Plan]
     channels(input: GetChannelsInput): [Channel!]
+  }
+
+  type Plan {
+    id: String
+    name: String
+    introduction: String
+    pricePerMonth: Int
+    trialPeriod: String!
+    numberOfApplicants: Int!
+    createdAt: Date
+    updatedAt: Date
   }
 
   type Channel {

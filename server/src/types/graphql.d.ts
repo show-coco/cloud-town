@@ -60,6 +60,7 @@ export type Community = {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   channels?: Maybe<Array<Channel>>;
+  plans?: Maybe<Array<Maybe<Plan>>>;
 };
 
 
@@ -78,6 +79,15 @@ export type CreateCommunityInput = {
   name: Scalars['String'];
   slug: Scalars['String'];
   introduction: Scalars['String'];
+  plans?: Maybe<Array<Maybe<CreatePlanInputWithNoCommunityId>>>;
+};
+
+export type CreatePlanInputWithNoCommunityId = {
+  name?: Maybe<Scalars['String']>;
+  introduction: Scalars['String'];
+  pricePerMonth: Scalars['Int'];
+  trialPeriod: Scalars['String'];
+  numberOfApplicants: Scalars['Int'];
 };
 
 
@@ -173,6 +183,18 @@ export type MutationAddMemberToChannelArgs = {
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
+};
+
+export type Plan = {
+  __typename?: 'Plan';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  introduction?: Maybe<Scalars['String']>;
+  pricePerMonth?: Maybe<Scalars['Int']>;
+  trialPeriod: Scalars['String'];
+  numberOfApplicants: Scalars['Int'];
+  createdAt?: Maybe<Scalars['Date']>;
+  updatedAt?: Maybe<Scalars['Date']>;
 };
 
 export type Query = {
@@ -287,6 +309,8 @@ export type ResolversTypes = ResolversObject<{
   Community: ResolverTypeWrapper<Community>;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreatePlanInputWithNoCommunityId: CreatePlanInputWithNoCommunityId;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DeleteChannelInput: DeleteChannelInput;
   GetChannelInput: GetChannelInput;
@@ -297,6 +321,7 @@ export type ResolversTypes = ResolversObject<{
   LeaveChannelInput: LeaveChannelInput;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
+  Plan: ResolverTypeWrapper<Plan>;
   Query: ResolverTypeWrapper<{}>;
   UpdateChannelInput: UpdateChannelInput;
 }>;
@@ -312,6 +337,8 @@ export type ResolversParentTypes = ResolversObject<{
   Community: Community;
   CreateChannelInput: CreateChannelInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreatePlanInputWithNoCommunityId: CreatePlanInputWithNoCommunityId;
+  Int: Scalars['Int'];
   Date: Scalars['Date'];
   DeleteChannelInput: DeleteChannelInput;
   GetChannelInput: GetChannelInput;
@@ -322,6 +349,7 @@ export type ResolversParentTypes = ResolversObject<{
   LeaveChannelInput: LeaveChannelInput;
   Mutation: {};
   MutationResponse: MutationResponse;
+  Plan: Plan;
   Query: {};
   UpdateChannelInput: UpdateChannelInput;
 }>;
@@ -352,6 +380,7 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<CommunityChannelsArgs, never>>;
+  plans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -376,6 +405,18 @@ export type MutationResponseResolvers<ContextType = Context, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = ResolversObject<{
+  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  introduction?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pricePerMonth?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  trialPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  numberOfApplicants?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<QueryCommunityArgs, 'input'>>;
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'input'>>;
@@ -388,6 +429,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Date?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
+  Plan?: PlanResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 
