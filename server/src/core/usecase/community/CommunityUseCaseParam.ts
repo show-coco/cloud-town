@@ -1,4 +1,4 @@
-import { TrialPeriod } from '@prisma/client'
+import { TrailPeriod } from '@prisma/client'
 
 export interface CreateCommunityParam {
   name: string
@@ -8,7 +8,7 @@ export interface CreateCommunityParam {
     name: string
     introduction: string
     pricePerMonth: number
-    trialPeriod: TrialPeriod | null
+    trialPeriod: TrailPeriod | null
     numberOfApplicants: number
   }[]
 }
