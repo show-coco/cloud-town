@@ -6,6 +6,8 @@ import PCommunityRepository from '../repository/CommunityRepository/PCommunityRe
 import { Context } from '../../../types/context'
 import { dateScalar } from './scalar'
 import PUserRepository from '../repository/UserRepository/PUserRepository'
+import { TrialPeriod } from '@prisma/client'
+import { CreateCommunityParam } from '../../usecase/community/CommunityUseCaseParam'
 
 const communityRepo = new PCommunityRepository()
 const communityUseCase = new CommunityUseCase(communityRepo)
@@ -97,27 +99,29 @@ export const resolvers: Resolvers = {
         args,
       })
 
+      const plans =
+        args.input.plans
+          ?.map((plan) => {
+            if (!plan) {
+              return undefined
+            }
+
+            return {
+              name: plan.name?.toString(),
+              introduction: plan.introduction,
+              pricePerMonth: plan.pricePerMonth,
+              trialPeriod: plan.trialPeriod as string | TrialPeriod | null,
+              numberOfApplicants: plan.numberOfApplicants as number | null,
+            }
+          })
+          .filter((v) => !v) || []
+
       const com = await communityUseCase.createCommunity({
         name: args.input.name,
         slug: args.input.slug,
         introduction: args.input.introduction,
-        plans:
-          args.input.plans
-            ?.map((plan) => {
-              if (!plan) {
-                return undefined
-              }
-
-              return {
-                name: plan.name?.toString(),
-                introduction: plan.introduction,
-                pricePerMonth: plan.pricePerMonth,
-                trialPeriod: plan.trialPeriod,
-                numberOfApplicants: plan.numberOfApplicants,
-              }
-            })
-            .filter((v) => v !== undefined) || [],
-      })
+        plans: plans,
+      } as CreateCommunityParam)
 
       return {
         id: com.getCommunityId(),
