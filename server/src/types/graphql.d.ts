@@ -63,6 +63,11 @@ export type Community = {
   plans?: Maybe<Array<Maybe<Plan>>>;
 };
 
+
+export type CommunityChannelsArgs = {
+  input?: Maybe<GetChannelsInput>;
+};
+
 export type CreateChannelInput = {
   slug: Scalars['String'];
   name: Scalars['String'];
@@ -190,12 +195,6 @@ export type Plan = {
   numberOfApplicants: Scalars['Int'];
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
-  channels?: Maybe<Array<Channel>>;
-};
-
-
-export type PlanChannelsArgs = {
-  input?: Maybe<GetChannelsInput>;
 };
 
 export type Query = {
@@ -380,7 +379,7 @@ export type CommunityResolvers<ContextType = Context, ParentType extends Resolve
   introduction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType>;
+  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<CommunityChannelsArgs, never>>;
   plans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -415,7 +414,6 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   numberOfApplicants?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
-  channels?: Resolver<Maybe<Array<ResolversTypes['Channel']>>, ParentType, ContextType, RequireFields<PlanChannelsArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

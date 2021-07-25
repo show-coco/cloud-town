@@ -83,6 +83,7 @@ export const typeDefs = gql`
     updatedAt: Date!
     channels: [Channel!]
     plans: [Plan]
+    channels(input: GetChannelsInput): [Channel!]
   }
 
   type Plan {
@@ -94,7 +95,6 @@ export const typeDefs = gql`
     numberOfApplicants: Int!
     createdAt: Date
     updatedAt: Date
-    channels(input: GetChannelsInput): [Channel!]
   }
 
   type Channel {
