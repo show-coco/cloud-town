@@ -105,6 +105,32 @@ export const typeDefs = gql`
     # createdAt: Date!
   }
 
+  input PostThreadInput {
+    channelId: String!
+    content: String!
+  }
+
+  input GetThreadInput {
+    id: String!
+  }
+
+  type Thread {
+    id: String!
+    content: String!
+    pinned: Boolean!
+    slug: String!
+    sender: ChannelMember!
+    replies: [Reply!]
+  }
+
+  type Reply {
+    id: String!
+    content: String!
+    slug: String!
+    pinned: Boolean!
+    sender: ChannelMember!
+  }
+
   enum ChannelRole {
     OWNER
     ADMIN
@@ -127,6 +153,7 @@ export const typeDefs = gql`
   type Query {
     community(input: GetCommunityInput!): Community
     channel(input: GetChannelInput!): Channel!
+    thread(input: GetThreadInput!): Thread!
   }
 
   type Mutation {
@@ -139,5 +166,6 @@ export const typeDefs = gql`
     joinChannel(input: JoinChannelInput!): Channel!
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
+    postThread(input: PostThreadInput!): Thread!
   }
 `

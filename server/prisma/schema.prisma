@@ -28,6 +28,8 @@ model User {
   updated_at      DateTime          @updatedAt
   ChannelMember   ChannelMember[]
   CommunityMember CommunityMember[]
+  Message         Message[]
+  Read            Read[]
 }
 
 /// コミュニティ
@@ -87,6 +89,7 @@ model Channel {
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   ChannelMember ChannelMember[]
+  Message       Message[]
 }
 
 /// チャンネルのユーザー権限
@@ -111,6 +114,29 @@ model ChannelMember {
   role       ChannelRole
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
+}
+
+model Message {
+  id                String    @id @default(uuid())
+  slug              String    @unique
+  content           String
+  user              User      @relation(fields: [user_id], references: [id])
+  user_id           String
+  parent_message    Message?  @relation(fields: [parent_message_id], references: [id])
+  parent_message_id String?
+  pinned            Boolean
+  channel           Channel   @relation(fields: [channel_id], references: [id])
+  channel_id        String
+  Message           Message[] @relation("MessageToMessage")
+  Read              Read[]
+}
+
+model Read {
+  id         Int     @id @default(autoincrement())
+  message    Message @relation(fields: [message_id], references: [id])
+  message_id String
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String
 }
 
 /// チャンネルのユーザー権限

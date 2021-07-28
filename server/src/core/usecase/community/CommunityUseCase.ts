@@ -48,7 +48,11 @@ export default class CommunityUseCase {
           if (!v) {
             return false
           }
-          return (Object.values(TrialPeriod) as string[]).includes(v)
+          if (v !== TrialPeriod.FREE_FOR_THE_FIRST_MONTH) {
+            return false
+          }
+
+          return Object.values(TrialPeriod).includes(v)
         }
 
         return new Plan({
