@@ -1,4 +1,4 @@
-import Community from '../../../domain/entities/Community'
+import Community from '../../../domain/entities/CommunityAggregate/Community'
 import ICommunityRepository from './ICommunityRepository'
 
 export class InMemoryCommunityRepository implements ICommunityRepository {
