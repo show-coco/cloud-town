@@ -53,6 +53,12 @@ export const resolvers: Resolvers = {
 
       return channel
     },
+    thread: async (_parent, args, _context: Context) => {
+      const { id } = args.input
+
+      const thread = await messageUseCase.getThreadDetail(id)
+      return threadMapToSchema(thread)
+    },
   },
   Community: {
     channels: async (community, args, context) => {

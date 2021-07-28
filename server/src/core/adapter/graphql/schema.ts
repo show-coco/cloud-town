@@ -89,6 +89,10 @@ export const typeDefs = gql`
     content: String!
   }
 
+  input GetThreadInput {
+    id: String!
+  }
+
   type Thread {
     id: String!
     content: String!
@@ -128,6 +132,7 @@ export const typeDefs = gql`
   type Query {
     community(input: GetCommunityInput!): Community
     channel(input: GetChannelInput!): Channel!
+    thread(input: GetThreadInput!): Thread!
   }
 
   type Mutation {

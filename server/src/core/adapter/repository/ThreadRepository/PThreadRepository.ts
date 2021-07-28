@@ -9,6 +9,21 @@ type MessageModel = PMessage & {
 }
 
 export default class PThreadRepository implements IThreadReporsitory {
+  async getById(id: string): Promise<Thread> {
+    const pMessage = await prisma.message.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        Message: true,
+      },
+    })
+
+    if (!pMessage) throw new Error('Thread not found')
+
+    return this.converter(pMessage)
+  }
+
   async save(thread: Thread): Promise<Thread> {
     const pMessage = await prisma.message.create({
       data: {

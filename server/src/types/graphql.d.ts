@@ -98,6 +98,10 @@ export type GetCommunityInput = {
   id: Scalars['String'];
 };
 
+export type GetThreadInput = {
+  id: Scalars['String'];
+};
+
 export type JoinChannelInput = {
   id: Scalars['String'];
 };
@@ -190,6 +194,7 @@ export type Query = {
   __typename?: 'Query';
   community?: Maybe<Community>;
   channel: Channel;
+  thread: Thread;
 };
 
 
@@ -200,6 +205,11 @@ export type QueryCommunityArgs = {
 
 export type QueryChannelArgs = {
   input: GetChannelInput;
+};
+
+
+export type QueryThreadArgs = {
+  input: GetThreadInput;
 };
 
 export type Reply = {
@@ -322,6 +332,7 @@ export type ResolversTypes = ResolversObject<{
   GetChannelInput: GetChannelInput;
   GetChannelsInput: GetChannelsInput;
   GetCommunityInput: GetCommunityInput;
+  GetThreadInput: GetThreadInput;
   JoinChannelInput: JoinChannelInput;
   KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
@@ -350,6 +361,7 @@ export type ResolversParentTypes = ResolversObject<{
   GetChannelInput: GetChannelInput;
   GetChannelsInput: GetChannelsInput;
   GetCommunityInput: GetCommunityInput;
+  GetThreadInput: GetThreadInput;
   JoinChannelInput: JoinChannelInput;
   KickMemberFromChannelInput: KickMemberFromChannelInput;
   LeaveChannelInput: LeaveChannelInput;
@@ -416,6 +428,7 @@ export type MutationResponseResolvers<ContextType = Context, ParentType extends 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType, RequireFields<QueryCommunityArgs, 'input'>>;
   channel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<QueryChannelArgs, 'input'>>;
+  thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'input'>>;
 }>;
 
 export type ReplyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Reply'] = ResolversParentTypes['Reply']> = ResolversObject<{
