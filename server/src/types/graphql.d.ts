@@ -139,6 +139,7 @@ export type Mutation = {
   addMemberToChannel: Channel;
   postThread: Thread;
   postReply: Thread;
+  updateMessage: Thread;
 };
 
 
@@ -194,6 +195,11 @@ export type MutationPostThreadArgs = {
 
 export type MutationPostReplyArgs = {
   input: PostReplyInput;
+};
+
+
+export type MutationUpdateMessageArgs = {
+  input: UpdateMessageInput;
 };
 
 export type MutationResponse = {
@@ -269,6 +275,12 @@ export type UpdateChannelInput = {
   name?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   isPrivate?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdateMessageInput = {
+  id: Scalars['String'];
+  content?: Maybe<Scalars['String']>;
+  pinned?: Maybe<Scalars['Boolean']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -380,6 +392,7 @@ export type ResolversTypes = ResolversObject<{
   Reply: ResolverTypeWrapper<Reply>;
   Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
+  UpdateMessageInput: UpdateMessageInput;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -413,6 +426,7 @@ export type ResolversParentTypes = ResolversObject<{
   Reply: Reply;
   Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
+  UpdateMessageInput: UpdateMessageInput;
 }>;
 
 export type ChannelResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = ResolversObject<{
@@ -461,6 +475,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addMemberToChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationAddMemberToChannelArgs, 'input'>>;
   postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
   postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
+  updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

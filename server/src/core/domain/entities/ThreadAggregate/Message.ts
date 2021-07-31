@@ -71,6 +71,14 @@ export default class Message {
     return new Message(props)
   }
 
+  changePinned(pinned: boolean): void {
+    this._pinned = pinned
+  }
+
+  changeContent(content: string): void {
+    this._content = content
+  }
+
   get id(): string {
     return this._id
   }

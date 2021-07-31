@@ -2,7 +2,11 @@ import IChannelRepository from '../../../adapter/repository/ChannelRepository/IC
 import IThreadReporsitory from '../../../adapter/repository/ThreadRepository/IThreadRepository'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
-import { PostReply, PostThread } from './MessageUseCaseParam'
+import {
+  PostReplyParam,
+  PostThreadParam,
+  UpdateMessageParam,
+} from './MessageUseCaseParam'
 
 export type ReplyUCOutput = {
   id: string
@@ -37,7 +41,7 @@ export default class MessageUseCase {
     senderId,
     content,
     channelId,
-  }: PostThread): Promise<ThreadUCOutput> {
+  }: PostThreadParam): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(channelId)
     const sender = channel.getMember(senderId)
 
@@ -53,12 +57,25 @@ export default class MessageUseCase {
     senderId,
     content,
     threadId,
-  }: PostReply): Promise<ThreadUCOutput> {
+  }: PostReplyParam): Promise<ThreadUCOutput> {
     const thread = await this.threadRepo.getById(threadId)
     thread.reply({ senderId, content })
 
     const updatedThread = await this.threadRepo.save(thread)
     return this.mapToOutput(updatedThread)
+  }
+
+  async update({
+    content,
+    pinned,
+    id,
+  }: UpdateMessageParam): Promise<ThreadUCOutput> {
+    const message = await this.threadRepo.getById(id)
+    if (content) message.changeContent(content)
+    if (typeof pinned !== 'undefined') message.changePinned(pinned)
+
+    const updatedMessage = await this.threadRepo.save(message)
+    return this.mapToOutput(updatedMessage)
   }
 
   private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {

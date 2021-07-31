@@ -1,11 +1,17 @@
-export interface PostThread {
+export interface PostThreadParam {
   senderId: string
   content: string
   channelId: string
 }
 
-export interface PostReply {
+export interface PostReplyParam {
   senderId: string
   content: string
   threadId: string
+}
+
+export interface UpdateMessageParam {
+  id: string
+  content?: string
+  pinned?: boolean
 }
