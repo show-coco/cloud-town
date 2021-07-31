@@ -118,6 +118,11 @@ export const typeDefs = gql`
   input GetThreadInput {
     id: String!
   }
+  input UpdateMessageInput {
+    id: String!
+    content: String
+    pinned: Boolean
+  }
 
   type Thread {
     id: String!
@@ -173,5 +178,6 @@ export const typeDefs = gql`
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
     postThread(input: PostThreadInput!): Thread!
     postReply(input: PostReplyInput!): Thread!
+    updateMessage(input: UpdateMessageInput!): Thread!
   }
 `

@@ -91,9 +91,6 @@ export const resolvers: Resolvers = {
       return members.map((member) => channelMemberMapToSchema(member))
     },
   },
-  // Thread: {
-  //   replies: async (thread) => {},
-  // },
   Mutation: {
     createCommunity: async (_parent, args, _context: Context) => {
       console.log('resolvers createCommunity args', {
@@ -278,6 +275,20 @@ export const resolvers: Resolvers = {
       })
 
       return threadMapToSchema(thread)
+    },
+    updateMessage: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, content, pinned } = args.input
+      if (
+        (typeof content === 'string' || typeof content === 'undefined') &&
+        (typeof pinned === 'boolean' || typeof pinned === 'undefined')
+      ) {
+        const thread = await messageUseCase.update({ id, content, pinned })
+        return threadMapToSchema(thread)
+      }
+
+      throw new Error('Input type is strange')
     },
   },
 }
