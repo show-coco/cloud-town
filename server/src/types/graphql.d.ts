@@ -138,6 +138,7 @@ export type Mutation = {
   kickMemberFromChannel: Channel;
   addMemberToChannel: Channel;
   postThread: Thread;
+  postReply: Thread;
 };
 
 
@@ -190,6 +191,11 @@ export type MutationPostThreadArgs = {
   input: PostThreadInput;
 };
 
+
+export type MutationPostReplyArgs = {
+  input: PostReplyInput;
+};
+
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
@@ -205,6 +211,11 @@ export type Plan = {
   numberOfApplicants: Scalars['Int'];
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
+};
+
+export type PostReplyInput = {
+  threadId: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type PostThreadInput = {
@@ -363,6 +374,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<MutationResponse>;
   Plan: ResolverTypeWrapper<Plan>;
+  PostReplyInput: PostReplyInput;
   PostThreadInput: PostThreadInput;
   Query: ResolverTypeWrapper<{}>;
   Reply: ResolverTypeWrapper<Reply>;
@@ -395,6 +407,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   MutationResponse: MutationResponse;
   Plan: Plan;
+  PostReplyInput: PostReplyInput;
   PostThreadInput: PostThreadInput;
   Query: {};
   Reply: Reply;
@@ -447,6 +460,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   kickMemberFromChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationKickMemberFromChannelArgs, 'input'>>;
   addMemberToChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationAddMemberToChannelArgs, 'input'>>;
   postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
+  postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

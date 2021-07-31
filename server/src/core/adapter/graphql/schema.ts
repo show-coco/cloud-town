@@ -110,6 +110,11 @@ export const typeDefs = gql`
     content: String!
   }
 
+  input PostReplyInput {
+    threadId: String!
+    content: String!
+  }
+
   input GetThreadInput {
     id: String!
   }
@@ -167,5 +172,6 @@ export const typeDefs = gql`
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
     postThread(input: PostThreadInput!): Thread!
+    postReply(input: PostReplyInput!): Thread!
   }
 `
