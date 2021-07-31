@@ -59,6 +59,7 @@ export const resolvers: Resolvers = {
       const { id } = args.input
 
       const thread = await messageUseCase.getThreadDetail(id)
+
       return threadMapToSchema(thread)
     },
   },
@@ -90,6 +91,9 @@ export const resolvers: Resolvers = {
       return members.map((member) => channelMemberMapToSchema(member))
     },
   },
+  // Thread: {
+  //   replies: async (thread) => {},
+  // },
   Mutation: {
     createCommunity: async (_parent, args, _context: Context) => {
       console.log('resolvers createCommunity args', {
@@ -258,6 +262,19 @@ export const resolvers: Resolvers = {
         senderId,
         channelId,
         content,
+      })
+
+      return threadMapToSchema(thread)
+    },
+    postReply: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { threadId, content } = args.input
+      const senderId = context.user.sub
+      const thread = await messageUseCase.postReply({
+        threadId,
+        content,
+        senderId,
       })
 
       return threadMapToSchema(thread)

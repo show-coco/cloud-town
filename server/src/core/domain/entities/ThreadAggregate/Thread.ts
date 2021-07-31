@@ -24,7 +24,7 @@ export default class Thread extends Message {
   }
 
   static create(props: CreateProps): Thread {
-    const message = super.create(props)
+    const message = Message.create(props)
     return new Thread({
       id: message.id,
       content: message.content,
@@ -32,7 +32,7 @@ export default class Thread extends Message {
       pinned: message.pinned,
       senderId: message.senderId,
       readers: message.readers,
-      channelId: message.channelId,
+      channelId: props.channelId,
     })
   }
 
@@ -42,5 +42,20 @@ export default class Thread extends Message {
 
   get replies(): Reply[] | undefined {
     return this._replies
+  }
+
+  reply(props: { senderId: string; content: string }): void {
+    const message = Message.create({ ...props, channelId: this._channelId })
+    const reply = new Reply({
+      id: message.id,
+      content: message.content,
+      slug: message.slug,
+      pinned: message.pinned,
+      senderId: message.senderId,
+      readers: message.readers,
+      channelId: message.channelId,
+    })
+
+    this._replies?.push(reply)
   }
 }

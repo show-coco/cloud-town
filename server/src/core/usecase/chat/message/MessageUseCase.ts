@@ -1,8 +1,8 @@
 import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
 import IThreadReporsitory from '../../../adapter/repository/ThreadRepository/IThreadRepository'
-import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
+import { PostReply, PostThread } from './MessageUseCaseParam'
 
 export type ReplyUCOutput = {
   id: string
@@ -29,20 +29,15 @@ export default class MessageUseCase {
 
   async getThreadDetail(id: string): Promise<ThreadUCOutput> {
     const thread = await this.threadRepo.getById(id)
-    const channel = await this.channelRepo.getChannelById(thread.channelId)
 
-    return this.mapToOutput(thread, channel)
+    return this.mapToOutput(thread)
   }
 
   async postThread({
     senderId,
     content,
     channelId,
-  }: {
-    senderId: string
-    content: string
-    channelId: string
-  }): Promise<ThreadUCOutput> {
+  }: PostThread): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(channelId)
     const sender = channel.getMember(senderId)
 
@@ -51,21 +46,35 @@ export default class MessageUseCase {
     const newThread = Thread.create({ content, channelId, senderId })
     const thread = await this.threadRepo.save(newThread)
 
-    return this.mapToOutput(thread, channel)
+    return this.mapToOutput(thread)
   }
 
-  mapToOutput(thread: Thread, channel: Channel): ThreadUCOutput {
+  async postReply({
+    senderId,
+    content,
+    threadId,
+  }: PostReply): Promise<ThreadUCOutput> {
+    const thread = await this.threadRepo.getById(threadId)
+    thread.reply({ senderId, content })
+
+    const updatedThread = await this.threadRepo.save(thread)
+    return this.mapToOutput(updatedThread)
+  }
+
+  private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {
+    const channel = await this.channelRepo.getChannelById(thread.channelId)
+
     const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
       const replier = channel.getMember(reply.senderId)
       if (!replier) throw new Error('Replier is not found')
       return {
-        id: thread.id,
-        content: thread.content,
-        channelId: thread.channelId,
-        slug: thread.slug,
-        pinned: thread.pinned,
+        id: reply.id,
+        content: reply.content,
+        channelId: reply.channelId,
+        slug: reply.slug,
+        pinned: reply.pinned,
         sender: replier,
-        readers: thread.readers,
+        readers: reply.readers,
       }
     })
 
