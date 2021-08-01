@@ -279,6 +279,11 @@ export type Reply = {
   reactinos?: Maybe<Array<Reaction>>;
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  threadPosted: Thread;
+};
+
 export type Thread = {
   __typename?: 'Thread';
   id: Scalars['String'];
@@ -412,6 +417,7 @@ export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
   Reaction: ResolverTypeWrapper<Reaction>;
   Reply: ResolverTypeWrapper<Reply>;
+  Subscription: ResolverTypeWrapper<{}>;
   Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
   UpdateMessageInput: UpdateMessageInput;
@@ -448,6 +454,7 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {};
   Reaction: Reaction;
   Reply: Reply;
+  Subscription: {};
   Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
   UpdateMessageInput: UpdateMessageInput;
@@ -543,6 +550,10 @@ export type ReplyResolvers<ContextType = Context, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+  threadPosted?: SubscriptionResolver<ResolversTypes['Thread'], "threadPosted", ParentType, ContextType>;
+}>;
+
 export type ThreadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -565,6 +576,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Reaction?: ReactionResolvers<ContextType>;
   Reply?: ReplyResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   Thread?: ThreadResolvers<ContextType>;
 }>;
 

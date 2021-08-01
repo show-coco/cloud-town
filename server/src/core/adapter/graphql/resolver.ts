@@ -19,6 +19,9 @@ import MessageUseCase, {
   ThreadUCOutput,
 } from '../../usecase/chat/message/MessageUseCase'
 import { CreateCommunityParam } from '../../usecase/community/CommunityUseCaseParam'
+import { PubSub, withFilter } from 'graphql-subscriptions'
+
+const pubsub = new PubSub()
 
 const communityRepo = new PCommunityRepository()
 const channelRepo = new PChannelRepository()
@@ -264,6 +267,9 @@ export const resolvers: Resolvers = {
         content,
       })
 
+      await pubsub.publish('THREAD_POSTED', {
+        threadPosted: thread,
+      })
       return threadMapToSchema(thread)
     },
     postReply: async (_parent, args, context: Context) => {
@@ -307,6 +313,28 @@ export const resolvers: Resolvers = {
       const senderId = context.user.sub
       const thread = await messageUseCase.addReaction({ id, emoji, senderId })
       return threadMapToSchema(thread)
+    },
+  },
+  Subscription: {
+    threadPosted: {
+      // チャンネルに所属していればスレッドを受け取る
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['THREAD_POSTED']),
+        async (
+          payload: { threadPosted: ThreadUCOutput },
+          _variables,
+          context: Context
+        ) => {
+          const userId = context.user?.sub
+          if (!userId) throw new Error('Not Authenticated')
+
+          const channel = await channelRepo.getChannelById(
+            payload.threadPosted.channelId
+          )
+
+          return Boolean(channel.getMember(userId))
+        }
+      ),
     },
   },
 }
