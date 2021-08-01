@@ -262,6 +262,13 @@ export type QueryThreadArgs = {
   input: GetThreadInput;
 };
 
+export type Reaction = {
+  __typename?: 'Reaction';
+  id: Scalars['Int'];
+  emoji: Scalars['String'];
+  sender: ChannelMember;
+};
+
 export type Reply = {
   __typename?: 'Reply';
   id: Scalars['String'];
@@ -269,6 +276,7 @@ export type Reply = {
   slug: Scalars['String'];
   pinned: Scalars['Boolean'];
   sender: ChannelMember;
+  reactinos?: Maybe<Array<Reaction>>;
 };
 
 export type Thread = {
@@ -279,6 +287,7 @@ export type Thread = {
   slug: Scalars['String'];
   sender: ChannelMember;
   replies?: Maybe<Array<Reply>>;
+  reactinos?: Maybe<Array<Reaction>>;
 };
 
 export type UpdateChannelInput = {
@@ -401,6 +410,7 @@ export type ResolversTypes = ResolversObject<{
   PostReplyInput: PostReplyInput;
   PostThreadInput: PostThreadInput;
   Query: ResolverTypeWrapper<{}>;
+  Reaction: ResolverTypeWrapper<Reaction>;
   Reply: ResolverTypeWrapper<Reply>;
   Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
@@ -436,6 +446,7 @@ export type ResolversParentTypes = ResolversObject<{
   PostReplyInput: PostReplyInput;
   PostThreadInput: PostThreadInput;
   Query: {};
+  Reaction: Reaction;
   Reply: Reply;
   Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
@@ -515,12 +526,20 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   thread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<QueryThreadArgs, 'input'>>;
 }>;
 
+export type ReactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Reaction'] = ResolversParentTypes['Reaction']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  emoji?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type ReplyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Reply'] = ResolversParentTypes['Reply']> = ResolversObject<{
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -531,6 +550,7 @@ export type ThreadResolvers<ContextType = Context, ParentType extends ResolversP
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
   replies?: Resolver<Maybe<Array<ResolversTypes['Reply']>>, ParentType, ContextType>;
+  reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -543,6 +563,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   MutationResponse?: MutationResponseResolvers<ContextType>;
   Plan?: PlanResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Reaction?: ReactionResolvers<ContextType>;
   Reply?: ReplyResolvers<ContextType>;
   Thread?: ThreadResolvers<ContextType>;
 }>;

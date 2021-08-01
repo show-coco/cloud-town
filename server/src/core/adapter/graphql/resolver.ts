@@ -308,12 +308,22 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
     pinned: thread.pinned,
     slug: thread.slug,
     sender: channelMemberMapToSchema(thread.sender),
+    reactinos: thread.reactions?.map((reaction) => ({
+      id: reaction.id,
+      emoji: reaction.emoji,
+      sender: channelMemberMapToSchema(reaction.sender),
+    })),
     replies: thread.replies?.map<GReply>((reply) => ({
       content: reply.content,
       id: reply.id,
       pinned: reply.pinned,
       slug: reply.slug,
       sender: channelMemberMapToSchema(reply.sender),
+      reactinos: reply.reactions?.map((reaction) => ({
+        id: reaction.id,
+        emoji: reaction.emoji,
+        sender: channelMemberMapToSchema(reaction.sender),
+      })),
     })),
   }
 }

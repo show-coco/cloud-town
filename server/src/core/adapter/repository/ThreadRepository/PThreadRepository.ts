@@ -5,10 +5,13 @@ import Reply from '../../../domain/entities/ThreadAggregate/Reply'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 import IThreadReporsitory from './IThreadRepository'
 
-type MessageModel = PMessage & {
-  Message: PMessage[]
-  reactions: PReaction[]
-}
+type MessageModel =
+  | PMessage & {
+      Message: (PMessage & {
+        reactions: PReaction[]
+      })[]
+      reactions: PReaction[]
+    }
 
 export default class PThreadRepository implements IThreadReporsitory {
   async getById(id: string): Promise<Thread> {
@@ -17,7 +20,11 @@ export default class PThreadRepository implements IThreadReporsitory {
         id,
       },
       include: {
-        Message: true,
+        Message: {
+          include: {
+            reactions: true,
+          },
+        },
         reactions: true,
       },
     })
@@ -48,7 +55,11 @@ export default class PThreadRepository implements IThreadReporsitory {
           id: thread.id,
         },
         include: {
-          Message: true,
+          Message: {
+            include: {
+              reactions: true,
+            },
+          },
           reactions: true,
         },
       })
@@ -147,7 +158,11 @@ export default class PThreadRepository implements IThreadReporsitory {
           channel_id: thread.channelId,
         },
         include: {
-          Message: true,
+          Message: {
+            include: {
+              reactions: true,
+            },
+          },
           reactions: true,
         },
       })
@@ -169,6 +184,10 @@ export default class PThreadRepository implements IThreadReporsitory {
           ...reply,
           channelId: pMessage.channel_id,
           senderId: reply.user_id,
+          reactions: reply.reactions.map(
+            (reaction) =>
+              new Reaction({ ...reaction, senderId: reaction.user_id })
+          ),
         })
       ),
     })

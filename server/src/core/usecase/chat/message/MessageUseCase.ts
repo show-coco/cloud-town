@@ -8,6 +8,12 @@ import {
   UpdateMessageParam,
 } from './MessageUseCaseParam'
 
+export type ReactionUCOutPut = {
+  id: number
+  emoji: string
+  sender: ChannelMember
+}
+
 export type ReplyUCOutput = {
   id: string
   content: string
@@ -15,6 +21,7 @@ export type ReplyUCOutput = {
   slug: string
   pinned: boolean
   sender: ChannelMember
+  reactions?: ReactionUCOutPut[]
   readers?: ChannelMember[]
 }
 
@@ -100,6 +107,17 @@ export default class MessageUseCase {
     const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
       const replier = channel.getMember(reply.senderId)
       if (!replier) throw new Error('Replier is not found')
+
+      const replyReactions = reply.reactions?.map<ReactionUCOutPut>(
+        (reaction) => {
+          return {
+            id: reaction.id || 0,
+            emoji: reaction.emoji,
+            sender: channel.getMember(reaction.senderId),
+          }
+        }
+      )
+
       return {
         id: reply.id,
         content: reply.content,
@@ -108,11 +126,20 @@ export default class MessageUseCase {
         pinned: reply.pinned,
         sender: replier,
         readers: reply.readers,
+        reactions: replyReactions,
       }
     })
 
     const sender = channel.getMember(thread.senderId)
     if (!sender) throw new Error('Sender is not found')
+
+    const threadReactions = thread.reactions?.map<ReactionUCOutPut>(
+      (reaction) => ({
+        id: reaction.id || 0,
+        emoji: reaction.emoji,
+        sender: channel.getMember(reaction.senderId),
+      })
+    )
 
     return {
       id: thread.id,
@@ -123,6 +150,7 @@ export default class MessageUseCase {
       replies,
       sender,
       readers: thread.readers,
+      reactions: threadReactions,
     }
   }
 }
