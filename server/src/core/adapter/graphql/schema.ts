@@ -192,12 +192,13 @@ export const typeDefs = gql`
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
     postThread(input: PostThreadInput!): Thread!
-    postReply(input: PostReplyInput!): Thread!
+    postReply(input: PostReplyInput!): Reply!
     updateMessage(input: UpdateMessageInput!): Thread!
     addReaction(input: AddReactionInput!): Thread!
   }
 
   type Subscription {
     threadPosted: Thread!
+    replyPosted: Reply!
   }
 `

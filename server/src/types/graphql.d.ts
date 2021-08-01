@@ -143,7 +143,7 @@ export type Mutation = {
   kickMemberFromChannel: Channel;
   addMemberToChannel: Channel;
   postThread: Thread;
-  postReply: Thread;
+  postReply: Reply;
   updateMessage: Thread;
   addReaction: Thread;
 };
@@ -283,6 +283,7 @@ export type Reply = {
 export type Subscription = {
   __typename?: 'Subscription';
   threadPosted: Thread;
+  replyPosted: Reply;
 };
 
 export type Thread = {
@@ -507,7 +508,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   kickMemberFromChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationKickMemberFromChannelArgs, 'input'>>;
   addMemberToChannel?: Resolver<ResolversTypes['Channel'], ParentType, ContextType, RequireFields<MutationAddMemberToChannelArgs, 'input'>>;
   postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
-  postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
+  postReply?: Resolver<ResolversTypes['Reply'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
   updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
   addReaction?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionArgs, 'input'>>;
 }>;
@@ -555,6 +556,7 @@ export type ReplyResolvers<ContextType = Context, ParentType extends ResolversPa
 
 export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   threadPosted?: SubscriptionResolver<ResolversTypes['Thread'], "threadPosted", ParentType, ContextType>;
+  replyPosted?: SubscriptionResolver<ResolversTypes['Reply'], "replyPosted", ParentType, ContextType>;
 }>;
 
 export type ThreadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Thread'] = ResolversParentTypes['Thread']> = ResolversObject<{

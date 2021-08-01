@@ -44,7 +44,7 @@ export default class Thread extends Message {
     return this._replies
   }
 
-  reply(props: { senderId: string; content: string }): void {
+  reply(props: { senderId: string; content: string }): Reply {
     const message = Message.create({ ...props, channelId: this._channelId })
     const reply = new Reply({
       id: message.id,
@@ -57,5 +57,6 @@ export default class Thread extends Message {
     })
 
     this._replies?.push(reply)
+    return reply
   }
 }
