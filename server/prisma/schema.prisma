@@ -29,7 +29,8 @@ model User {
   ChannelMember   ChannelMember[]
   CommunityMember CommunityMember[]
   Message         Message[]
-  Read            Read[]
+  reads           Read[]
+  reactions       Reaction[]
 }
 
 /// コミュニティ
@@ -117,18 +118,19 @@ model ChannelMember {
 }
 
 model Message {
-  id                String    @id @default(uuid())
-  slug              String    @unique
+  id                String     @id @default(uuid())
+  slug              String     @unique
   content           String
-  user              User      @relation(fields: [user_id], references: [id])
+  user              User       @relation(fields: [user_id], references: [id])
   user_id           String
-  parent_message    Message?  @relation(fields: [parent_message_id], references: [id])
+  parent_message    Message?   @relation(fields: [parent_message_id], references: [id])
   parent_message_id String?
   pinned            Boolean
-  channel           Channel   @relation(fields: [channel_id], references: [id])
+  channel           Channel    @relation(fields: [channel_id], references: [id])
   channel_id        String
-  Message           Message[] @relation("MessageToMessage")
-  Read              Read[]
+  Message           Message[]  @relation("MessageToMessage")
+  reads             Read[]
+  reactions         Reaction[]
 }
 
 model Read {
@@ -137,6 +139,15 @@ model Read {
   message_id String
   user       User    @relation(fields: [user_id], references: [id])
   user_id    String
+}
+
+model Reaction {
+  id         Int     @id @default(autoincrement())
+  emoji      String
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String
+  message    Message @relation(fields: [message_id], references: [id])
+  message_id String
 }
 
 /// チャンネルのユーザー権限

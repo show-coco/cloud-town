@@ -20,6 +20,11 @@ export type AddMemberToChannelInput = {
   memberIds: Array<Scalars['String']>;
 };
 
+export type AddReactionInput = {
+  id: Scalars['String'];
+  emoji: Scalars['String'];
+};
+
 export type ChangeChannelOwnerInput = {
   id: Scalars['String'];
   currentOwnerId: Scalars['String'];
@@ -140,6 +145,7 @@ export type Mutation = {
   postThread: Thread;
   postReply: Thread;
   updateMessage: Thread;
+  addReaction: Thread;
 };
 
 
@@ -200,6 +206,11 @@ export type MutationPostReplyArgs = {
 
 export type MutationUpdateMessageArgs = {
   input: UpdateMessageInput;
+};
+
+
+export type MutationAddReactionArgs = {
+  input: AddReactionInput;
 };
 
 export type MutationResponse = {
@@ -364,6 +375,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   AddMemberToChannelInput: AddMemberToChannelInput;
   String: ResolverTypeWrapper<Scalars['String']>;
+  AddReactionInput: AddReactionInput;
   ChangeChannelOwnerInput: ChangeChannelOwnerInput;
   Channel: ResolverTypeWrapper<Channel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -399,6 +411,7 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   AddMemberToChannelInput: AddMemberToChannelInput;
   String: Scalars['String'];
+  AddReactionInput: AddReactionInput;
   ChangeChannelOwnerInput: ChangeChannelOwnerInput;
   Channel: Channel;
   Boolean: Scalars['Boolean'];
@@ -476,6 +489,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
   postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
   updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
+  addReaction?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

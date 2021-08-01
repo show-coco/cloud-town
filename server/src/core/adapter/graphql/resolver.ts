@@ -290,6 +290,14 @@ export const resolvers: Resolvers = {
 
       throw new Error('Input type is strange')
     },
+    addReaction: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, emoji } = args.input
+      const senderId = context.user.sub
+      const thread = await messageUseCase.addReaction({ id, emoji, senderId })
+      return threadMapToSchema(thread)
+    },
   },
 }
 

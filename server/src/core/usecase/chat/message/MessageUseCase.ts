@@ -78,6 +78,22 @@ export default class MessageUseCase {
     return this.mapToOutput(updatedMessage)
   }
 
+  async addReaction({
+    senderId,
+    emoji,
+    id,
+  }: {
+    senderId: string
+    emoji: string
+    id: string
+  }): Promise<ThreadUCOutput> {
+    const message = await this.threadRepo.getById(id)
+    message.addReaction(emoji, senderId)
+
+    const updatedMessage = await this.threadRepo.save(message)
+    return this.mapToOutput(updatedMessage)
+  }
+
   private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(thread.channelId)
 

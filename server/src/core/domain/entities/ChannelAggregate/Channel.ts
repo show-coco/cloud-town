@@ -173,10 +173,12 @@ export default class Channel {
     return Boolean(this.getMember(userId))
   }
 
-  getMember(userId: string): ChannelMember | undefined {
-    return this._channelMembers.find(
+  getMember(userId: string): ChannelMember {
+    const member = this._channelMembers.find(
       (channelMember) => channelMember.id === userId
     )
+    if (!member) throw new Error('Member not found')
+    return member
   }
 
   private isOwner(userId: string): boolean {

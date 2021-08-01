@@ -1,11 +1,13 @@
-import { Message as PMessage } from '@prisma/client'
+import { Message as PMessage, Reaction as PReaction } from '@prisma/client'
 import prisma from '../../../../prisma'
+import Reaction from '../../../domain/entities/ThreadAggregate/Reaction'
 import Reply from '../../../domain/entities/ThreadAggregate/Reply'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 import IThreadReporsitory from './IThreadRepository'
 
 type MessageModel = PMessage & {
   Message: PMessage[]
+  reactions: PReaction[]
 }
 
 export default class PThreadRepository implements IThreadReporsitory {
@@ -16,6 +18,7 @@ export default class PThreadRepository implements IThreadReporsitory {
       },
       include: {
         Message: true,
+        reactions: true,
       },
     })
 
@@ -46,39 +49,91 @@ export default class PThreadRepository implements IThreadReporsitory {
         },
         include: {
           Message: true,
+          reactions: true,
         },
       })
 
-      if (!thread.replies) throw new Error('')
+      if (thread.replies) {
+        // MEMO: upsertManyがまだ使用できないため繰り返しupsertを実行 (issue: https://github.com/prisma/prisma/issues/4134)
+        const replies = await Promise.all(
+          thread.replies.map(async (reply) => {
+            const updatedReply = await prisma.message.upsert({
+              create: {
+                id: reply.id,
+                content: reply.content,
+                slug: reply.slug,
+                user_id: reply.senderId,
+                pinned: reply.pinned,
+                channel_id: reply.channelId,
+                parent_message_id: thread.id,
+              },
+              update: {
+                content: reply.content,
+                slug: reply.slug,
+                pinned: reply.pinned,
+              },
+              where: {
+                id: reply.id,
+              },
+              include: {
+                reactions: true,
+              },
+            })
 
-      // MEMO: upsertManyがまだ使用できないため繰り返しupsertを実行 (issue: https://github.com/prisma/prisma/issues/4134)
-      const replies = await Promise.all(
-        thread.replies.map(async (reply) => {
-          const updatedReply = await prisma.message.upsert({
-            create: {
-              id: reply.id,
-              content: reply.content,
-              slug: reply.slug,
-              user_id: reply.senderId,
-              pinned: reply.pinned,
-              channel_id: reply.channelId,
-              parent_message_id: thread.id,
-            },
-            update: {
-              content: reply.content,
-              slug: reply.slug,
-              pinned: reply.pinned,
-            },
-            where: {
-              id: reply.id,
-            },
+            if (reply.reactions) {
+              const reactions = await Promise.all(
+                reply.reactions.map(async (reaction) => {
+                  const updatedReaction = await prisma.reaction.upsert({
+                    create: {
+                      emoji: reaction.emoji,
+                      user_id: reaction.senderId,
+                      message_id: thread.id,
+                    },
+                    update: {
+                      emoji: reaction.emoji,
+                    },
+                    where: {
+                      id: reaction.id || 0,
+                    },
+                  })
+
+                  return updatedReaction
+                })
+              )
+
+              updatedReply.reactions = reactions
+            }
+
+            return updatedReply
           })
+        )
 
-          return updatedReply
-        })
-      )
+        pMessage.Message = replies
+      }
 
-      pMessage.Message = replies
+      if (thread.reactions) {
+        const reactions = await Promise.all(
+          thread.reactions.map(async (reaction) => {
+            const updatedReaction = await prisma.reaction.upsert({
+              create: {
+                emoji: reaction.emoji,
+                user_id: reaction.senderId,
+                message_id: thread.id,
+              },
+              update: {
+                emoji: reaction.emoji,
+              },
+              where: {
+                id: reaction.id || 0,
+              },
+            })
+
+            return updatedReaction
+          })
+        )
+
+        pMessage.reactions = reactions
+      }
 
       return this.converter(pMessage)
     } else {
@@ -93,6 +148,7 @@ export default class PThreadRepository implements IThreadReporsitory {
         },
         include: {
           Message: true,
+          reactions: true,
         },
       })
 
@@ -105,6 +161,9 @@ export default class PThreadRepository implements IThreadReporsitory {
       ...pMessage,
       channelId: pMessage.channel_id,
       senderId: pMessage.user_id,
+      reactions: pMessage.reactions.map(
+        (reaction) => new Reaction({ ...reaction, senderId: reaction.user_id })
+      ),
       replies: pMessage.Message.map((reply) =>
         Reply.regenerate({
           ...reply,

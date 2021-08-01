@@ -1,5 +1,6 @@
 import { v4 } from 'uuid'
 import ChannelMember from '../ChannelAggregate/ChannelMember'
+import Reaction from './Reaction'
 
 export type MessageCreateProps = {
   content: string
@@ -15,6 +16,7 @@ export type MessageConstructorProps = {
   pinned: boolean
   senderId: string
   readers?: ChannelMember[]
+  reactions?: Reaction[]
 }
 
 export type MessageRegenerateProps = {
@@ -24,6 +26,7 @@ export type MessageRegenerateProps = {
   slug: string
   id: string
   pinned: boolean
+  reactions?: Reaction[]
 }
 
 export default class Message {
@@ -33,7 +36,8 @@ export default class Message {
   protected _pinned: boolean
   protected _channelId: string
   protected _senderId: string
-  protected _readers?: ChannelMember[]
+  protected _readers: ChannelMember[] = []
+  protected _reactions: Reaction[] | undefined
 
   protected constructor({
     id,
@@ -42,6 +46,7 @@ export default class Message {
     pinned,
     channelId,
     senderId,
+    reactions,
     readers,
   }: MessageConstructorProps) {
     this._id = id
@@ -50,7 +55,8 @@ export default class Message {
     this._pinned = pinned
     this._channelId = channelId
     this._senderId = senderId
-    this._readers = readers
+    this._reactions = reactions
+    this._readers = readers || []
   }
 
   static create(props: MessageCreateProps): Message {
@@ -77,6 +83,15 @@ export default class Message {
 
   changeContent(content: string): void {
     this._content = content
+  }
+
+  addReaction(emoji: string, senderId: string): void {
+    const reaction = new Reaction({ emoji, senderId })
+    this._reactions?.push(reaction)
+  }
+
+  get reactions(): Reaction[] | undefined {
+    return this._reactions
   }
 
   get id(): string {
