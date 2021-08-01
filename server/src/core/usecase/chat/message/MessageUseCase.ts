@@ -1,5 +1,6 @@
 import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
 import IThreadReporsitory from '../../../adapter/repository/ThreadRepository/IThreadRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 import {
@@ -17,7 +18,7 @@ export type ReactionUCOutPut = {
 export type ReplyUCOutput = {
   id: string
   content: string
-  channelId: string
+  channel: Channel
   slug: string
   pinned: boolean
   sender: ChannelMember
@@ -151,7 +152,7 @@ export default class MessageUseCase {
       return {
         id: reply.id,
         content: reply.content,
-        channelId: reply.channelId,
+        channel: channel,
         slug: reply.slug,
         pinned: reply.pinned,
         sender: replier,
@@ -179,7 +180,7 @@ export default class MessageUseCase {
     return {
       id: thread.id,
       content: thread.content,
-      channelId: thread.channelId,
+      channel: channel,
       slug: thread.slug,
       pinned: thread.pinned,
       replies,

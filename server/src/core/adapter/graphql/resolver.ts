@@ -268,7 +268,7 @@ export const resolvers: Resolvers = {
       })
 
       await pubsub.publish('THREAD_POSTED', {
-        threadPosted: thread,
+        threadPosted: threadMapToSchema(thread),
       })
       return threadMapToSchema(thread)
     },
@@ -283,6 +283,9 @@ export const resolvers: Resolvers = {
         senderId,
       })
 
+      await pubsub.publish('THREAD_POSTED', {
+        threadPosted: threadMapToSchema(thread),
+      })
       return threadMapToSchema(thread)
     },
     updateMessage: async (_parent, args, context: Context) => {
@@ -301,6 +304,9 @@ export const resolvers: Resolvers = {
           pinned,
           userId,
         })
+        await pubsub.publish('THREAD_POSTED', {
+          threadPosted: threadMapToSchema(thread),
+        })
         return threadMapToSchema(thread)
       }
 
@@ -312,6 +318,9 @@ export const resolvers: Resolvers = {
       const { id, emoji } = args.input
       const senderId = context.user.sub
       const thread = await messageUseCase.addReaction({ id, emoji, senderId })
+      await pubsub.publish('THREAD_POSTED', {
+        threadPosted: threadMapToSchema(thread),
+      })
       return threadMapToSchema(thread)
     },
   },
@@ -321,7 +330,7 @@ export const resolvers: Resolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['THREAD_POSTED']),
         async (
-          payload: { threadPosted: ThreadUCOutput },
+          payload: { threadPosted: GThread },
           _variables,
           context: Context
         ) => {
@@ -329,7 +338,7 @@ export const resolvers: Resolvers = {
           if (!userId) throw new Error('Not Authenticated')
 
           const channel = await channelRepo.getChannelById(
-            payload.threadPosted.channelId
+            payload.threadPosted.channel.id
           )
 
           return Boolean(channel.getMember(userId))
@@ -345,6 +354,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
     content: thread.content,
     pinned: thread.pinned,
     slug: thread.slug,
+    channel: thread.channel,
     sender: channelMemberMapToSchema(thread.sender),
     reactinos: thread.reactions?.map((reaction) => ({
       id: reaction.id,
@@ -356,6 +366,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
       id: reply.id,
       pinned: reply.pinned,
       slug: reply.slug,
+      channel: reply.channel,
       sender: channelMemberMapToSchema(reply.sender),
       reactinos: reply.reactions?.map((reaction) => ({
         id: reaction.id,

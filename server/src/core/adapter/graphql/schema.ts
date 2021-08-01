@@ -134,6 +134,7 @@ export const typeDefs = gql`
     content: String!
     pinned: Boolean!
     slug: String!
+    channel: Channel!
     sender: ChannelMember!
     replies: [Reply!]
     reactinos: [Reaction!]
@@ -144,6 +145,7 @@ export const typeDefs = gql`
     content: String!
     slug: String!
     pinned: Boolean!
+    channel: Channel!
     sender: ChannelMember!
     reactinos: [Reaction!]
   }
