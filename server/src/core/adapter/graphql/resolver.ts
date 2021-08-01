@@ -55,10 +55,13 @@ export const resolvers: Resolvers = {
 
       return channel
     },
-    thread: async (_parent, args, _context: Context) => {
-      const { id } = args.input
+    thread: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
 
-      const thread = await messageUseCase.getThreadDetail(id)
+      const { id } = args.input
+      const userId = context.user.sub
+
+      const thread = await messageUseCase.getThreadDetail(id, userId)
 
       return threadMapToSchema(thread)
     },
@@ -280,15 +283,30 @@ export const resolvers: Resolvers = {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { id, content, pinned } = args.input
+      const userId = context.user.sub
+
       if (
         (typeof content === 'string' || typeof content === 'undefined') &&
         (typeof pinned === 'boolean' || typeof pinned === 'undefined')
       ) {
-        const thread = await messageUseCase.update({ id, content, pinned })
+        const thread = await messageUseCase.update({
+          id,
+          content,
+          pinned,
+          userId,
+        })
         return threadMapToSchema(thread)
       }
 
       throw new Error('Input type is strange')
+    },
+    addReaction: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, emoji } = args.input
+      const senderId = context.user.sub
+      const thread = await messageUseCase.addReaction({ id, emoji, senderId })
+      return threadMapToSchema(thread)
     },
   },
 }
@@ -300,12 +318,22 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
     pinned: thread.pinned,
     slug: thread.slug,
     sender: channelMemberMapToSchema(thread.sender),
+    reactinos: thread.reactions?.map((reaction) => ({
+      id: reaction.id,
+      emoji: reaction.emoji,
+      sender: channelMemberMapToSchema(reaction.sender),
+    })),
     replies: thread.replies?.map<GReply>((reply) => ({
       content: reply.content,
       id: reply.id,
       pinned: reply.pinned,
       slug: reply.slug,
       sender: channelMemberMapToSchema(reply.sender),
+      reactinos: reply.reactions?.map((reaction) => ({
+        id: reaction.id,
+        emoji: reaction.emoji,
+        sender: channelMemberMapToSchema(reaction.sender),
+      })),
     })),
   }
 }

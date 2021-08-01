@@ -8,6 +8,12 @@ import {
   UpdateMessageParam,
 } from './MessageUseCaseParam'
 
+export type ReactionUCOutPut = {
+  id: number
+  emoji: string
+  sender: ChannelMember
+}
+
 export type ReplyUCOutput = {
   id: string
   content: string
@@ -15,6 +21,7 @@ export type ReplyUCOutput = {
   slug: string
   pinned: boolean
   sender: ChannelMember
+  reactions?: ReactionUCOutPut[]
   readers?: ChannelMember[]
 }
 
@@ -31,8 +38,13 @@ export default class MessageUseCase {
     this.channelRepo = channelRepo
   }
 
-  async getThreadDetail(id: string): Promise<ThreadUCOutput> {
+  async getThreadDetail(id: string, userId: string): Promise<ThreadUCOutput> {
     const thread = await this.threadRepo.getById(id)
+    const channel = await this.channelRepo.getChannelById(thread.channelId)
+    if (!channel.getMember(userId))
+      throw new Error(
+        'User does not have authorization to get thread. Please join to the channel'
+      )
 
     return this.mapToOutput(thread)
   }
@@ -59,6 +71,12 @@ export default class MessageUseCase {
     threadId,
   }: PostReplyParam): Promise<ThreadUCOutput> {
     const thread = await this.threadRepo.getById(threadId)
+    const channel = await this.channelRepo.getChannelById(thread.channelId)
+    if (!channel.getMember(senderId))
+      throw new Error(
+        'User does not have authorization to post reply. Please join to the channel'
+      )
+
     thread.reply({ senderId, content })
 
     const updatedThread = await this.threadRepo.save(thread)
@@ -69,10 +87,42 @@ export default class MessageUseCase {
     content,
     pinned,
     id,
+    userId,
   }: UpdateMessageParam): Promise<ThreadUCOutput> {
     const message = await this.threadRepo.getById(id)
+    const channel = await this.channelRepo.getChannelById(message.channelId)
+    if (!channel.getMember(userId))
+      throw new Error(
+        'User does not have authorization to get thread. Please join to the channel'
+      )
+
+    if (userId !== message.senderId)
+      throw new Error('User does not have authorization to update message.')
+
     if (content) message.changeContent(content)
     if (typeof pinned !== 'undefined') message.changePinned(pinned)
+
+    const updatedMessage = await this.threadRepo.save(message)
+    return this.mapToOutput(updatedMessage)
+  }
+
+  async addReaction({
+    senderId,
+    emoji,
+    id,
+  }: {
+    senderId: string
+    emoji: string
+    id: string
+  }): Promise<ThreadUCOutput> {
+    const message = await this.threadRepo.getById(id)
+    const channel = await this.channelRepo.getChannelById(message.channelId)
+    if (!channel.getMember(senderId))
+      throw new Error(
+        'User does not have authorization to get thread. Please join to the channel'
+      )
+
+    message.addReaction(emoji, senderId)
 
     const updatedMessage = await this.threadRepo.save(message)
     return this.mapToOutput(updatedMessage)
@@ -83,7 +133,21 @@ export default class MessageUseCase {
 
     const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
       const replier = channel.getMember(reply.senderId)
-      if (!replier) throw new Error('Replier is not found')
+      if (!replier) throw new Error('Replier is not found in this channel')
+
+      const replyReactions = reply.reactions?.map<ReactionUCOutPut>(
+        (reaction) => {
+          const sender = channel.getMember(reaction.senderId)
+          if (!sender) throw new Error('Sender is not found in this channel')
+
+          return {
+            id: reaction.id || 0,
+            emoji: reaction.emoji,
+            sender: sender,
+          }
+        }
+      )
+
       return {
         id: reply.id,
         content: reply.content,
@@ -92,11 +156,25 @@ export default class MessageUseCase {
         pinned: reply.pinned,
         sender: replier,
         readers: reply.readers,
+        reactions: replyReactions,
       }
     })
 
     const sender = channel.getMember(thread.senderId)
-    if (!sender) throw new Error('Sender is not found')
+    if (!sender) throw new Error('Sender is not found in this channel')
+
+    const threadReactions = thread.reactions?.map<ReactionUCOutPut>(
+      (reaction) => {
+        const sender = channel.getMember(reaction.senderId)
+        if (!sender) throw new Error('Sender is not found in this channel')
+
+        return {
+          id: reaction.id || 0,
+          emoji: reaction.emoji,
+          sender,
+        }
+      }
+    )
 
     return {
       id: thread.id,
@@ -107,6 +185,7 @@ export default class MessageUseCase {
       replies,
       sender,
       readers: thread.readers,
+      reactions: threadReactions,
     }
   }
 }

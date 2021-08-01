@@ -124,6 +124,11 @@ export const typeDefs = gql`
     pinned: Boolean
   }
 
+  input AddReactionInput {
+    id: String!
+    emoji: String!
+  }
+
   type Thread {
     id: String!
     content: String!
@@ -131,6 +136,7 @@ export const typeDefs = gql`
     slug: String!
     sender: ChannelMember!
     replies: [Reply!]
+    reactinos: [Reaction!]
   }
 
   type Reply {
@@ -138,6 +144,13 @@ export const typeDefs = gql`
     content: String!
     slug: String!
     pinned: Boolean!
+    sender: ChannelMember!
+    reactinos: [Reaction!]
+  }
+
+  type Reaction {
+    id: Int!
+    emoji: String!
     sender: ChannelMember!
   }
 
@@ -179,5 +192,6 @@ export const typeDefs = gql`
     postThread(input: PostThreadInput!): Thread!
     postReply(input: PostReplyInput!): Thread!
     updateMessage(input: UpdateMessageInput!): Thread!
+    addReaction(input: AddReactionInput!): Thread!
   }
 `

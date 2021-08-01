@@ -34,6 +34,11 @@ export default class PChannelRepository implements IChannelRepository {
           include: {
             user: true,
           },
+          where: {
+            NOT: {
+              role: ChannelRole.Leaved,
+            },
+          },
         },
       },
     })
@@ -85,6 +90,11 @@ export default class PChannelRepository implements IChannelRepository {
         ChannelMember: {
           include: {
             user: true,
+          },
+          where: {
+            NOT: {
+              role: ChannelRole.Leaved,
+            },
           },
         },
       },
@@ -155,6 +165,11 @@ export default class PChannelRepository implements IChannelRepository {
             include: {
               user: true,
             },
+            where: {
+              NOT: {
+                role: ChannelRole.Leaved,
+              },
+            },
           },
         },
       })
@@ -174,6 +189,11 @@ export default class PChannelRepository implements IChannelRepository {
           ChannelMember: {
             include: {
               user: true,
+            },
+            where: {
+              NOT: {
+                role: ChannelRole.Leaved,
+              },
             },
           },
         },
