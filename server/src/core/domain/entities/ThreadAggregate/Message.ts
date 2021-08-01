@@ -86,6 +86,11 @@ export default class Message {
   }
 
   addReaction(emoji: string, senderId: string): void {
+    const exists = this.reactions?.some(
+      (reaction) => reaction.emoji === emoji && reaction.senderId === senderId
+    )
+    if (exists) throw new Error('This user already added this emoji')
+
     const reaction = new Reaction({ emoji, senderId })
     this._reactions?.push(reaction)
   }
