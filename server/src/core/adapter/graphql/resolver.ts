@@ -55,10 +55,13 @@ export const resolvers: Resolvers = {
 
       return channel
     },
-    thread: async (_parent, args, _context: Context) => {
-      const { id } = args.input
+    thread: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
 
-      const thread = await messageUseCase.getThreadDetail(id)
+      const { id } = args.input
+      const userId = context.user.sub
+
+      const thread = await messageUseCase.getThreadDetail(id, userId)
 
       return threadMapToSchema(thread)
     },
@@ -280,11 +283,18 @@ export const resolvers: Resolvers = {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { id, content, pinned } = args.input
+      const userId = context.user.sub
+
       if (
         (typeof content === 'string' || typeof content === 'undefined') &&
         (typeof pinned === 'boolean' || typeof pinned === 'undefined')
       ) {
-        const thread = await messageUseCase.update({ id, content, pinned })
+        const thread = await messageUseCase.update({
+          id,
+          content,
+          pinned,
+          userId,
+        })
         return threadMapToSchema(thread)
       }
 

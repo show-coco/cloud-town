@@ -14,4 +14,5 @@ export interface UpdateMessageParam {
   id: string
   content?: string
   pinned?: boolean
+  userId: string
 }
