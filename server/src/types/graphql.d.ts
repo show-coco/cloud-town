@@ -146,6 +146,7 @@ export type Mutation = {
   postReply: Thread;
   updateMessage: Thread;
   addReaction: Thread;
+  readMessage: Thread;
 };
 
 
@@ -213,6 +214,11 @@ export type MutationAddReactionArgs = {
   input: AddReactionInput;
 };
 
+
+export type MutationReadMessageArgs = {
+  input: ReadMessageInput;
+};
+
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
@@ -267,6 +273,10 @@ export type Reaction = {
   id: Scalars['Int'];
   emoji: Scalars['String'];
   sender: ChannelMember;
+};
+
+export type ReadMessageInput = {
+  messageId: Scalars['String'];
 };
 
 export type Reply = {
@@ -411,6 +421,7 @@ export type ResolversTypes = ResolversObject<{
   PostThreadInput: PostThreadInput;
   Query: ResolverTypeWrapper<{}>;
   Reaction: ResolverTypeWrapper<Reaction>;
+  ReadMessageInput: ReadMessageInput;
   Reply: ResolverTypeWrapper<Reply>;
   Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
@@ -447,6 +458,7 @@ export type ResolversParentTypes = ResolversObject<{
   PostThreadInput: PostThreadInput;
   Query: {};
   Reaction: Reaction;
+  ReadMessageInput: ReadMessageInput;
   Reply: Reply;
   Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
@@ -501,6 +513,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
   updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
   addReaction?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionArgs, 'input'>>;
+  readMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationReadMessageArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{

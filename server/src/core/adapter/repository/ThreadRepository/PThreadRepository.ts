@@ -1,17 +1,23 @@
-import { Message as PMessage, Reaction as PReaction } from '@prisma/client'
+import {
+  Message as PMessage,
+  Reaction as PReaction,
+  Read as PRead,
+} from '@prisma/client'
 import prisma from '../../../../prisma'
 import Reaction from '../../../domain/entities/ThreadAggregate/Reaction'
+import Read from '../../../domain/entities/ThreadAggregate/Read'
 import Reply from '../../../domain/entities/ThreadAggregate/Reply'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 import IThreadReporsitory from './IThreadRepository'
 
 type MessageModel =
   | PMessage & {
-      Message: (PMessage & {
-        reactions: PReaction[]
-      })[]
+    Message: (PMessage & {
       reactions: PReaction[]
-    }
+      reads: PRead[]
+    })[]
+    reactions: PReaction[]
+  }
 
 export default class PThreadRepository implements IThreadReporsitory {
   async getById(id: string): Promise<Thread> {
@@ -23,6 +29,7 @@ export default class PThreadRepository implements IThreadReporsitory {
         Message: {
           include: {
             reactions: true,
+            reads: true,
           },
         },
         reactions: true,
@@ -58,6 +65,7 @@ export default class PThreadRepository implements IThreadReporsitory {
           Message: {
             include: {
               reactions: true,
+              reads: true,
             },
           },
           reactions: true,
@@ -88,6 +96,7 @@ export default class PThreadRepository implements IThreadReporsitory {
               },
               include: {
                 reactions: true,
+                reads: true,
               },
             })
 
@@ -161,6 +170,7 @@ export default class PThreadRepository implements IThreadReporsitory {
           Message: {
             include: {
               reactions: true,
+              reads: true,
             },
           },
           reactions: true,
@@ -171,7 +181,7 @@ export default class PThreadRepository implements IThreadReporsitory {
     }
   }
 
-  converter(pMessage: MessageModel): Thread {
+  private converter(pMessage: MessageModel): Thread {
     return Thread.regenerate({
       ...pMessage,
       channelId: pMessage.channel_id,
@@ -187,6 +197,16 @@ export default class PThreadRepository implements IThreadReporsitory {
           reactions: reply.reactions.map(
             (reaction) =>
               new Reaction({ ...reaction, senderId: reaction.user_id })
+          ),
+          reads: reply.reads.map(
+            (read) =>
+              new Read({
+                id: read.id,
+                userId: read.user_id,
+                messageId: read.message_id,
+                createdAt: read.created_at,
+                updatedAt: read.updated_at,
+              })
           ),
         })
       ),

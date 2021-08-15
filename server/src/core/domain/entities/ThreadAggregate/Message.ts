@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import ChannelMember from '../ChannelAggregate/ChannelMember'
 import Reaction from './Reaction'
+import Read from './Read'
 
 export type MessageCreateProps = {
   content: string
@@ -17,6 +18,7 @@ export type MessageConstructorProps = {
   senderId: string
   readers?: ChannelMember[]
   reactions?: Reaction[]
+  reads?: Read[]
 }
 
 export type MessageRegenerateProps = {
@@ -27,6 +29,7 @@ export type MessageRegenerateProps = {
   id: string
   pinned: boolean
   reactions?: Reaction[]
+  reads?: Read[]
 }
 
 export default class Message {
@@ -38,6 +41,7 @@ export default class Message {
   protected _senderId: string
   protected _readers: ChannelMember[] = []
   protected _reactions: Reaction[] | undefined
+  protected _reads: Read[] | undefined
 
   protected constructor({
     id,
@@ -48,6 +52,7 @@ export default class Message {
     senderId,
     reactions,
     readers,
+    reads,
   }: MessageConstructorProps) {
     this._id = id
     this._content = content
@@ -57,6 +62,7 @@ export default class Message {
     this._senderId = senderId
     this._reactions = reactions
     this._readers = readers || []
+    this._reads = reads || []
   }
 
   static create(props: MessageCreateProps): Message {
@@ -93,6 +99,18 @@ export default class Message {
 
     const reaction = new Reaction({ emoji, senderId })
     this._reactions?.push(reaction)
+  }
+
+  addRead(userId: string, readAt: Date = new Date()): void {
+    const exists = this._reads?.some((read) => read.userId === userId)
+    if (exists) throw new Error('This user already read this message')
+    const read = new Read({
+      userId,
+      messageId: this._id,
+      createdAt: readAt,
+      updatedAt: readAt,
+    })
+    this._reads?.push(read)
   }
 
   get reactions(): Reaction[] | undefined {

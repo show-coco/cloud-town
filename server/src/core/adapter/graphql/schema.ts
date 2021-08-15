@@ -129,6 +129,10 @@ export const typeDefs = gql`
     emoji: String!
   }
 
+  input ReadMessageInput {
+    messageId: String!
+  }
+
   type Thread {
     id: String!
     content: String!
@@ -193,5 +197,6 @@ export const typeDefs = gql`
     postReply(input: PostReplyInput!): Thread!
     updateMessage(input: UpdateMessageInput!): Thread!
     addReaction(input: AddReactionInput!): Thread!
+    readMessage(input: ReadMessageInput!): Thread!
   }
 `

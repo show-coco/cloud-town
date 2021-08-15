@@ -128,6 +128,27 @@ export default class MessageUseCase {
     return this.mapToOutput(updatedMessage)
   }
 
+  async readMessage({
+    userId,
+    messageId,
+  }: {
+    userId: string
+    messageId: string
+  }): Promise<ThreadUCOutput> {
+    const message = await this.threadRepo.getById(messageId)
+
+    const channel = await this.channelRepo.getChannelById(message.channelId)
+    if (!channel.getMember(userId))
+      throw new Error(
+        'User does not have authorization to get thread. Please join to the channel'
+      )
+
+    // 既読処理
+    message.addRead(userId)
+    const updatedMessage = await this.threadRepo.save(message)
+    return this.mapToOutput(updatedMessage)
+  }
+
   private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(thread.channelId)
 
