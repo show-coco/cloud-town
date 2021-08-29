@@ -327,6 +327,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
     pinned: thread.pinned,
     slug: thread.slug,
     sender: channelMemberMapToSchema(thread.sender),
+    isRead: thread.isRead,
     reactinos: thread.reactions?.map((reaction) => ({
       id: reaction.id,
       emoji: reaction.emoji,
@@ -338,6 +339,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
       pinned: reply.pinned,
       slug: reply.slug,
       sender: channelMemberMapToSchema(reply.sender),
+      isRead: thread.isRead,
       reactinos: reply.reactions?.map((reaction) => ({
         id: reaction.id,
         emoji: reaction.emoji,

@@ -16,6 +16,7 @@ type MessageModel =
       reactions: PReaction[]
       reads: PRead[]
     })[]
+    reads: PRead[]
     reactions: PReaction[]
   }
 
@@ -33,6 +34,7 @@ export default class PThreadRepository implements IThreadReporsitory {
           },
         },
         reactions: true,
+        reads: true,
       },
     })
 
@@ -69,6 +71,7 @@ export default class PThreadRepository implements IThreadReporsitory {
             },
           },
           reactions: true,
+          reads: true,
         },
       })
 
@@ -124,6 +127,31 @@ export default class PThreadRepository implements IThreadReporsitory {
               updatedReply.reactions = reactions
             }
 
+            if (reply.reads) {
+              const reads = await Promise.all(
+                reply.reads.map(async (read) => {
+                  const updatedReaction = await prisma.read.upsert({
+                    create: {
+                      user_id: read.userId,
+                      message_id: read.messageId,
+                      created_at: read.createdAt,
+                      updated_at: read.updatedAt,
+                    },
+                    update: {
+                      created_at: read.createdAt,
+                      updated_at: read.updatedAt,
+                    },
+                    where: {
+                      id: thread.id,
+                    },
+                  })
+
+                  return updatedReaction
+                })
+              )
+              updatedReply.reads = reads
+            }
+
             return updatedReply
           })
         )
@@ -155,6 +183,31 @@ export default class PThreadRepository implements IThreadReporsitory {
         pMessage.reactions = reactions
       }
 
+      if (thread.reads) {
+        const reads = await Promise.all(
+          thread.reads.map(async (read) => {
+            const updatedReaction = await prisma.read.upsert({
+              create: {
+                user_id: read.userId,
+                message_id: read.messageId,
+                created_at: read.createdAt,
+                updated_at: read.updatedAt,
+              },
+              update: {
+                created_at: read.createdAt,
+                updated_at: read.updatedAt,
+              },
+              where: {
+                id: thread.id,
+              },
+            })
+
+            return updatedReaction
+          })
+        )
+        pMessage.reads = reads
+      }
+
       return this.converter(pMessage)
     } else {
       const pMessage = await prisma.message.create({
@@ -174,6 +227,7 @@ export default class PThreadRepository implements IThreadReporsitory {
             },
           },
           reactions: true,
+          reads: true,
         },
       })
 
@@ -188,6 +242,16 @@ export default class PThreadRepository implements IThreadReporsitory {
       senderId: pMessage.user_id,
       reactions: pMessage.reactions.map(
         (reaction) => new Reaction({ ...reaction, senderId: reaction.user_id })
+      ),
+      reads: pMessage.reads.map(
+        (read) =>
+          new Read({
+            id: read.id,
+            userId: read.user_id,
+            messageId: read.message_id,
+            createdAt: read.created_at,
+            updatedAt: read.updated_at,
+          })
       ),
       replies: pMessage.Message.map((reply) =>
         Reply.regenerate({

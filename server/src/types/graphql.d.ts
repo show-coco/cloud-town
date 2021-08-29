@@ -285,6 +285,7 @@ export type Reply = {
   content: Scalars['String'];
   slug: Scalars['String'];
   pinned: Scalars['Boolean'];
+  isRead: Scalars['Boolean'];
   sender: ChannelMember;
   reactinos?: Maybe<Array<Reaction>>;
 };
@@ -296,6 +297,7 @@ export type Thread = {
   pinned: Scalars['Boolean'];
   slug: Scalars['String'];
   sender: ChannelMember;
+  isRead: Scalars['Boolean'];
   replies?: Maybe<Array<Reply>>;
   reactinos?: Maybe<Array<Reaction>>;
 };
@@ -551,6 +553,7 @@ export type ReplyResolvers<ContextType = Context, ParentType extends ResolversPa
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
   reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -562,6 +565,7 @@ export type ThreadResolvers<ContextType = Context, ParentType extends ResolversP
   pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   replies?: Resolver<Maybe<Array<ResolversTypes['Reply']>>, ParentType, ContextType>;
   reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

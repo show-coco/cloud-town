@@ -104,6 +104,7 @@ export default class Message {
   addRead(userId: string, readAt: Date = new Date()): void {
     const exists = this._reads?.some((read) => read.userId === userId)
     if (exists) throw new Error('This user already read this message')
+
     const read = new Read({
       userId,
       messageId: this._id,
@@ -143,5 +144,13 @@ export default class Message {
 
   get channelId(): string {
     return this._channelId
+  }
+
+  get reads(): Read[] | undefined {
+    return this._reads
+  }
+
+  isRead(userId: string): boolean {
+    return this._reads?.some((read) => read.userId === userId) ?? false
   }
 }
