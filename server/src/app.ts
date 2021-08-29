@@ -20,7 +20,7 @@ import './auth/google'
 import jwt from 'jsonwebtoken'
 import { settings } from './settings'
 
-const app = express()
+export const app = express()
 app.use(cors())
 const router = express.Router()
 app.use('/', router)
