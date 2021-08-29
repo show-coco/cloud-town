@@ -313,7 +313,7 @@ export const resolvers: Resolvers = {
 
       throw new Error('Input type is strange')
     },
-    addReaction: async (_parent, args, context: Context) => {
+    addReactionToThread: async (_parent, args, context: Context) => {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { id, emoji } = args.input
@@ -323,6 +323,27 @@ export const resolvers: Resolvers = {
         threadPosted: mapThreadToSchema(thread),
       })
       return mapThreadToSchema(thread)
+    },
+    addReactionToReply: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, emoji } = args.input
+      const senderId = context.user.sub
+      const reply = await messageUseCase.addReaction({ id, emoji, senderId })
+      await pubsub.publish('REPLY_POSTED', {
+        replyPosted: mapThreadToSchema(reply),
+      })
+      const mapped = mapThreadToSchema(reply)
+
+      return {
+        id: mapped.id,
+        content: mapped.content,
+        slug: mapped.slug,
+        pinned: mapped.pinned,
+        channel: mapped.channel,
+        sender: mapped.sender,
+        reactinos: mapped.reactinos,
+      }
     },
   },
   Subscription: {

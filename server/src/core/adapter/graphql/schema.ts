@@ -194,7 +194,8 @@ export const typeDefs = gql`
     postThread(input: PostThreadInput!): Thread!
     postReply(input: PostReplyInput!): Reply!
     updateMessage(input: UpdateMessageInput!): Thread!
-    addReaction(input: AddReactionInput!): Thread!
+    addReactionToThread(input: AddReactionInput!): Thread!
+    addReactionToReply(input: AddReactionInput!): Reply!
   }
 
   type Subscription {

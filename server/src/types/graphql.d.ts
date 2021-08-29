@@ -145,7 +145,8 @@ export type Mutation = {
   postThread: Thread;
   postReply: Reply;
   updateMessage: Thread;
-  addReaction: Thread;
+  addReactionToThread: Thread;
+  addReactionToReply: Reply;
 };
 
 
@@ -209,7 +210,12 @@ export type MutationUpdateMessageArgs = {
 };
 
 
-export type MutationAddReactionArgs = {
+export type MutationAddReactionToThreadArgs = {
+  input: AddReactionInput;
+};
+
+
+export type MutationAddReactionToReplyArgs = {
   input: AddReactionInput;
 };
 
@@ -510,7 +516,8 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   postThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostThreadArgs, 'input'>>;
   postReply?: Resolver<ResolversTypes['Reply'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
   updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
-  addReaction?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionArgs, 'input'>>;
+  addReactionToThread?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionToThreadArgs, 'input'>>;
+  addReactionToReply?: Resolver<ResolversTypes['Reply'], ParentType, ContextType, RequireFields<MutationAddReactionToReplyArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
