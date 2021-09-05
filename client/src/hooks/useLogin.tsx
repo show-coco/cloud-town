@@ -1,11 +1,8 @@
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { FirebaseAuthAdapter } from "../adapter/auth/FirebaseAuthAdapter";
 import { useAuthContext } from "../context/AuthContext";
 import { useUsersLazyQuery } from "../graphql/generated/types";
-import { jwtManager } from "../utils/jwtManager";
-
-const auth = new FirebaseAuthAdapter();
+import { tokenManager } from "../utils/jwtManager";
 
 type UseLoginReturn = {
   onLogin: () => void;
@@ -13,7 +10,7 @@ type UseLoginReturn = {
 
 export const useLogin = (): UseLoginReturn => {
   const router = useRouter();
-  const { setUser } = useAuthContext();
+  const { setUser, auth } = useAuthContext();
   const toast = useToast();
   const [fetchUser] = useUsersLazyQuery({
     onCompleted: (data) => {
@@ -32,7 +29,7 @@ export const useLogin = (): UseLoginReturn => {
   const onLogin = async () => {
     try {
       const { token, authId } = await auth.login();
-      jwtManager.setJwt(token);
+      tokenManager.setToken(token, authId);
       await fetchUser({
         variables: {
           authId,

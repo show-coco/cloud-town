@@ -1,4 +1,5 @@
 import {
+  Auth,
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
@@ -10,6 +11,8 @@ import "firebase/auth";
 import { IAuthAdapter } from "./IAuthAdapter";
 
 export class FirebaseAuthAdapter implements IAuthAdapter {
+  private auth: Auth;
+
   constructor() {
     const firebaseConfig = {
       apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
@@ -22,12 +25,12 @@ export class FirebaseAuthAdapter implements IAuthAdapter {
     };
 
     firebase.initializeApp(firebaseConfig);
+    this.auth = getAuth();
   }
 
   async login(): Promise<{ authId: string; token: string }> {
     const provider = new GoogleAuthProvider();
-    const auth = getAuth();
-    const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(this.auth, provider);
     const idTokenResult = await result.user.getIdTokenResult();
     const uid = result.user.uid;
     const hasuraClaim = idTokenResult.claims["https://hasura.io/jwt/claims"];

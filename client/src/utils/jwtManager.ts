@@ -1,24 +1,34 @@
-const KEY = "jwt";
+const jwtKey = "jwt";
+const authIdKey = "AuthID";
 
-class JwtManager {
+class TokenManager {
   private token: string | null = null;
+  private authId: string | null = null;
 
-  setJwt(token: string) {
+  setToken(token: string, authId: string) {
     this.token = token;
-    localStorage.setItem(KEY, token);
+    this.authId = authId;
+    localStorage.setItem(jwtKey, token);
+    localStorage.setItem(authIdKey, authId);
   }
 
-  getJwt() {
-    if (this.token === null) {
-      this.token = localStorage.getItem(KEY);
+  getToken() {
+    if (this.token === null || this.authId === null) {
+      this.token = localStorage.getItem(jwtKey);
+      this.authId = localStorage.getItem(authIdKey);
     }
-    return this.token;
+    return {
+      token: this.token,
+      authId: this.authId,
+    };
   }
 
   clear() {
     this.token = null;
-    localStorage.removeItem(KEY);
+    this.authId = null;
+    localStorage.removeItem(jwtKey);
+    localStorage.removeItem(authIdKey);
   }
 }
 
-export const jwtManager = new JwtManager();
+export const tokenManager = new TokenManager();
