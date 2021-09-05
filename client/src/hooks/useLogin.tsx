@@ -1,0 +1,54 @@
+import { useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { FirebaseAuthAdapter } from "../adapter/auth/FirebaseAuthAdapter";
+import { useAuthContext } from "../context/AuthContext";
+import { useUsersLazyQuery } from "../graphql/generated/types";
+import { jwtManager } from "../utils/jwtManager";
+
+const auth = new FirebaseAuthAdapter();
+
+type UseLoginReturn = {
+  onLogin: () => void;
+};
+
+export const useLogin = (): UseLoginReturn => {
+  const router = useRouter();
+  const { setUser } = useAuthContext();
+  const toast = useToast();
+  const [fetchUser] = useUsersLazyQuery({
+    onCompleted: (data) => {
+      const user = data.users[0];
+      setUser({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        slug: user.slug,
+        authId: user.auth_id,
+      });
+      router.push("/");
+    },
+  });
+
+  const onLogin = async () => {
+    try {
+      const { token, authId } = await auth.login();
+      jwtManager.setJwt(token);
+      await fetchUser({
+        variables: {
+          authId,
+        },
+      });
+    } catch (error) {
+      toast({
+        title: "ログインに失敗しました。再度やり直してください。",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+      });
+    }
+  };
+
+  return {
+    onLogin,
+  };
+};

@@ -1,13 +1,12 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React from "react";
-import { Spinner } from "@chakra-ui/spinner";
-import { useCommunityQuery } from "../graphql/generated/types";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function Home() {
-  const { data, loading } = useCommunityQuery();
+  const { user } = useAuthContext();
 
-  console.log(data);
+  console.log("Home", user);
 
   return (
     <div className={styles.container}>
@@ -17,7 +16,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>{loading ? <Spinner /> : <p>Hello</p>}</div>
+      <div>
+        <p>Hello</p>
+      </div>
     </div>
   );
 }

@@ -4,14 +4,19 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../config/theme";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../graphql/apollo";
+import React, { VFC } from "react";
+import AuthContext from "../context/AuthContext";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: VFC<AppProps> = ({ Component, pageProps }) => {
   return (
     <ApolloProvider client={client}>
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        <AuthContext>
+          <Component {...pageProps} />
+        </AuthContext>
       </ChakraProvider>
     </ApolloProvider>
   );
-}
+};
+
 export default MyApp;

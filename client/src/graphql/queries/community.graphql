@@ -1,6 +1,0 @@
-query Community {
-  community {
-    id
-    name
-  }
-}

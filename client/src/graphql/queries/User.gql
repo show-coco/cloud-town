@@ -1,0 +1,9 @@
+query Users($authId: String!) {
+  users(where: {auth_id: {_eq: $authId}}) {
+    id
+    name
+    slug
+    email
+    auth_id
+  }
+}

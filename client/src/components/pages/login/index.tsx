@@ -1,11 +1,14 @@
 import { Button } from "@chakra-ui/button";
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
 import { Link as ChakraLink } from "@chakra-ui/react";
+import { useLogin } from "client/src/hooks/useLogin";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { VFC } from "react";
 
-export const SignInPage = () => {
+const LoginPage: VFC = () => {
+  const { onLogin } = useLogin();
+
   return (
     <Box bgColor="blue.50" minH="100vh">
       <Flex
@@ -52,18 +55,17 @@ export const SignInPage = () => {
             >
               コミュニティ一覧
             </Button>
-            <a href="http://localhost:4000/api/authentication/google/start">
-              <Button
-                colorScheme="blue"
-                size="lg"
-                px="10"
-                py={{ lg: 8 }}
-                boxShadow="2xl-blue"
-                mb={10}
-              >
-                Login with Google
-              </Button>
-            </a>
+            <Button
+              colorScheme="blue"
+              size="lg"
+              px="10"
+              py={{ lg: 8 }}
+              boxShadow="2xl-blue"
+              mb={10}
+              onClick={onLogin}
+            >
+              Login with Google
+            </Button>
           </Flex>
 
           <Text fontSize="lg">
@@ -77,3 +79,5 @@ export const SignInPage = () => {
     </Box>
   );
 };
+
+export default LoginPage;
