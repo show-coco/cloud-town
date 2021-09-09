@@ -3,7 +3,7 @@ import { setContext } from "@apollo/client/link/context";
 import { tokenManager } from "../utils/jwtManager";
 
 const httpLink = createHttpLink({
-  uri: `https://cloudtown-sandbox.hasura.app/v1/graphql`,
+  uri: process.env.NEXT_PUBLIC_API_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
