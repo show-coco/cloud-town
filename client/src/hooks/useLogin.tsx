@@ -36,6 +36,7 @@ export const useLogin = (): UseLoginReturn => {
         },
       });
     } catch (error) {
+      console.error(error);
       toast({
         title: "ログインに失敗しました。再度やり直してください。",
         status: "error",
