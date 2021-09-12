@@ -1,0 +1,1 @@
+CREATE TABLE "public"."community_hashtag" ("community_id" uuid NOT NULL, "hashtag_id" uuid NOT NULL, PRIMARY KEY ("community_id","hashtag_id") , FOREIGN KEY ("hashtag_id") REFERENCES "public"."hashtag"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("community_id") REFERENCES "public"."community"("id") ON UPDATE restrict ON DELETE restrict);

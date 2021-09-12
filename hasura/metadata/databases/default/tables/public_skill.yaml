@@ -1,0 +1,17 @@
+table:
+  name: skill
+  schema: public
+is_enum: true
+select_permissions:
+- permission:
+    columns:
+    - name
+    - icon
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - icon
+    - name
+    filter: {}
+  role: user

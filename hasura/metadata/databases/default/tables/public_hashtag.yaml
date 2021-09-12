@@ -1,0 +1,11 @@
+table:
+  name: hashtag
+  schema: public
+array_relationships:
+- name: community_hashtags
+  using:
+    foreign_key_constraint_on:
+      column: hashtag_id
+      table:
+        name: community_hashtag
+        schema: public

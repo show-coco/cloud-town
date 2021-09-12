@@ -1,0 +1,23 @@
+table:
+  name: user_role
+  schema: public
+is_enum: true
+array_relationships:
+- name: community_members
+  using:
+    foreign_key_constraint_on:
+      column: role
+      table:
+        name: community_member
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - name
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - name
+    filter: {}
+  role: user

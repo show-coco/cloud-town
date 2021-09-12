@@ -1,0 +1,16 @@
+table:
+  name: community_skill
+  schema: public
+select_permissions:
+- permission:
+    columns:
+    - skill_name
+    - community_id
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - community_id
+    - skill_name
+    filter: {}
+  role: user
