@@ -1,0 +1,40 @@
+table:
+  name: plan
+  schema: public
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+array_relationships:
+- name: community_members
+  using:
+    foreign_key_constraint_on:
+      column: plan_id
+      table:
+        name: community_member
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - price_per_month
+    - description
+    - name
+    - trial_period
+    - created_at
+    - updated_at
+    - community_id
+    - id
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - id
+    - name
+    - description
+    - trial_period
+    - price_per_month
+    - created_at
+    - updated_at
+    - community_id
+    filter: {}
+  role: user

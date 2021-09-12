@@ -1,0 +1,12 @@
+table:
+  name: community_member_status
+  schema: public
+is_enum: true
+array_relationships:
+- name: community_members
+  using:
+    foreign_key_constraint_on:
+      column: status
+      table:
+        name: community_member
+        schema: public

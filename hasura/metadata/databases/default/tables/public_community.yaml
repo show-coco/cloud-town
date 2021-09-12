@@ -1,0 +1,53 @@
+table:
+  name: community
+  schema: public
+object_relationships:
+- name: category
+  using:
+    foreign_key_constraint_on: category_id
+array_relationships:
+- name: channels
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: channel
+        schema: public
+- name: community_hashtags
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: community_hashtag
+        schema: public
+- name: community_members
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: community_member
+        schema: public
+- name: plans
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: plan
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - slug
+    - description
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - id
+    - name
+    - slug
+    - description
+    filter: {}
+  role: user

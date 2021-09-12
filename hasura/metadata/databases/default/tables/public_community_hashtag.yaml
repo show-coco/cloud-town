@@ -1,0 +1,10 @@
+table:
+  name: community_hashtag
+  schema: public
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+- name: hashtag
+  using:
+    foreign_key_constraint_on: hashtag_id

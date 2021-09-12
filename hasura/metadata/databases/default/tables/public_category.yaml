@@ -1,0 +1,12 @@
+table:
+  name: category
+  schema: public
+is_enum: true
+array_relationships:
+- name: communities
+  using:
+    foreign_key_constraint_on:
+      column: category_id
+      table:
+        name: community
+        schema: public

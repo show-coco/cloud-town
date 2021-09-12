@@ -1,0 +1,9 @@
+{
+  "name": "hasura",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "console:dev": "hasura console --envfile env/.env.sandbox"
+  }
+}
