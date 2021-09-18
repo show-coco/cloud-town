@@ -1,0 +1,12 @@
+table:
+  name: channel_role
+  schema: public
+is_enum: true
+array_relationships:
+- name: channel_members
+  using:
+    foreign_key_constraint_on:
+      column: role
+      table:
+        name: channel_member
+        schema: public

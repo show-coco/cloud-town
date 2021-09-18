@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -14,18 +15,23 @@ model category {
 }
 
 model channel {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  is_private   Boolean   @default(false)
-  community_id String    @db.Uuid
-  created_at   DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
-  community    community @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  is_private     Boolean          @default(false)
+  community_id   String           @db.Uuid
+  created_at     DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime         @default(now()) @db.Timestamptz(6)
+  community      community        @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  channel_member channel_member[]
 }
 
 model channel_member {
-  channel_id String @db.Uuid
-  user_id    String @db.Uuid
+  channel_id   String       @db.Uuid
+  user_id      String       @db.Uuid
+  role         String
+  channel      channel      @relation(fields: [channel_id], references: [id], onUpdate: Restrict)
+  channel_role channel_role @relation(fields: [role], references: [name], onUpdate: Restrict)
+  users        users        @relation(fields: [user_id], references: [id], onUpdate: Restrict)
 
   @@id([user_id, channel_id])
 }
@@ -58,16 +64,16 @@ model community_hashtag {
 }
 
 model community_member {
-  community_id            String                   @db.Uuid
-  user_id                 String                   @db.Uuid
+  community_id            String                  @db.Uuid
+  user_id                 String                  @db.Uuid
   role                    String
-  status                  String?
-  plan_id                 String?                  @db.Uuid
-  community               community                @relation(fields: [community_id], references: [id], onUpdate: Restrict)
-  plan                    plan?                    @relation(fields: [plan_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  user_role               user_role                @relation(fields: [role], references: [name], onUpdate: Restrict)
-  community_member_status community_member_status? @relation(fields: [status], references: [name], onDelete: Restrict, onUpdate: Restrict)
-  users                   users                    @relation(fields: [user_id], references: [id], onUpdate: Restrict)
+  status                  String
+  plan_id                 String?                 @db.Uuid
+  community               community               @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  plan                    plan?                   @relation(fields: [plan_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  community_role          community_role          @relation(fields: [role], references: [name], onUpdate: Restrict)
+  community_member_status community_member_status @relation(fields: [status], references: [name], onUpdate: Restrict)
+  users                   users                   @relation(fields: [user_id], references: [id], onUpdate: Restrict)
 
   @@id([community_id, user_id])
 }
@@ -87,7 +93,7 @@ model plan {
   id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                 String
   description          String
-  trial_period         String
+  trial_period         String?
   price_per_month      Int
   created_at           DateTime           @default(now()) @db.Timestamptz(6)
   updated_at           DateTime           @default(now()) @db.Timestamptz(6)
@@ -97,16 +103,22 @@ model plan {
   community_member     community_member[]
 }
 
-model user_role {
-  name             String             @id
-  community_member community_member[]
-}
-
 model users {
   id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String
   slug             String             @unique
   auth_id          String             @unique
   email            String             @unique
+  channel_member   channel_member[]
+  community_member community_member[]
+}
+
+model channel_role {
+  name           String           @id
+  channel_member channel_member[]
+}
+
+model community_role {
+  name             String             @id(map: "user_role_pkey")
   community_member community_member[]
 }

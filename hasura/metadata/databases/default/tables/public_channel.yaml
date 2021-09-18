@@ -5,6 +5,14 @@ object_relationships:
 - name: community
   using:
     foreign_key_constraint_on: community_id
+array_relationships:
+- name: channel_members
+  using:
+    foreign_key_constraint_on:
+      column: channel_id
+      table:
+        name: channel_member
+        schema: public
 select_permissions:
 - permission:
     columns:
