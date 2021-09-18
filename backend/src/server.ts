@@ -1,34 +1,39 @@
 import express from 'express'
 import cors from 'cors'
-import { ApolloServer, gql } from 'apollo-server-express'
+import { ApolloServer } from 'apollo-server-express'
+import { PrismaClient } from '@prisma/client'
+import { typeDefs } from './graphql/schema'
+import { Resolvers } from './types/graphql'
 
-const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
+const prisma = new PrismaClient()
 
-  type Query {
-    books: [Book]
-  }
-`
+const resolvers: Resolvers = {
+  Mutation: {
+    createCommunity: async (_, { input }) => {
+      const { name, slug, description, thumbnailUrl, title } = input
 
-const resolvers = {
+      console.log(input)
+      const community = await prisma.community.create({
+        data: {
+          name,
+          slug,
+          description,
+          title,
+          thumbnail_url: thumbnailUrl,
+          category_id: 'Programming',
+        },
+      })
+      console.log(community)
+
+      return community.id
+    },
+  },
   Query: {
-    books: () => books,
+    healthCheck: () => {
+      return true
+    },
   },
 }
-
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-]
 
 const server = new ApolloServer({ typeDefs, resolvers })
 

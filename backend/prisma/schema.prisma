@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id        String      @id
+  name      String
+  community community[]
+}
+
+model channel {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  is_private   Boolean   @default(false)
+  community_id String    @db.Uuid
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+  community    community @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+}
+
+model channel_member {
+  channel_id String @db.Uuid
+  user_id    String @db.Uuid
+
+  @@id([user_id, channel_id])
+}
+
+model community {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  slug              String              @unique
+  description       String
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime            @default(now()) @db.Timestamptz(6)
+  thumbnail_url     String
+  chat_url          String?
+  category_id       String
+  title             String
+  category          category            @relation(fields: [category_id], references: [id], onUpdate: Restrict)
+  channel           channel[]
+  community_hashtag community_hashtag[]
+  community_member  community_member[]
+  plan              plan[]
+}
+
+model community_hashtag {
+  community_id String    @db.Uuid
+  hashtag_id   String    @db.Uuid
+  community    community @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  hashtag      hashtag   @relation(fields: [hashtag_id], references: [id], onUpdate: Restrict)
+
+  @@id([community_id, hashtag_id])
+}
+
+model community_member {
+  community_id            String                   @db.Uuid
+  user_id                 String                   @db.Uuid
+  role                    String
+  status                  String?
+  plan_id                 String?                  @db.Uuid
+  community               community                @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  plan                    plan?                    @relation(fields: [plan_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  user_role               user_role                @relation(fields: [role], references: [name], onUpdate: Restrict)
+  community_member_status community_member_status? @relation(fields: [status], references: [name], onDelete: Restrict, onUpdate: Restrict)
+  users                   users                    @relation(fields: [user_id], references: [id], onUpdate: Restrict)
+
+  @@id([community_id, user_id])
+}
+
+model community_member_status {
+  name             String             @id
+  community_member community_member[]
+}
+
+model hashtag {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String              @unique
+  community_hashtag community_hashtag[]
+}
+
+model plan {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String
+  description          String
+  trial_period         String
+  price_per_month      Int
+  created_at           DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime           @default(now()) @db.Timestamptz(6)
+  community_id         String             @db.Uuid
+  number_of_applicants Int?
+  community            community          @relation(fields: [community_id], references: [id], onUpdate: Restrict)
+  community_member     community_member[]
+}
+
+model user_role {
+  name             String             @id
+  community_member community_member[]
+}
+
+model users {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String
+  slug             String             @unique
+  auth_id          String             @unique
+  email            String             @unique
+  community_member community_member[]
+}
