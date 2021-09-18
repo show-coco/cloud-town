@@ -1,1 +1,5 @@
-[]
+- name: backend
+  definition:
+    url: http://ec2-3-112-247-113.ap-northeast-1.compute.amazonaws.com/graphql
+    timeout_seconds: 60
+  comment: ""

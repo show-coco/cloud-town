@@ -7,8 +7,6 @@
     "types": [
       "express",
       "node",
-      "jest",
-      "supertest"
     ],
     "outDir": "./build",
     "rootDir": "./src",
