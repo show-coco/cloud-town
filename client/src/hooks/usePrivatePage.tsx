@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { useUsersLazyQuery } from "../graphql/generated/types";
+import { useUserLazyQuery } from "../graphql/generated/types";
 import { tokenManager } from "../utils/jwtManager";
 
-export const usePrivatePage = (): void => {
+export const usePrivatePage = () => {
   const router = useRouter();
   const { setUser } = useAuthContext();
-  const [fetchUser] = useUsersLazyQuery({
+  const [fetchUser, { loading }] = useUserLazyQuery({
     onCompleted: (data) => {
       const user = data.users[0];
       setUser({
@@ -33,4 +33,8 @@ export const usePrivatePage = (): void => {
       });
     }
   }, []);
+
+  return {
+    loading,
+  };
 };

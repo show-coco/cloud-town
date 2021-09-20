@@ -28,6 +28,9 @@ const theme = extendTheme({
     gray: {
       200: "#f3f3f3",
     },
+    border: {
+      light: "#EDF2F7",
+    },
   },
   components: {
     Button: CustomButton,

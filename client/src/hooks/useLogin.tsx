@@ -1,7 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useAuthContext } from "../context/AuthContext";
-import { useUsersLazyQuery } from "../graphql/generated/types";
+import { useUserLazyQuery } from "../graphql/generated/types";
 import { tokenManager } from "../utils/jwtManager";
 
 type UseLoginReturn = {
@@ -12,7 +12,7 @@ export const useLogin = (): UseLoginReturn => {
   const router = useRouter();
   const { setUser, auth } = useAuthContext();
   const toast = useToast();
-  const [fetchUser] = useUsersLazyQuery({
+  const [fetchUser] = useUserLazyQuery({
     onCompleted: (data) => {
       const user = data.users[0];
       setUser({

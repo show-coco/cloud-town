@@ -1,9 +1,17 @@
-query Users($authId: String!) {
+query User($authId: String!) {
   users(where: {auth_id: {_eq: $authId}}) {
     id
     name
     slug
     email
     auth_id
+    community_members(where: {user: {auth_id: {_eq: $authId}}}) {
+      community {
+        id
+        name
+        slug
+        icon_url
+      }
+    }
   }
 }
