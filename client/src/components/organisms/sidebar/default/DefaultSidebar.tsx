@@ -4,7 +4,7 @@ import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
 import { useAuthContext } from "client/src/context/AuthContext";
 import { useUserQuery } from "client/src/graphql/generated/types";
 import React, { VFC } from "react";
-import { BaseSidebar } from "../Base";
+import { BaseLoginSidebar } from "../base/BaseLoginSidebar";
 
 export const DeafultSidebar: VFC = () => {
   const { user } = useAuthContext();
@@ -19,7 +19,7 @@ export const DeafultSidebar: VFC = () => {
   });
 
   return (
-    <BaseSidebar>
+    <BaseLoginSidebar>
       <NavLink href="/community/search" icon={<SearchIcon />}>
         コミュニティを探す
       </NavLink>
@@ -45,6 +45,6 @@ export const DeafultSidebar: VFC = () => {
           </NavLink>
         ))}
       </VStack>
-    </BaseSidebar>
+    </BaseLoginSidebar>
   );
 };
