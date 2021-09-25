@@ -4,7 +4,7 @@ import { Heading } from "@chakra-ui/react";
 
 const CommunitySearchPage: VFC = () => {
   return (
-    <SidebarTemplate>
+    <SidebarTemplate variant="search">
       <Heading as="h1">コミュニティを探す</Heading>
     </SidebarTemplate>
   );
