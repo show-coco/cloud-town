@@ -1,24 +1,38 @@
-import { BellIcon, DragHandleIcon, InfoIcon } from "@chakra-ui/icons";
-import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
-import React, { ComponentProps, VFC } from "react";
+import {
+  NavButton,
+  NavLink,
+} from "client/src/components/atoms/nav-link/NavLink";
+import React, { ComponentProps, MouseEventHandler, VFC } from "react";
 import { BaseSidebar } from "./Base";
+import Logout from "../../../../icons/logout.svg";
+import Person from "../../../../icons/person.svg";
+import Bell from "../../../../icons/bell.svg";
+import { useAuthContext } from "client/src/context/AuthContext";
+import { tokenManager } from "client/src/utils/jwtManager";
 
 type Props = Omit<ComponentProps<typeof BaseSidebar>, "footer">;
 
 export const BaseLoginSidebar: VFC<Props> = ({ children, ...props }) => {
+  const { setUser } = useAuthContext();
+
+  const onLogout: MouseEventHandler<HTMLAnchorElement> = () => {
+    setUser(undefined);
+    tokenManager.clear();
+  };
+
   return (
     <BaseSidebar
       footer={
         <>
-          <NavLink href="/notification" icon={<BellIcon />}>
+          <NavLink href="/notification" icon={<Bell />}>
             通知
           </NavLink>
-          <NavLink href="/account" icon={<InfoIcon />}>
+          <NavLink href="/account" icon={<Person />}>
             アカウント
           </NavLink>
-          <NavLink href="/settings" icon={<DragHandleIcon />}>
+          <NavButton icon={<Logout />} onClick={onLogout}>
             ログアウト
-          </NavLink>
+          </NavButton>
         </>
       }
       {...props}
