@@ -1,12 +1,15 @@
-import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAuthContext } from "../context/AuthContext";
+import { User } from "../context/AuthContext";
 import { useUserLazyQuery } from "../graphql/generated/types";
 import { tokenManager } from "../utils/jwtManager";
 
-export const usePrivatePage = () => {
-  const router = useRouter();
-  const { setUser } = useAuthContext();
+export type UseInitializeReturns = {
+  loading: boolean;
+};
+
+export const useInitialize = (
+  setUser: (user: User) => void
+): UseInitializeReturns => {
   const [fetchUser, { loading }] = useUserLazyQuery({
     onCompleted: (data) => {
       const user = data.users[0];
@@ -22,9 +25,7 @@ export const usePrivatePage = () => {
 
   useEffect(() => {
     const { authId } = tokenManager.getToken();
-    if (!authId) {
-      router.push("/login");
-    } else {
+    if (authId) {
       console.log(authId);
       fetchUser({
         variables: {

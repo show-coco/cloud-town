@@ -6,7 +6,7 @@ import { useUserQuery } from "client/src/graphql/generated/types";
 import React, { VFC } from "react";
 import { BaseLoginSidebar } from "../base/BaseLoginSidebar";
 
-export const DeafultSidebar: VFC = () => {
+export const DefaultSidebar: VFC = () => {
   const { user } = useAuthContext();
   const { data } = useUserQuery({
     variables: {
