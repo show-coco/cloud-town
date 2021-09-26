@@ -17,7 +17,7 @@ type NavButtonProps = LinkProps & {
 export const NavLink: VFC<NavlinkProps> = ({ children, icon, href }) => {
   const router = useRouter();
 
-  const isCurrent = router.pathname === href;
+  const isCurrent = router.asPath === href;
 
   return (
     <NextLink href={href || ""}>

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { User } from "../context/AuthContext";
+import { mapToAuthUser, User } from "../context/AuthContext";
 import { useUserLazyQuery } from "../graphql/generated/types";
 import { tokenManager } from "../utils/jwtManager";
 
@@ -12,14 +12,7 @@ export const useInitialize = (
 ): UseInitializeReturns => {
   const [fetchUser, { loading }] = useUserLazyQuery({
     onCompleted: (data) => {
-      const user = data.users[0];
-      setUser({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        slug: user.slug,
-        authId: user.auth_id,
-      });
+      setUser(mapToAuthUser(data));
     },
   });
 

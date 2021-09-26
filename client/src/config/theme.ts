@@ -1,6 +1,5 @@
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
-import { CustomButton } from "./custom-style/button";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -31,9 +30,6 @@ const theme = extendTheme({
     border: {
       light: "#EDF2F7",
     },
-  },
-  components: {
-    Button: CustomButton,
   },
   shadows: {
     "2xl-blue": "0 25px 50px -12px rgba(83, 103, 255, 0.25)",
