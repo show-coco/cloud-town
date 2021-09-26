@@ -1,9 +1,13 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import { Box, Divider, FormLabel, Select } from "@chakra-ui/react";
+import { AffilicationCommunityList } from "client/src/components/atoms/affilication-community-list/AffilicationCommunityList";
 import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
+import { useAuthContext } from "client/src/context/AuthContext";
 import React, { VFC } from "react";
 
 export const SearchSidebarContent: VFC = () => {
+  const { user } = useAuthContext();
+
   return (
     <Box w="100%">
       <Box width="90%" mx="auto">
@@ -47,6 +51,8 @@ export const SearchSidebarContent: VFC = () => {
       </NavLink>
 
       <Divider borderColor="border.light" />
+
+      <AffilicationCommunityList communities={user?.communities || []} />
     </Box>
   );
 };

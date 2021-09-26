@@ -4,7 +4,7 @@ import { IAuthAdapter } from "../adapter/auth/IAuthAdapter";
 import { UserQuery } from "../graphql/generated/types";
 import { useInitialize } from "../hooks/useInitialize";
 
-type Community = {
+export type Community = {
   id: string;
   name: string;
   slug: string;
