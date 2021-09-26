@@ -20,6 +20,8 @@ const theme = extendTheme({
     blue: {
       50: "#F0F4F9",
       400: "#5367FF",
+      500: "#4C6FFF",
+      600: "#3754DB",
     },
     blackAlpha: {
       900: "#212121",
@@ -29,6 +31,9 @@ const theme = extendTheme({
     },
     border: {
       light: "#EDF2F7",
+    },
+    heading: {
+      dark: "#27272E",
     },
   },
   shadows: {
