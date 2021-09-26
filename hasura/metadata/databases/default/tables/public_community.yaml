@@ -37,10 +37,17 @@ array_relationships:
 select_permissions:
 - permission:
     columns:
-    - id
+    - category_id
+    - chat_url
+    - description
+    - icon_url
     - name
     - slug
-    - description
+    - thumbnail_url
+    - title
+    - created_at
+    - updated_at
+    - id
     filter: {}
   role: anonymous
 - permission:
@@ -49,5 +56,12 @@ select_permissions:
     - name
     - slug
     - description
+    - created_at
+    - updated_at
+    - thumbnail_url
+    - chat_url
+    - category_id
+    - title
+    - icon_url
     filter: {}
   role: user
