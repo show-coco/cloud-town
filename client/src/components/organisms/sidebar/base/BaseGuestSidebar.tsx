@@ -1,5 +1,5 @@
 import { InfoIcon } from "@chakra-ui/icons";
-import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
+import { NavLink } from "client/src/components/elements/nav-link/NavLink";
 import React, { ComponentProps, VFC } from "react";
 import { BaseSidebar } from "./Base";
 

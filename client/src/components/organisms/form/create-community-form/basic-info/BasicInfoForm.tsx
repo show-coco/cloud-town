@@ -1,26 +1,42 @@
-import { Box, FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
+import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
 import React, { VFC } from "react";
-import { BaseCreateCommunityForm } from "../base/BaseCreateCommunityForm";
+import { Card } from "../base/Card";
+import { Body } from "../base/Body";
+import { Footer } from "../base/Footer";
 
-export const BasicInfoForm: VFC = () => {
+type Props = {
+  onFinish: () => void;
+};
+
+export const BasicInfoForm: VFC<Props> = ({ onFinish }) => {
   return (
-    <BaseCreateCommunityForm>
-      <Box w="60%" mx="auto" mt="50px">
-        <FormControl isRequired>
-          <FormLabel>コミュニティ名</FormLabel>
-          <Input placeholder="Community Name" />
-        </FormControl>
+    <Card title="基本情報">
+      <form onSubmit={onFinish}>
+        <Body>
+          <FormControl isRequired>
+            <FormLabel>コミュニティ名</FormLabel>
+            <Input placeholder="Community Name" />
+          </FormControl>
 
-        <FormControl isRequired mt="40px">
-          <FormLabel>募集タイトル</FormLabel>
-          <Input placeholder="Title" />
-        </FormControl>
+          <FormControl isRequired mt="40px">
+            <FormLabel>募集タイトル</FormLabel>
+            <Input placeholder="Title" />
+          </FormControl>
 
-        <FormControl isRequired mt="40px">
-          <FormLabel>コミュニティID</FormLabel>
-          <Input placeholder="community-id" />
-        </FormControl>
-      </Box>
-    </BaseCreateCommunityForm>
+          <FormControl isRequired mt="40px">
+            <FormLabel>コミュニティID</FormLabel>
+            <Input placeholder="community-id" />
+          </FormControl>
+        </Body>
+
+        <Footer>
+          <Button leftIcon={<ChevronLeftIcon />}>前へ</Button>
+          <Button w="140px" colorScheme="blue" type="submit">
+            次へ
+          </Button>
+        </Footer>
+      </form>
+    </Card>
   );
 };

@@ -1,7 +1,7 @@
 import {
   NavButton,
   NavLink,
-} from "client/src/components/atoms/nav-link/NavLink";
+} from "client/src/components/elements/nav-link/NavLink";
 import React, { ComponentProps, MouseEventHandler, VFC } from "react";
 import { BaseSidebar } from "./Base";
 import Logout from "../../../../icons/logout.svg";

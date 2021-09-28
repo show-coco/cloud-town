@@ -1,6 +1,25 @@
-import { VFC } from "react";
+import { useState, VFC } from "react";
 import { BasicInfoForm } from "./basic-info/BasicInfoForm";
+import { ImageForm } from "./image/ImageForm";
 
 export const CreateCommunityForm: VFC = () => {
-  return <BasicInfoForm />;
+  const [step, setStep] = useState(1);
+  // const [formData, setFormData] = useState();
+
+  const onFinishStep1 = () => {
+    setStep(2);
+  };
+
+  const onFinishStep2 = () => {
+    setStep(2);
+  };
+
+  switch (step) {
+    case 1:
+      return <BasicInfoForm onFinish={onFinishStep1} />;
+    case 2:
+      return <ImageForm onFinish={onFinishStep2} />;
+    default:
+      throw new Error();
+  }
 };

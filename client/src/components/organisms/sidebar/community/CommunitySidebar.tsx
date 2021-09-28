@@ -7,7 +7,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
+import { NavLink } from "client/src/components/elements/nav-link/NavLink";
 import { useAuthContext } from "client/src/context/AuthContext";
 import { useRouter } from "next/router";
 import React, { VFC } from "react";
