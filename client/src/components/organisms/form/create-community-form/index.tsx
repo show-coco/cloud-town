@@ -1,5 +1,6 @@
 import { useState, VFC } from "react";
 import { BasicInfoForm } from "./basic-info/BasicInfoForm";
+import { CategoryForm } from "./category/CategoryForm";
 import { ImageForm } from "./image/ImageForm";
 
 export const CreateCommunityForm: VFC = () => {
@@ -20,7 +21,7 @@ export const CreateCommunityForm: VFC = () => {
     case 2:
       return <ImageForm onFinish={onFinishStep2} />;
     case 3:
-      return <div>カテゴリ</div>;
+      return <CategoryForm />;
     default:
       throw new Error();
   }

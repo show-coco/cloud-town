@@ -74,6 +74,34 @@ export type String_Comparison_Exp = {
   _similar?: Maybe<Scalars["String"]>;
 };
 
+/** columns and relationships of "category" */
+export type Category = {
+  __typename?: "category";
+  /** An array relationship */
+  communities: Array<Community>;
+  id: Scalars["String"];
+  name: Scalars["String"];
+};
+
+/** columns and relationships of "category" */
+export type CategoryCommunitiesArgs = {
+  distinct_on?: Maybe<Array<Community_Select_Column>>;
+  limit?: Maybe<Scalars["Int"]>;
+  offset?: Maybe<Scalars["Int"]>;
+  order_by?: Maybe<Array<Community_Order_By>>;
+  where?: Maybe<Community_Bool_Exp>;
+};
+
+/** Boolean expression to filter rows from the table "category". All fields are combined with a logical 'AND'. */
+export type Category_Bool_Exp = {
+  _and?: Maybe<Array<Category_Bool_Exp>>;
+  _not?: Maybe<Category_Bool_Exp>;
+  _or?: Maybe<Array<Category_Bool_Exp>>;
+  communities?: Maybe<Community_Bool_Exp>;
+  id?: Maybe<String_Comparison_Exp>;
+  name?: Maybe<String_Comparison_Exp>;
+};
+
 export enum Category_Enum {
   /** ビジネス */
   Business = "Business",
@@ -104,9 +132,26 @@ export type Category_Enum_Comparison_Exp = {
   _nin?: Maybe<Array<Category_Enum>>;
 };
 
+/** Ordering options when selecting data from "category". */
+export type Category_Order_By = {
+  communities_aggregate?: Maybe<Community_Aggregate_Order_By>;
+  id?: Maybe<Order_By>;
+  name?: Maybe<Order_By>;
+};
+
+/** select columns of table "category" */
+export enum Category_Select_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  Name = "name",
+}
+
 /** columns and relationships of "community" */
 export type Community = {
   __typename?: "community";
+  /** An object relationship */
+  category: Category;
   category_id: Category_Enum;
   chat_url?: Maybe<Scalars["String"]>;
   /** An array relationship */
@@ -142,11 +187,19 @@ export type CommunityPlansArgs = {
   where?: Maybe<Plan_Bool_Exp>;
 };
 
+/** order by aggregate values of table "community" */
+export type Community_Aggregate_Order_By = {
+  count?: Maybe<Order_By>;
+  max?: Maybe<Community_Max_Order_By>;
+  min?: Maybe<Community_Min_Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "community". All fields are combined with a logical 'AND'. */
 export type Community_Bool_Exp = {
   _and?: Maybe<Array<Community_Bool_Exp>>;
   _not?: Maybe<Community_Bool_Exp>;
   _or?: Maybe<Array<Community_Bool_Exp>>;
+  category?: Maybe<Category_Bool_Exp>;
   category_id?: Maybe<Category_Enum_Comparison_Exp>;
   chat_url?: Maybe<String_Comparison_Exp>;
   community_members?: Maybe<Community_Member_Bool_Exp>;
@@ -160,6 +213,20 @@ export type Community_Bool_Exp = {
   thumbnail_url?: Maybe<String_Comparison_Exp>;
   title?: Maybe<String_Comparison_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "community" */
+export type Community_Max_Order_By = {
+  chat_url?: Maybe<Order_By>;
+  created_at?: Maybe<Order_By>;
+  description?: Maybe<Order_By>;
+  icon_url?: Maybe<Order_By>;
+  id?: Maybe<Order_By>;
+  name?: Maybe<Order_By>;
+  slug?: Maybe<Order_By>;
+  thumbnail_url?: Maybe<Order_By>;
+  title?: Maybe<Order_By>;
+  updated_at?: Maybe<Order_By>;
 };
 
 /** columns and relationships of "community_member" */
@@ -232,8 +299,23 @@ export enum Community_Member_Select_Column {
   UserId = "user_id",
 }
 
+/** order by min() on columns of table "community" */
+export type Community_Min_Order_By = {
+  chat_url?: Maybe<Order_By>;
+  created_at?: Maybe<Order_By>;
+  description?: Maybe<Order_By>;
+  icon_url?: Maybe<Order_By>;
+  id?: Maybe<Order_By>;
+  name?: Maybe<Order_By>;
+  slug?: Maybe<Order_By>;
+  thumbnail_url?: Maybe<Order_By>;
+  title?: Maybe<Order_By>;
+  updated_at?: Maybe<Order_By>;
+};
+
 /** Ordering options when selecting data from "community". */
 export type Community_Order_By = {
+  category?: Maybe<Category_Order_By>;
   category_id?: Maybe<Order_By>;
   chat_url?: Maybe<Order_By>;
   community_members_aggregate?: Maybe<Community_Member_Aggregate_Order_By>;
@@ -513,6 +595,10 @@ export type Plan_Variance_Order_By = {
 
 export type Query_Root = {
   __typename?: "query_root";
+  /** fetch data from the table: "category" */
+  category: Array<Category>;
+  /** fetch data from the table: "category" using primary key columns */
+  category_by_pk?: Maybe<Category>;
   /** fetch data from the table: "community" */
   community: Array<Community>;
   /** fetch data from the table: "community" using primary key columns */
@@ -534,6 +620,18 @@ export type Query_Root = {
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
+};
+
+export type Query_RootCategoryArgs = {
+  distinct_on?: Maybe<Array<Category_Select_Column>>;
+  limit?: Maybe<Scalars["Int"]>;
+  offset?: Maybe<Scalars["Int"]>;
+  order_by?: Maybe<Array<Category_Order_By>>;
+  where?: Maybe<Category_Bool_Exp>;
+};
+
+export type Query_RootCategory_By_PkArgs = {
+  id: Scalars["String"];
 };
 
 export type Query_RootCommunityArgs = {
@@ -599,6 +697,10 @@ export type Query_RootUsers_By_PkArgs = {
 
 export type Subscription_Root = {
   __typename?: "subscription_root";
+  /** fetch data from the table: "category" */
+  category: Array<Category>;
+  /** fetch data from the table: "category" using primary key columns */
+  category_by_pk?: Maybe<Category>;
   /** fetch data from the table: "community" */
   community: Array<Community>;
   /** fetch data from the table: "community" using primary key columns */
@@ -619,6 +721,18 @@ export type Subscription_Root = {
   users: Array<Users>;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
+};
+
+export type Subscription_RootCategoryArgs = {
+  distinct_on?: Maybe<Array<Category_Select_Column>>;
+  limit?: Maybe<Scalars["Int"]>;
+  offset?: Maybe<Scalars["Int"]>;
+  order_by?: Maybe<Array<Category_Order_By>>;
+  where?: Maybe<Category_Bool_Exp>;
+};
+
+export type Subscription_RootCategory_By_PkArgs = {
+  id: Scalars["String"];
 };
 
 export type Subscription_RootCommunityArgs = {
@@ -766,6 +880,12 @@ export type Uuid_Comparison_Exp = {
   _nin?: Maybe<Array<Scalars["uuid"]>>;
 };
 
+export type CategoriesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CategoriesQuery = { __typename?: "query_root" } & {
+  category: Array<{ __typename?: "category" } & Pick<Category, "id" | "name">>;
+};
+
 export type UserQueryVariables = Exact<{
   authId: Scalars["String"];
 }>;
@@ -788,6 +908,62 @@ export type UserQuery = { __typename?: "query_root" } & {
   >;
 };
 
+export const CategoriesDocument = gql`
+  query Categories {
+    category {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCategoriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CategoriesQuery,
+    CategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(
+    CategoriesDocument,
+    options
+  );
+}
+export function useCategoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CategoriesQuery,
+    CategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(
+    CategoriesDocument,
+    options
+  );
+}
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<
+  typeof useCategoriesLazyQuery
+>;
+export type CategoriesQueryResult = Apollo.QueryResult<
+  CategoriesQuery,
+  CategoriesQueryVariables
+>;
 export const UserDocument = gql`
   query User($authId: String!) {
     users(where: { auth_id: { _eq: $authId } }) {
