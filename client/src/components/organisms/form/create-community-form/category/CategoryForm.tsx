@@ -12,7 +12,11 @@ import { Body } from "../base/Body";
 import { Card } from "../base/Card";
 import { Footer } from "../base/Footer";
 
-export const CategoryForm: VFC = () => {
+type Props = {
+  onFinish: () => void;
+};
+
+export const CategoryForm: VFC<Props> = ({ onFinish }) => {
   const { data } = useCategoriesQuery();
 
   return (
@@ -41,7 +45,7 @@ export const CategoryForm: VFC = () => {
 
         <Footer>
           <Button leftIcon={<ChevronLeftIcon />}>前へ</Button>
-          <Button w="140px" colorScheme="blue" type="submit">
+          <Button w="140px" colorScheme="blue" type="submit" onClick={onFinish}>
             次へ
           </Button>
         </Footer>
