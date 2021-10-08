@@ -27,13 +27,17 @@ const theme = extendTheme({
       900: "#212121",
     },
     gray: {
-      200: "#f3f3f3",
+      200: "#EDF2F7",
+      300: "#E2E8F0",
     },
     border: {
       light: "#EDF2F7",
     },
     heading: {
       dark: "#27272E",
+    },
+    body: {
+      light: "#425466",
     },
   },
   shadows: {

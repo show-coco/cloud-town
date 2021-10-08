@@ -11,7 +11,7 @@ export const CreateCommunityForm: VFC = () => {
   };
 
   const onFinishStep2 = () => {
-    setStep(2);
+    setStep(3);
   };
 
   switch (step) {
@@ -19,6 +19,8 @@ export const CreateCommunityForm: VFC = () => {
       return <BasicInfoForm onFinish={onFinishStep1} />;
     case 2:
       return <ImageForm onFinish={onFinishStep2} />;
+    case 3:
+      return <div>カテゴリ</div>;
     default:
       throw new Error();
   }
