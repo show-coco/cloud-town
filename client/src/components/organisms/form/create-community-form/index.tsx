@@ -8,7 +8,6 @@ import { ImageForm } from "./image/ImageForm";
 export const CreateCommunityForm: VFC = () => {
   // const [formData, setFormData] = useState();
   const router = useRouter();
-  console.log(router.query.step);
   const currentStep = Number(router.query.step || 1);
 
   const moveStep = (step: number) => {
