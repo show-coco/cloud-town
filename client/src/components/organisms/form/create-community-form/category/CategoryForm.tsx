@@ -14,9 +14,10 @@ import { Footer } from "../base/Footer";
 
 type Props = {
   onFinish: () => void;
+  backStep: () => void;
 };
 
-export const CategoryForm: VFC<Props> = ({ onFinish }) => {
+export const CategoryForm: VFC<Props> = ({ onFinish, backStep }) => {
   const { data } = useCategoriesQuery();
 
   return (
@@ -44,7 +45,9 @@ export const CategoryForm: VFC<Props> = ({ onFinish }) => {
         </Body>
 
         <Footer>
-          <Button leftIcon={<ChevronLeftIcon />}>前へ</Button>
+          <Button leftIcon={<ChevronLeftIcon />} onClick={backStep}>
+            前へ
+          </Button>
           <Button w="140px" colorScheme="blue" type="submit" onClick={onFinish}>
             次へ
           </Button>

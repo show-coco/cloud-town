@@ -11,9 +11,10 @@ import { ImageDisplayer } from "client/src/components/elements/image-displayer/I
 
 type Props = {
   onFinish: () => void;
+  backStep: () => void;
 };
 
-export const ImageForm: VFC<Props> = ({ onFinish }) => {
+export const ImageForm: VFC<Props> = ({ onFinish, backStep }) => {
   const {
     isOpen: headerModalIsOpen,
     imageBlob: headerBlob,
@@ -34,7 +35,7 @@ export const ImageForm: VFC<Props> = ({ onFinish }) => {
   return (
     <>
       <Card title="画像を設定（任意）">
-        <form onSubmit={onFinish}>
+        <form>
           <Body>
             <FormControl mb="24px">
               <FormLabel>ヘッダー画像</FormLabel>
@@ -70,8 +71,15 @@ export const ImageForm: VFC<Props> = ({ onFinish }) => {
           </Body>
 
           <Footer>
-            <Button leftIcon={<ChevronLeftIcon />}>前へ</Button>
-            <Button w="140px" colorScheme="blue" type="submit">
+            <Button leftIcon={<ChevronLeftIcon />} onClick={backStep}>
+              前へ
+            </Button>
+            <Button
+              w="140px"
+              colorScheme="blue"
+              onClick={onFinish}
+              type="button"
+            >
               次へ
             </Button>
           </Footer>

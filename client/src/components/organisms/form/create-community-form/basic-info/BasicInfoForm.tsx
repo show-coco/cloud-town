@@ -1,4 +1,3 @@
-import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
 import React, { VFC } from "react";
 import { Card } from "../base/Card";
@@ -31,7 +30,6 @@ export const BasicInfoForm: VFC<Props> = ({ onFinish }) => {
         </Body>
 
         <Footer>
-          <Button leftIcon={<ChevronLeftIcon />}>前へ</Button>
           <Button w="140px" colorScheme="blue" type="submit">
             次へ
           </Button>
