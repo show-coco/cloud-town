@@ -5,33 +5,22 @@ import { Card } from "../base/Card";
 import { Body } from "../base/Body";
 import { Footer } from "../base/Footer";
 import ImageCropper from "client/src/components/elements/image-cropper/ImageCropper";
-import { useImageController } from "client/src/hooks/useImageController";
+import { UseImageControllerRetunrs } from "client/src/hooks/useImageController";
 import { ImageSelector } from "client/src/components/elements/image-selector/ImageSelector";
 import { ImageDisplayer } from "client/src/components/elements/image-displayer/ImageDisplayer";
 
 type Props = {
-  onFinish: () => void;
-  backStep: () => void;
+  thumbnail: UseImageControllerRetunrs;
+  icon: UseImageControllerRetunrs;
+  moveStep: (step: number) => void;
 };
 
-export const ImageForm: VFC<Props> = ({ onFinish, backStep }) => {
-  const {
-    isOpen: headerModalIsOpen,
-    imageBlob: headerBlob,
-    onClose: onHeaderModalClose,
-    onFileChange: onHeaderChange,
-    onSave: onHeaderSave,
-    onFileRemove: onHeaderRemove,
-  } = useImageController();
-  const {
-    isOpen: iconModalIsOpen,
-    imageBlob: iconBlob,
-    onClose: onIconModalClose,
-    onFileChange: onIconChange,
-    onSave: onIconSave,
-    onFileRemove: onIconRemove,
-  } = useImageController();
+export type ImageFormValues = {
+  thumbnailBrob?: string;
+  iconBlob?: string;
+};
 
+export const ImageForm: VFC<Props> = ({ thumbnail, icon, moveStep }) => {
   return (
     <>
       <Card title="画像を設定（任意）">
@@ -39,30 +28,30 @@ export const ImageForm: VFC<Props> = ({ onFinish, backStep }) => {
           <Body>
             <FormControl mb="24px">
               <FormLabel>ヘッダー画像</FormLabel>
-              {headerBlob ? (
+              {thumbnail.imageBlob ? (
                 <ImageDisplayer
-                  src={headerBlob}
+                  src={thumbnail.imageBlob}
                   width="100%"
                   height="100%"
-                  onFileRemove={onHeaderRemove}
+                  onFileRemove={thumbnail.onFileRemove}
                 />
               ) : (
-                <ImageSelector onChange={onHeaderChange} />
+                <ImageSelector onChange={thumbnail.onFileChange} />
               )}
             </FormControl>
 
             <FormControl>
               <FormLabel>アイコン画像</FormLabel>
-              {iconBlob ? (
+              {icon.imageBlob ? (
                 <ImageDisplayer
-                  src={iconBlob}
+                  src={icon.imageBlob}
                   width="50px"
                   height="50px"
-                  onFileRemove={onIconRemove}
+                  onFileRemove={icon.onFileRemove}
                 />
               ) : (
                 <ImageSelector
-                  onChange={onIconChange}
+                  onChange={icon.onFileChange}
                   variant="icon"
                   width="50px"
                 />
@@ -71,13 +60,13 @@ export const ImageForm: VFC<Props> = ({ onFinish, backStep }) => {
           </Body>
 
           <Footer>
-            <Button leftIcon={<ChevronLeftIcon />} onClick={backStep}>
+            <Button leftIcon={<ChevronLeftIcon />} onClick={() => moveStep(1)}>
               前へ
             </Button>
             <Button
               w="140px"
               colorScheme="blue"
-              onClick={onFinish}
+              onClick={() => moveStep(3)}
               type="button"
             >
               次へ
@@ -87,16 +76,16 @@ export const ImageForm: VFC<Props> = ({ onFinish, backStep }) => {
       </Card>
 
       <ImageCropper
-        isOpen={headerModalIsOpen}
-        src={headerBlob}
-        onClose={onHeaderModalClose}
-        onSave={onHeaderSave}
+        isOpen={thumbnail.isOpen}
+        src={thumbnail.imageBlob || ""}
+        onClose={thumbnail.onClose}
+        onSave={thumbnail.onSave}
       />
       <ImageCropper
-        isOpen={iconModalIsOpen}
-        src={iconBlob}
-        onClose={onIconModalClose}
-        onSave={onIconSave}
+        isOpen={icon.isOpen}
+        src={icon.imageBlob || ""}
+        onClose={icon.onClose}
+        onSave={icon.onSave}
         canvasHeight={200}
         canvasWidth={200}
       />

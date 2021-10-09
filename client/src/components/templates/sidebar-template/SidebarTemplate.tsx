@@ -49,7 +49,7 @@ export const SidebarTemplate: VFC<Props> = ({
   const sidebar = getSidebar(variant, isAuthenticated, loading);
 
   return (
-    <HStack bgColor="#F3F5FA" p="0">
+    <HStack bgColor="#F3F5FA" p="0" alignItems="flex-start">
       {sidebar}
       <Box flex="1" minH="100vh">
         {children}

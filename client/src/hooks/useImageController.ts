@@ -1,9 +1,21 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { ChangeEventHandler, MouseEventHandler, useState } from "react";
 
-export const useImageController = () => {
+export type UseImageControllerRetunrs = {
+  isOpen: boolean;
+  imageBlob: string | undefined;
+  image: File | undefined;
+  onClose: () => void;
+  onFileRemove: MouseEventHandler<HTMLButtonElement>;
+  onFileChange: ChangeEventHandler<HTMLInputElement>;
+  onSave: (blobObj: Blob) => void;
+};
+
+export const useImageController = (
+  defaultImageBlob?: string
+): UseImageControllerRetunrs => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [imageBlob, setImageBlob] = useState("");
+  const [imageBlob, setImageBlob] = useState(defaultImageBlob);
   const [imageName, setImageName] = useState("");
   const [image, setImage] = useState<File>();
 

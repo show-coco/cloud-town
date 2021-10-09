@@ -1,14 +1,27 @@
+import { useImageController } from "client/src/hooks/useImageController";
 import { useRouter } from "next/router";
 import { VFC } from "react";
+import { useForm } from "react-hook-form";
 import { BasicInfoForm } from "./basic-info/BasicInfoForm";
 import { BodyForm } from "./body/BodyForm";
 import { CategoryForm } from "./category/CategoryForm";
 import { ImageForm } from "./image/ImageForm";
 
+export type CreateCommunityFormData = {
+  name: string;
+  title: string;
+  slug: string;
+  categoryId: string;
+  hashtag: string;
+  body: string;
+};
+
 export const CreateCommunityForm: VFC = () => {
-  // const [formData, setFormData] = useState();
   const router = useRouter();
+  const thumbnailController = useImageController();
+  const iconController = useImageController();
   const currentStep = Number(router.query.step || 1);
+  const methods = useForm<CreateCommunityFormData>();
 
   const moveStep = (step: number) => {
     router.push({
@@ -19,35 +32,28 @@ export const CreateCommunityForm: VFC = () => {
     });
   };
 
-  const backStep = () => {
-    moveStep(currentStep - 1);
-  };
-
-  const onFinishStep1 = () => {
-    moveStep(2);
-  };
-
-  const onFinishStep2 = () => {
-    moveStep(3);
-  };
-
-  const onFinishStep3 = () => {
-    moveStep(4);
-  };
-
-  const onFinishStep4 = () => {
+  const onSubmit = methods.handleSubmit((values) => {
     // TODO: API叩く
-  };
+    console.log(values);
+    console.log(iconController.image);
+    console.log(thumbnailController.image);
+  });
 
   switch (currentStep) {
     case 1:
-      return <BasicInfoForm onFinish={onFinishStep1} />;
+      return <BasicInfoForm moveStep={moveStep} {...methods} />;
     case 2:
-      return <ImageForm onFinish={onFinishStep2} backStep={backStep} />;
+      return (
+        <ImageForm
+          moveStep={moveStep}
+          thumbnail={thumbnailController}
+          icon={iconController}
+        />
+      );
     case 3:
-      return <CategoryForm onFinish={onFinishStep3} backStep={backStep} />;
+      return <CategoryForm moveStep={moveStep} {...methods} />;
     case 4:
-      return <BodyForm onFinish={onFinishStep4} backStep={backStep} />;
+      return <BodyForm moveStep={moveStep} onClick={onSubmit} {...methods} />;
     default:
       throw new Error("ページが存在しません");
   }

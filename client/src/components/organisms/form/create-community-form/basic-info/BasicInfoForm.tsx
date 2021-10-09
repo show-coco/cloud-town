@@ -1,36 +1,68 @@
-import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
+import { Button, FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
 import React, { VFC } from "react";
 import { Card } from "../base/Card";
 import { Body } from "../base/Body";
 import { Footer } from "../base/Footer";
+import { UseFormReturn } from "react-hook-form";
+import { REQUIRED_MSG } from "client/src/utils/constants";
+import { FormLabel } from "client/src/components/elements/form-label/FormLabel";
+import { CreateCommunityFormData } from "..";
 
-type Props = {
-  onFinish: () => void;
+type Props = UseFormReturn<CreateCommunityFormData> & {
+  moveStep: (step: number) => void;
 };
 
-export const BasicInfoForm: VFC<Props> = ({ onFinish }) => {
+export type BasicInfoValues = {
+  name: string;
+  title: string;
+  slug: string;
+};
+
+export const BasicInfoForm: VFC<Props> = ({
+  formState: { errors },
+  register,
+  moveStep,
+}) => {
   return (
     <Card title="基本情報">
-      <form onSubmit={onFinish}>
+      <form>
         <Body>
-          <FormControl isRequired>
-            <FormLabel>コミュニティ名</FormLabel>
-            <Input placeholder="Community Name" />
+          <FormControl isInvalid={!!errors.name}>
+            <FormLabel isRequired>コミュニティ名</FormLabel>
+            <Input
+              placeholder="Community Name"
+              {...register("name", {
+                required: REQUIRED_MSG,
+              })}
+            />
+            <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isRequired mt="40px">
-            <FormLabel>募集タイトル</FormLabel>
-            <Input placeholder="Title" />
+          <FormControl mt="40px" isInvalid={!!errors.title}>
+            <FormLabel isRequired>募集タイトル</FormLabel>
+            <Input
+              placeholder="Title"
+              {...register("title", {
+                required: REQUIRED_MSG,
+              })}
+            />
+            <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isRequired mt="40px">
-            <FormLabel>コミュニティID</FormLabel>
-            <Input placeholder="community-id" />
+          <FormControl mt="40px" isInvalid={!!errors.slug}>
+            <FormLabel isRequired>コミュニティID</FormLabel>
+            <Input
+              placeholder="community-id"
+              {...register("slug", {
+                required: REQUIRED_MSG,
+              })}
+            />
+            <FormErrorMessage>{errors.slug?.message}</FormErrorMessage>
           </FormControl>
         </Body>
 
         <Footer>
-          <Button w="140px" colorScheme="blue" type="submit">
+          <Button w="140px" colorScheme="blue" onClick={() => moveStep(2)}>
             次へ
           </Button>
         </Footer>

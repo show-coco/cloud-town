@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 export const CommunityNewPage: React.VFC = () => {
   return (
     <SidebarTemplate variant="default">
-      <Box maxW="870px" mx="auto" pt="70px">
+      <Box maxW="870px" mx="auto" py="70px">
         <Heading as="h1" fontSize="28px">
           コミュニティを作成する
         </Heading>
