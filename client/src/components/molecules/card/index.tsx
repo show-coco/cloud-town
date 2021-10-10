@@ -5,27 +5,19 @@ import Image from "next/image";
 import React, { VFC } from "react";
 import {
   Heading,
-  Avatar,
   Box,
-  Center,
   Text,
   Stack,
-  Button,
-  Link,
   Divider,
   Badge,
   useColorModeValue,
-  Container,
 } from "@chakra-ui/react";
 import styles from "./style.module.scss";
 /*
- * Types
+ * todo propsの型定義
  */
 // export type Props = {};
 
-/*
- * DOM
- */
 const Component: VFC = () => (
   <Box
     maxW={"320px"}
