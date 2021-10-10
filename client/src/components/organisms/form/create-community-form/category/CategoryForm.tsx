@@ -26,8 +26,9 @@ export type CategoryFormValues = {
 };
 
 export const CategoryForm: VFC<Props> = ({
-  register,
   formState: { errors },
+  register,
+  handleSubmit,
   moveStep,
 }) => {
   const { data, error } = useCategoriesQuery();
@@ -72,7 +73,7 @@ export const CategoryForm: VFC<Props> = ({
             w="140px"
             colorScheme="blue"
             type="submit"
-            onClick={() => moveStep(4)}
+            onClick={handleSubmit(() => moveStep(4))}
           >
             次へ
           </Button>

@@ -1,5 +1,11 @@
 import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { Button, FormControl, Textarea } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  Textarea,
+} from "@chakra-ui/react";
+import { REQUIRED_MSG } from "client/src/utils/constants";
 import React, { VFC } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { CreateCommunityFormData } from "..";
@@ -14,6 +20,7 @@ type Props = UseFormReturn<CreateCommunityFormData> & {
 
 export const BodyForm: VFC<Props> = ({
   loading,
+  formState: { errors },
   register,
   moveStep,
   onClick,
@@ -21,13 +28,16 @@ export const BodyForm: VFC<Props> = ({
   return (
     <Card title="本文">
       <form>
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={!!errors.body}>
           <Textarea
             resize="none"
             minH="300px"
             placeholder="コミュニティについて書き下してみましょう。"
-            {...register("body")}
+            {...register("body", {
+              required: REQUIRED_MSG,
+            })}
           />
+          <FormErrorMessage>{errors.body?.message}</FormErrorMessage>
         </FormControl>
 
         <Footer>

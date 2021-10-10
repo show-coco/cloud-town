@@ -21,6 +21,7 @@ export type BasicInfoValues = {
 export const BasicInfoForm: VFC<Props> = ({
   formState: { errors },
   register,
+  handleSubmit,
   moveStep,
 }) => {
   return (
@@ -62,7 +63,11 @@ export const BasicInfoForm: VFC<Props> = ({
         </Body>
 
         <Footer>
-          <Button w="140px" colorScheme="blue" onClick={() => moveStep(2)}>
+          <Button
+            w="140px"
+            colorScheme="blue"
+            onClick={handleSubmit(() => moveStep(2))}
+          >
             次へ
           </Button>
         </Footer>

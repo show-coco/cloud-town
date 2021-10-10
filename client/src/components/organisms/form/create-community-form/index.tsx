@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { useAuthContext } from "client/src/context/AuthContext";
 import {
   Category_Enum,
@@ -59,27 +60,33 @@ export const CreateCommunityForm: VFC = () => {
       .split(" ")
       .map((hashtag) => hashtag.trim().substr(1));
 
-    await createCommunity({
-      variables: {
-        ...values,
-        userId: user?.id,
-        description: values.body,
-        thumbnailUrl,
-        iconUrl,
-        categoryId: Category_Enum[values.categoryId as Category_Enum],
-        hashtags: hashtags.map((hashtag) => ({
-          hashtag: {
-            data: {
-              name: hashtag,
+    try {
+      await createCommunity({
+        variables: {
+          ...values,
+          userId: user?.id,
+          description: values.body,
+          thumbnailUrl,
+          iconUrl,
+          categoryId: Category_Enum[values.categoryId as Category_Enum],
+          hashtags: hashtags.map((hashtag) => ({
+            hashtag: {
+              data: {
+                name: hashtag,
+              },
+              on_conflict: {
+                constraint: Hashtag_Constraint.HashtagNameKey,
+                update_columns: [Hashtag_Update_Column.Name],
+              },
             },
-            on_conflict: {
-              constraint: Hashtag_Constraint.HashtagNameKey,
-              update_columns: [Hashtag_Update_Column.Name],
-            },
-          },
-        })),
-      },
-    });
+          })),
+        },
+      });
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        console.error(error);
+      }
+    }
   });
 
   switch (currentStep) {
