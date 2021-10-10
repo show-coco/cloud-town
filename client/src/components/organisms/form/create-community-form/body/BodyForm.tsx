@@ -9,9 +9,15 @@ import { Footer } from "../base/Footer";
 type Props = UseFormReturn<CreateCommunityFormData> & {
   moveStep: (step: number) => void;
   onClick: () => void;
+  loading: boolean;
 };
 
-export const BodyForm: VFC<Props> = ({ register, moveStep, onClick }) => {
+export const BodyForm: VFC<Props> = ({
+  loading,
+  register,
+  moveStep,
+  onClick,
+}) => {
   return (
     <Card title="本文">
       <form>
@@ -28,7 +34,13 @@ export const BodyForm: VFC<Props> = ({ register, moveStep, onClick }) => {
           <Button leftIcon={<ChevronLeftIcon />} onClick={() => moveStep(3)}>
             前へ
           </Button>
-          <Button w="140px" colorScheme="blue" type="submit" onClick={onClick}>
+          <Button
+            w="140px"
+            colorScheme="blue"
+            type="submit"
+            onClick={onClick}
+            isLoading={loading}
+          >
             作成
           </Button>
         </Footer>

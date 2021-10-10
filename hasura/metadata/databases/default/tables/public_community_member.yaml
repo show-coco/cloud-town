@@ -17,6 +17,17 @@ object_relationships:
 - name: user_role
   using:
     foreign_key_constraint_on: role
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - community_id
+    - user_id
+    - role
+    - status
+    - plan_id
+  role: user
 select_permissions:
 - permission:
     columns:
