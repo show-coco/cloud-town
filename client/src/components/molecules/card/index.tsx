@@ -24,7 +24,7 @@ const Component: VFC = () => (
     w={"full"}
     bg={useColorModeValue("white", "gray.900")}
     boxShadow={"2xl"}
-    rounded={"lg"}
+    rounded={"xl"}
     p={2}
     textAlign={"center"}
   >
@@ -36,7 +36,7 @@ const Component: VFC = () => (
       alt={"コミュニティ画像"}
       // layout="fill"
       height="130px"
-      width="295px"
+      width="305px"
     />
 
     <Heading fontSize={"2xl"} fontFamily={"body"}>
@@ -53,7 +53,7 @@ const Component: VFC = () => (
       設計など、さまざまなことを一緒に学習して...
     </Text>
 
-    <Stack align={"center"} justify={"center"} direction={"row"} px="4">
+    <Stack justifyContent="center" direction={"row"} spacing="0px">
       <Badge bg="#fff" fontWeight={"400"} color="#1DA1F2">
         #Hasura
       </Badge>
@@ -66,14 +66,8 @@ const Component: VFC = () => (
     </Stack>
     <Divider py="3" />
 
-    <Stack
-      align={"center"}
-      justify={"space-between"}
-      direction={"row"}
-      pt="4"
-      px="2"
-    >
-      <Box py={1}>
+    <Stack justifyContent="space-between" direction={"row"} spacing="0px">
+      <Box py={1} textAlign={"center"} w="20">
         <Text bg="#fff" fontWeight="bold" color="#4C6FFF">
           500人
         </Text>
@@ -81,7 +75,7 @@ const Component: VFC = () => (
           現在の人数
         </Text>
       </Box>
-      <Box py={1}>
+      <Box py={1} textAlign={"center"} px="10px" w="20">
         <Text bg="#fff" fontWeight="bold" color="#4C6FFF">
           無料
         </Text>
@@ -89,7 +83,7 @@ const Component: VFC = () => (
           最低価格
         </Text>
       </Box>
-      <Box py={1}>
+      <Box py={1} textAlign={"center"} px="10px" w="20">
         <Text bg="#fff" fontWeight="bold" color="#4C6FFF">
           なし
         </Text>
