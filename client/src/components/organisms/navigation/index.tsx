@@ -4,8 +4,8 @@
 import React from "react";
 import Link from "next/link";
 import { Box, Spacer } from "@chakra-ui/layout";
-import { UserMenu } from "client/src/components/atoms/user-menu";
-import { Select } from "client/src/components/atoms/select";
+import { UserMenu } from "client/src/components/elements/user-menu";
+import { Select } from "client/src/components/elements/select";
 import { TypeUserMenu } from "client/src/utils/types";
 import styles from "./style.module.scss";
 

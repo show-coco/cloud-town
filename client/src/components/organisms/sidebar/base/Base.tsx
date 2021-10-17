@@ -16,7 +16,9 @@ export const BaseSidebar: VFC<Props> = ({
   return (
     <VStack
       w="250px"
-      h="100vh"
+      minH="100vh"
+      position="sticky"
+      top="0"
       justifyContent="space-between"
       bgColor="white"
       {...stackProps}

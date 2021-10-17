@@ -1,0 +1,6 @@
+mutation CreateCommunity($description: String!, $slug: String!, $thumbnailUrl: String, $title: String!, $name: String!, $iconUrl: String, $categoryId: category_enum!, $userId: uuid!, $hashtags: [community_hashtag_insert_input!]!) {
+  insert_community_one(object: {description: $description, slug: $slug, thumbnail_url: $thumbnailUrl, title: $title, name: $name, icon_url: $iconUrl, category_id: $categoryId, community_hashtags: {data: $hashtags}, community_members: {data: {user_id: $userId, status: Joining, role: Owner}}, channels: {data: {channel_members: {data: {role: Admin, user_id: $userId}}, name: "general", is_private: false}}}) {
+    id
+    slug
+  }
+}

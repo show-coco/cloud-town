@@ -1,7 +1,7 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import { Divider } from "@chakra-ui/react";
-import { AffilicationCommunityList } from "client/src/components/atoms/affilication-community-list/AffilicationCommunityList";
-import { NavLink } from "client/src/components/atoms/nav-link/NavLink";
+import { AffilicationCommunityList } from "client/src/components/elements/affilication-community-list/AffilicationCommunityList";
+import { NavLink } from "client/src/components/elements/nav-link/NavLink";
 import { useAuthContext } from "client/src/context/AuthContext";
 import React, { VFC } from "react";
 import { BaseLoginSidebar } from "../base/BaseLoginSidebar";

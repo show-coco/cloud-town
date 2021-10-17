@@ -13,6 +13,18 @@ array_relationships:
       table:
         name: channel_member
         schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - name
+    - is_private
+    - community_id
+    - created_at
+    - updated_at
+  role: user
 select_permissions:
 - permission:
     columns:

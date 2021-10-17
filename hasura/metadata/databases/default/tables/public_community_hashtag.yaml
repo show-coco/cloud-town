@@ -8,3 +8,11 @@ object_relationships:
 - name: hashtag
   using:
     foreign_key_constraint_on: hashtag_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - community_id
+    - hashtag_id
+  role: user

@@ -12,7 +12,7 @@ import {
   ModalCloseButton,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { Navigation } from "client/src/components/molecules/navigation";
+import { Navigation } from "client/src/components/organisms/navigation";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { TypeUserMenu } from "client/src/utils/types";

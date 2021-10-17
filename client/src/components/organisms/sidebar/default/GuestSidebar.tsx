@@ -1,6 +1,6 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import { Box, Button, Divider } from "@chakra-ui/react";
-import { NavLink } from "../../../atoms/nav-link/NavLink";
+import { NavLink } from "../../../elements/nav-link/NavLink";
 import React, { VFC } from "react";
 import { BaseGuestSidebar } from "../base/BaseGuestSidebar";
 import Link from "next/link";
