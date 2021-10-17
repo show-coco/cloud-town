@@ -34,7 +34,6 @@ const Component: VFC = () => (
       }
       className={styles.image}
       alt={"コミュニティ画像"}
-      // layout="fill"
       height="130px"
       width="305px"
     />
@@ -66,7 +65,12 @@ const Component: VFC = () => (
     </Stack>
     <Divider py="3" />
 
-    <Stack justifyContent="space-between" direction={"row"} spacing="0px">
+    <Stack
+      justifyContent="space-between"
+      direction={"row"}
+      spacing="0px"
+      pt="11px"
+    >
       <Box py={1} textAlign={"center"} w="20">
         <Text bg="#fff" fontWeight="bold" color="#4C6FFF">
           500人
