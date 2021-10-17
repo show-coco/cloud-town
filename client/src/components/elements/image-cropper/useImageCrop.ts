@@ -152,9 +152,6 @@ export const useImageCrop = ({
       canvasHeight
     );
 
-    console.log("width", width);
-    console.log("height", height);
-
     img.style.maxWidth = width + "px";
     img.style.width = width + "px";
     img.style.height = height + "px";

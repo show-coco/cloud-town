@@ -25,7 +25,8 @@
     "react-dnd": "^14.0.4",
     "react-dnd-html5-backend": "^14.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.17.2"
+    "react-hook-form": "^7.17.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -40,6 +41,7 @@
     "@testing-library/user-event": "^13.1.9",
     "@types/jest": "^26.0.23",
     "@types/react": "17.0.8",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.25.0",
     "babel-jest": "^27.0.1",

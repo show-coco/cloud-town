@@ -3,8 +3,9 @@ import { ChangeEventHandler, MouseEventHandler, useState } from "react";
 
 export type UseImageControllerRetunrs = {
   isOpen: boolean;
-  imageBlob: string | undefined;
-  image: File | undefined;
+  imageBlob?: string;
+  image?: File;
+  blob?: Blob;
   onClose: () => void;
   onFileRemove: MouseEventHandler<HTMLButtonElement>;
   onFileChange: ChangeEventHandler<HTMLInputElement>;
@@ -15,6 +16,7 @@ export const useImageController = (
   defaultImageBlob?: string
 ): UseImageControllerRetunrs => {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [blob, setBlob] = useState<Blob>();
   const [imageBlob, setImageBlob] = useState(defaultImageBlob);
   const [imageName, setImageName] = useState("");
   const [image, setImage] = useState<File>();
@@ -35,7 +37,9 @@ export const useImageController = (
 
   const onSave = (blobObj: Blob) => {
     const blob = URL.createObjectURL(blobObj);
+    console.log(blob, blobObj);
     setImageBlob(blob);
+    setBlob(blobObj);
 
     const files = new File([blob], imageName);
     setImage(files);
@@ -46,6 +50,7 @@ export const useImageController = (
     isOpen,
     imageBlob,
     image,
+    blob,
     onClose,
     onFileRemove,
     onFileChange,
