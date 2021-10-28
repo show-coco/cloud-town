@@ -134,6 +134,7 @@ export const typeDefs = gql`
     content: String!
     pinned: Boolean!
     slug: String!
+    channel: Channel!
     sender: ChannelMember!
     replies: [Reply!]
     reactinos: [Reaction!]
@@ -144,6 +145,7 @@ export const typeDefs = gql`
     content: String!
     slug: String!
     pinned: Boolean!
+    channel: Channel!
     sender: ChannelMember!
     reactinos: [Reaction!]
   }
@@ -190,8 +192,14 @@ export const typeDefs = gql`
     kickMemberFromChannel(input: KickMemberFromChannelInput!): Channel!
     addMemberToChannel(input: AddMemberToChannelInput!): Channel!
     postThread(input: PostThreadInput!): Thread!
-    postReply(input: PostReplyInput!): Thread!
+    postReply(input: PostReplyInput!): Reply!
     updateMessage(input: UpdateMessageInput!): Thread!
-    addReaction(input: AddReactionInput!): Thread!
+    addReactionToThread(input: AddReactionInput!): Thread!
+    addReactionToReply(input: AddReactionInput!): Reply!
+  }
+
+  type Subscription {
+    threadPosted: Thread!
+    replyPosted: Reply!
   }
 `

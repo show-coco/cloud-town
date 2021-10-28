@@ -16,9 +16,13 @@ import PUserRepository from '../repository/UserRepository/PUserRepository'
 import ChannelMember from '../../domain/entities/ChannelAggregate/ChannelMember'
 import PThreadRepository from '../repository/ThreadRepository/PThreadRepository'
 import MessageUseCase, {
+  ReplyUCOutput,
   ThreadUCOutput,
 } from '../../usecase/chat/message/MessageUseCase'
 import { CreateCommunityParam } from '../../usecase/community/CommunityUseCaseParam'
+import { PubSub, withFilter } from 'graphql-subscriptions'
+
+const pubsub = new PubSub()
 
 const communityRepo = new PCommunityRepository()
 const channelRepo = new PChannelRepository()
@@ -63,7 +67,7 @@ export const resolvers: Resolvers = {
 
       const thread = await messageUseCase.getThreadDetail(id, userId)
 
-      return threadMapToSchema(thread)
+      return mapThreadToSchema(thread)
     },
   },
   Community: {
@@ -91,7 +95,7 @@ export const resolvers: Resolvers = {
     members: async (channel) => {
       const members = await channelUseCase.getMemberList(channel.id)
 
-      return members.map((member) => channelMemberMapToSchema(member))
+      return members.map((member) => mapChannelMemberToSchema(member))
     },
   },
   Mutation: {
@@ -264,20 +268,26 @@ export const resolvers: Resolvers = {
         content,
       })
 
-      return threadMapToSchema(thread)
+      await pubsub.publish('THREAD_POSTED', {
+        threadPosted: mapThreadToSchema(thread),
+      })
+      return mapThreadToSchema(thread)
     },
     postReply: async (_parent, args, context: Context) => {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { threadId, content } = args.input
       const senderId = context.user.sub
-      const thread = await messageUseCase.postReply({
+      const reply = await messageUseCase.postReply({
         threadId,
         content,
         senderId,
       })
 
-      return threadMapToSchema(thread)
+      await pubsub.publish('REPLY_POSTED', {
+        replyPosted: mapReplyToSchema(reply),
+      })
+      return mapReplyToSchema(reply)
     },
     updateMessage: async (_parent, args, context: Context) => {
       if (!context.user) throw new Error('Not Authenticated')
@@ -295,50 +305,128 @@ export const resolvers: Resolvers = {
           pinned,
           userId,
         })
-        return threadMapToSchema(thread)
+        await pubsub.publish('THREAD_POSTED', {
+          threadPosted: mapThreadToSchema(thread),
+        })
+        return mapThreadToSchema(thread)
       }
 
       throw new Error('Input type is strange')
     },
-    addReaction: async (_parent, args, context: Context) => {
+    addReactionToThread: async (_parent, args, context: Context) => {
       if (!context.user) throw new Error('Not Authenticated')
 
       const { id, emoji } = args.input
       const senderId = context.user.sub
       const thread = await messageUseCase.addReaction({ id, emoji, senderId })
-      return threadMapToSchema(thread)
+      await pubsub.publish('THREAD_POSTED', {
+        threadPosted: mapThreadToSchema(thread),
+      })
+      return mapThreadToSchema(thread)
+    },
+    addReactionToReply: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { id, emoji } = args.input
+      const senderId = context.user.sub
+      const reply = await messageUseCase.addReaction({ id, emoji, senderId })
+      await pubsub.publish('REPLY_POSTED', {
+        replyPosted: mapThreadToSchema(reply),
+      })
+      const mapped = mapThreadToSchema(reply)
+
+      return {
+        id: mapped.id,
+        content: mapped.content,
+        slug: mapped.slug,
+        pinned: mapped.pinned,
+        channel: mapped.channel,
+        sender: mapped.sender,
+        reactinos: mapped.reactinos,
+      }
+    },
+  },
+  Subscription: {
+    threadPosted: {
+      // チャンネルに所属していればスレッドを受け取る
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['THREAD_POSTED']),
+        async (
+          payload: { threadPosted: GThread },
+          _variables,
+          context: Context
+        ) => {
+          const userId = context.user?.sub
+          if (!userId) throw new Error('Not Authenticated')
+
+          const channel = await channelRepo.getChannelById(
+            payload.threadPosted.channel.id
+          )
+
+          return Boolean(channel.getMember(userId))
+        }
+      ),
+    },
+    replyPosted: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['REPLY_POSTED']),
+        async (
+          payload: { replyPosted: GReply },
+          _variables,
+          context: Context
+        ) => {
+          const userId = context.user?.sub
+          if (!userId) throw new Error('Not Authenticated')
+
+          const channel = await channelRepo.getChannelById(
+            payload.replyPosted.channel.id
+          )
+
+          return Boolean(channel.getMember(userId))
+        }
+      ),
     },
   },
 }
 
-const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
-  return {
+const mapThreadToSchema = (thread: ThreadUCOutput): GThread => {
+  const gThread = {
     id: thread.id,
     content: thread.content,
     pinned: thread.pinned,
     slug: thread.slug,
-    sender: channelMemberMapToSchema(thread.sender),
+    channel: thread.channel,
+    sender: mapChannelMemberToSchema(thread.sender),
     reactinos: thread.reactions?.map((reaction) => ({
       id: reaction.id,
       emoji: reaction.emoji,
-      sender: channelMemberMapToSchema(reaction.sender),
+      sender: mapChannelMemberToSchema(reaction.sender),
     })),
-    replies: thread.replies?.map<GReply>((reply) => ({
-      content: reply.content,
-      id: reply.id,
-      pinned: reply.pinned,
-      slug: reply.slug,
-      sender: channelMemberMapToSchema(reply.sender),
-      reactinos: reply.reactions?.map((reaction) => ({
-        id: reaction.id,
-        emoji: reaction.emoji,
-        sender: channelMemberMapToSchema(reaction.sender),
-      })),
+  }
+
+  return {
+    ...gThread,
+    replies: thread.replies?.map<GReply>((reply) => mapReplyToSchema(reply)),
+  }
+}
+
+const mapReplyToSchema = (reply: ReplyUCOutput): GReply => {
+  return {
+    content: reply.content,
+    id: reply.id,
+    pinned: reply.pinned,
+    slug: reply.slug,
+    channel: reply.channel,
+    sender: mapChannelMemberToSchema(reply.sender),
+    reactinos: reply.reactions?.map((reaction) => ({
+      id: reaction.id,
+      emoji: reaction.emoji,
+      sender: mapChannelMemberToSchema(reaction.sender),
     })),
   }
 }
 
-const channelMemberMapToSchema = (member: ChannelMember): GChannelMember => {
+const mapChannelMemberToSchema = (member: ChannelMember): GChannelMember => {
   let role: ChannelRole
   switch (member.role) {
     case 'Admin':

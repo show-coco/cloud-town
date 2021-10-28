@@ -1,6 +1,8 @@
 import IChannelRepository from '../../../adapter/repository/ChannelRepository/IChannelRepository'
 import IThreadReporsitory from '../../../adapter/repository/ThreadRepository/IThreadRepository'
+import Channel from '../../../domain/entities/ChannelAggregate/Channel'
 import ChannelMember from '../../../domain/entities/ChannelAggregate/ChannelMember'
+import Reply from '../../../domain/entities/ThreadAggregate/Reply'
 import Thread from '../../../domain/entities/ThreadAggregate/Thread'
 import {
   PostReplyParam,
@@ -17,7 +19,7 @@ export type ReactionUCOutPut = {
 export type ReplyUCOutput = {
   id: string
   content: string
-  channelId: string
+  channel: Channel
   slug: string
   pinned: boolean
   sender: ChannelMember
@@ -69,7 +71,7 @@ export default class MessageUseCase {
     senderId,
     content,
     threadId,
-  }: PostReplyParam): Promise<ThreadUCOutput> {
+  }: PostReplyParam): Promise<ReplyUCOutput> {
     const thread = await this.threadRepo.getById(threadId)
     const channel = await this.channelRepo.getChannelById(thread.channelId)
     if (!channel.getMember(senderId))
@@ -77,10 +79,10 @@ export default class MessageUseCase {
         'User does not have authorization to post reply. Please join to the channel'
       )
 
-    thread.reply({ senderId, content })
+    const reply = thread.reply({ senderId, content })
 
-    const updatedThread = await this.threadRepo.save(thread)
-    return this.mapToOutput(updatedThread)
+    await this.threadRepo.save(thread)
+    return this.mapReplyToOutPut(reply, channel)
   }
 
   async update({
@@ -131,34 +133,9 @@ export default class MessageUseCase {
   private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(thread.channelId)
 
-    const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
-      const replier = channel.getMember(reply.senderId)
-      if (!replier) throw new Error('Replier is not found in this channel')
-
-      const replyReactions = reply.reactions?.map<ReactionUCOutPut>(
-        (reaction) => {
-          const sender = channel.getMember(reaction.senderId)
-          if (!sender) throw new Error('Sender is not found in this channel')
-
-          return {
-            id: reaction.id || 0,
-            emoji: reaction.emoji,
-            sender: sender,
-          }
-        }
-      )
-
-      return {
-        id: reply.id,
-        content: reply.content,
-        channelId: reply.channelId,
-        slug: reply.slug,
-        pinned: reply.pinned,
-        sender: replier,
-        readers: reply.readers,
-        reactions: replyReactions,
-      }
-    })
+    const replies = thread.replies?.map<ReplyUCOutput>((reply) =>
+      this.mapReplyToOutPut(reply, channel)
+    )
 
     const sender = channel.getMember(thread.senderId)
     if (!sender) throw new Error('Sender is not found in this channel')
@@ -179,13 +156,42 @@ export default class MessageUseCase {
     return {
       id: thread.id,
       content: thread.content,
-      channelId: thread.channelId,
+      channel: channel,
       slug: thread.slug,
       pinned: thread.pinned,
       replies,
       sender,
       readers: thread.readers,
       reactions: threadReactions,
+    }
+  }
+
+  private mapReplyToOutPut(reply: Reply, channel: Channel): ReplyUCOutput {
+    const replier = channel.getMember(reply.senderId)
+    if (!replier) throw new Error('Replier is not found in this channel')
+
+    const replyReactions = reply.reactions?.map<ReactionUCOutPut>(
+      (reaction) => {
+        const sender = channel.getMember(reaction.senderId)
+        if (!sender) throw new Error('Sender is not found in this channel')
+
+        return {
+          id: reaction.id || 0,
+          emoji: reaction.emoji,
+          sender: sender,
+        }
+      }
+    )
+
+    return {
+      id: reply.id,
+      content: reply.content,
+      channel: channel,
+      slug: reply.slug,
+      pinned: reply.pinned,
+      sender: replier,
+      readers: reply.readers,
+      reactions: replyReactions,
     }
   }
 }
