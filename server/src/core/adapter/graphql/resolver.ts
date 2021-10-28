@@ -308,6 +308,15 @@ export const resolvers: Resolvers = {
       const thread = await messageUseCase.addReaction({ id, emoji, senderId })
       return threadMapToSchema(thread)
     },
+
+    readMessage: async (_parent, args, context: Context) => {
+      if (!context.user) throw new Error('Not Authenticated')
+
+      const { messageId } = args.input
+      const userId = context.user.sub
+      const thread = await messageUseCase.readMessage({ userId, messageId })
+      return threadMapToSchema(thread)
+    },
   },
 }
 
@@ -318,6 +327,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
     pinned: thread.pinned,
     slug: thread.slug,
     sender: channelMemberMapToSchema(thread.sender),
+    isRead: thread.isRead,
     reactinos: thread.reactions?.map((reaction) => ({
       id: reaction.id,
       emoji: reaction.emoji,
@@ -329,6 +339,7 @@ const threadMapToSchema = (thread: ThreadUCOutput): GThread => {
       pinned: reply.pinned,
       slug: reply.slug,
       sender: channelMemberMapToSchema(reply.sender),
+      isRead: thread.isRead,
       reactinos: reply.reactions?.map((reaction) => ({
         id: reaction.id,
         emoji: reaction.emoji,

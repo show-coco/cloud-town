@@ -146,6 +146,7 @@ export type Mutation = {
   postReply: Thread;
   updateMessage: Thread;
   addReaction: Thread;
+  readMessage: Thread;
 };
 
 
@@ -213,6 +214,11 @@ export type MutationAddReactionArgs = {
   input: AddReactionInput;
 };
 
+
+export type MutationReadMessageArgs = {
+  input: ReadMessageInput;
+};
+
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   ok: Scalars['Boolean'];
@@ -269,12 +275,17 @@ export type Reaction = {
   sender: ChannelMember;
 };
 
+export type ReadMessageInput = {
+  messageId: Scalars['String'];
+};
+
 export type Reply = {
   __typename?: 'Reply';
   id: Scalars['String'];
   content: Scalars['String'];
   slug: Scalars['String'];
   pinned: Scalars['Boolean'];
+  isRead: Scalars['Boolean'];
   sender: ChannelMember;
   reactinos?: Maybe<Array<Reaction>>;
 };
@@ -286,6 +297,7 @@ export type Thread = {
   pinned: Scalars['Boolean'];
   slug: Scalars['String'];
   sender: ChannelMember;
+  isRead: Scalars['Boolean'];
   replies?: Maybe<Array<Reply>>;
   reactinos?: Maybe<Array<Reaction>>;
 };
@@ -411,6 +423,7 @@ export type ResolversTypes = ResolversObject<{
   PostThreadInput: PostThreadInput;
   Query: ResolverTypeWrapper<{}>;
   Reaction: ResolverTypeWrapper<Reaction>;
+  ReadMessageInput: ReadMessageInput;
   Reply: ResolverTypeWrapper<Reply>;
   Thread: ResolverTypeWrapper<Thread>;
   UpdateChannelInput: UpdateChannelInput;
@@ -447,6 +460,7 @@ export type ResolversParentTypes = ResolversObject<{
   PostThreadInput: PostThreadInput;
   Query: {};
   Reaction: Reaction;
+  ReadMessageInput: ReadMessageInput;
   Reply: Reply;
   Thread: Thread;
   UpdateChannelInput: UpdateChannelInput;
@@ -501,6 +515,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   postReply?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationPostReplyArgs, 'input'>>;
   updateMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
   addReaction?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationAddReactionArgs, 'input'>>;
+  readMessage?: Resolver<ResolversTypes['Thread'], ParentType, ContextType, RequireFields<MutationReadMessageArgs, 'input'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
@@ -538,6 +553,7 @@ export type ReplyResolvers<ContextType = Context, ParentType extends ResolversPa
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
   reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -549,6 +565,7 @@ export type ThreadResolvers<ContextType = Context, ParentType extends ResolversP
   pinned?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['ChannelMember'], ParentType, ContextType>;
+  isRead?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   replies?: Resolver<Maybe<Array<ResolversTypes['Reply']>>, ParentType, ContextType>;
   reactinos?: Resolver<Maybe<Array<ResolversTypes['Reaction']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

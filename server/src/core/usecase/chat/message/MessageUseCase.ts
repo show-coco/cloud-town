@@ -20,6 +20,7 @@ export type ReplyUCOutput = {
   channelId: string
   slug: string
   pinned: boolean
+  isRead: boolean
   sender: ChannelMember
   reactions?: ReactionUCOutPut[]
   readers?: ChannelMember[]
@@ -46,7 +47,10 @@ export default class MessageUseCase {
         'User does not have authorization to get thread. Please join to the channel'
       )
 
-    return this.mapToOutput(thread)
+    return this.mapToOutput({
+      thread,
+      userId,
+    })
   }
 
   async postThread({
@@ -62,7 +66,10 @@ export default class MessageUseCase {
     const newThread = Thread.create({ content, channelId, senderId })
     const thread = await this.threadRepo.save(newThread)
 
-    return this.mapToOutput(thread)
+    return this.mapToOutput({
+      thread,
+      userId: senderId,
+    })
   }
 
   async postReply({
@@ -80,7 +87,10 @@ export default class MessageUseCase {
     thread.reply({ senderId, content })
 
     const updatedThread = await this.threadRepo.save(thread)
-    return this.mapToOutput(updatedThread)
+    return this.mapToOutput({
+      thread: updatedThread,
+      userId: senderId,
+    })
   }
 
   async update({
@@ -103,7 +113,10 @@ export default class MessageUseCase {
     if (typeof pinned !== 'undefined') message.changePinned(pinned)
 
     const updatedMessage = await this.threadRepo.save(message)
-    return this.mapToOutput(updatedMessage)
+    return this.mapToOutput({
+      thread: updatedMessage,
+      userId,
+    })
   }
 
   async addReaction({
@@ -125,10 +138,49 @@ export default class MessageUseCase {
     message.addReaction(emoji, senderId)
 
     const updatedMessage = await this.threadRepo.save(message)
-    return this.mapToOutput(updatedMessage)
+    return this.mapToOutput({
+      thread: updatedMessage,
+      userId: senderId,
+    })
   }
 
-  private async mapToOutput(thread: Thread): Promise<ThreadUCOutput> {
+  async readMessage({
+    userId,
+    messageId,
+  }: {
+    userId: string
+    messageId: string
+  }): Promise<ThreadUCOutput> {
+    const message = await this.threadRepo.getById(messageId)
+
+    const channel = await this.channelRepo.getChannelById(message.channelId)
+    if (!channel.getMember(userId))
+      throw new Error(
+        'User does not have authorization to get thread. Please join to the channel'
+      )
+
+    // 既読処理
+    message.addRead(userId)
+    console.log({
+      message,
+    })
+    const updatedMessage = await this.threadRepo.save(message)
+    console.log({
+      updatedMessage,
+    })
+    return this.mapToOutput({
+      thread: updatedMessage,
+      userId,
+    })
+  }
+
+  private async mapToOutput({
+    thread,
+    userId,
+  }: {
+    thread: Thread
+    userId: string
+  }): Promise<ThreadUCOutput> {
     const channel = await this.channelRepo.getChannelById(thread.channelId)
 
     const replies = thread.replies?.map<ReplyUCOutput>((reply) => {
@@ -154,6 +206,7 @@ export default class MessageUseCase {
         channelId: reply.channelId,
         slug: reply.slug,
         pinned: reply.pinned,
+        isRead: reply.isRead(userId),
         sender: replier,
         readers: reply.readers,
         reactions: replyReactions,
@@ -182,6 +235,7 @@ export default class MessageUseCase {
       channelId: thread.channelId,
       slug: thread.slug,
       pinned: thread.pinned,
+      isRead: thread.isRead(userId),
       replies,
       sender,
       readers: thread.readers,
